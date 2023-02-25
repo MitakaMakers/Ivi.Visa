@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>VXI11Net</RootNamespace>
+    <StartupObject>VXI11Net.Clientconsole</StartupObject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="client.cs" />
+    <Compile Include="visa32.cs" />
+    <Compile Include="tmctl.cs" />
+    <Compile Include="client_console.cs" />
+  </ItemGroup>
+
+</Project>
