@@ -180,6 +180,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_create_link(core_channel, xid, 123, 456, 789);
+                        Console.WriteLine("== reply to create_link ==");
                     }
                 }
                 if (a == "7")
@@ -189,6 +190,7 @@ namespace VXI11Net
                         int xid = Convert.ToInt32(Console.ReadLine());
                         int data_len = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_write(core_channel, xid, data_len);
+                        Console.WriteLine("== reply to device_write ==");
                     }
                 }
                 if (a == "8")
@@ -197,6 +199,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_read(core_channel, xid, 1, "XYZCO,246B,S000-0123-02,0");
+                        Console.WriteLine("== reply to device_read ==");
                     }
                 }
                 if (a == "9")
@@ -205,6 +208,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_readstb(core_channel, xid, 8);
+                        Console.WriteLine("== reply to device_readstb ==");
                     }
                 }
                 if (a == "10")
@@ -213,6 +217,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_trigger ==");
                     }
                 }
                 if (a == "11")
@@ -221,6 +226,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_clear ==");
                     }
                 }
                 if (a == "12")
@@ -229,6 +235,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_remote ==");
                     }
                 }
                 if (a == "13")
@@ -237,6 +244,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_local ==");
                     }
                 }
                 if (a == "14")
@@ -245,6 +253,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_lock ==");
                     }
                 }
                 if (a == "15")
@@ -253,6 +262,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_unlock ==");
                     }
                 }
                 if (a == "16")
@@ -261,6 +271,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to device_enable_srq ==");
                     }
                 }
                 if (a == "17")
@@ -270,6 +281,7 @@ namespace VXI11Net
                         int xid = Convert.ToInt32(Console.ReadLine());
                         int data_in_len = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_docmd(core_channel, xid, data_in_len);
+                        Console.WriteLine("== reply to device_docmd ==");
                     }
                 }
                 if (a == "18")
@@ -278,6 +290,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== :reply to destroy_link ==");
                     }
                 }
                 if (a == "19")
@@ -286,6 +299,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to create_intr_chan ==");
                     }
                 }
                 if (a == "20")
@@ -294,6 +308,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Server.reply_device_error(core_channel, xid, Server.SUCCESS);
+                        Console.WriteLine("== reply to destroy_intr_chan ==");
                     }
                 }
                 if (a == "21")
