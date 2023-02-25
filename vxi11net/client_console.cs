@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using Ivi.Visa.Interop;
+using Ivi.Visa;
 using TmctlAPINet;
 
 namespace VXI11Net
@@ -11,12 +11,12 @@ namespace VXI11Net
         public static void Main(string[] args)
         {
             bool isLoop = true;
-            if (isLoop)
+            while (isLoop)
             {
                 Console.WriteLine("Select Test target");
                 Console.WriteLine("   1:Test VXI-11 Functions");
-                Console.WriteLine("   2:Test VISA Functions");
-                Console.WriteLine("   3:Test Tmctl Functions");
+                Console.WriteLine("   2:Test VISA.Net Functions");
+                Console.WriteLine("   3:Test TmctlAPINet Functions");
                 Console.WriteLine(" E/Q:exit program");
                 Console.WriteLine("");
                 Console.Write("Input fuction number? : ");
@@ -43,12 +43,12 @@ namespace VXI11Net
         public static void ClientConsole()
         {
             bool isLoop = true;
-            if (isLoop)
+            while (isLoop)
             {
                 Socket? socket = null;
                 Console.WriteLine("Select VXI-11 client Function");
                 Console.WriteLine("   1:create RPC client (core channel.)");
-                Console.WriteLine("   2:create RPC client (abort chan., optional)");
+                Console.WriteLine("   2:create RPC client (abort channel)");
                 Console.WriteLine("   3:create RPC server (interrupt channel)");
                 Console.WriteLine("   4:create_link");
                 Console.WriteLine("   5:device_write");
@@ -68,7 +68,7 @@ namespace VXI11Net
                 Console.WriteLine("  19:device_abort");
                 Console.WriteLine("  20:device_intr_srq");
                 Console.WriteLine("  21:close RPC server (interrupt channel)");
-                Console.WriteLine("  22:close RPC client (abort chan., optional)");
+                Console.WriteLine("  22:close RPC client (abort channel)");
                 Console.WriteLine("  23:close RPC client (core channel.)");
                 Console.WriteLine("   B:back to Main menu");
                 Console.WriteLine(" E/Q:exit program");
@@ -107,6 +107,8 @@ namespace VXI11Net
                         int abortPort = 0;
                         int maxRecvSize = 0;
                         Client.create_link(socket, xid++, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
+                        Console.WriteLine("== create_link ==");
+                        Console.WriteLine(" Call : create_link : ret=0");
                     }
                 }
                 if (a == "5")
@@ -121,6 +123,8 @@ namespace VXI11Net
                         string msg = "*IDN?";
                         int data_len;
                         Client.device_write(socket, xid++, lid, flags, lock_timeout, io_timeout, msg, out data_len);
+                        Console.WriteLine("== device_write ==");
+                        Console.WriteLine(" Call : device_write : ret=0");
                     }
                 }
                 if (a == "6")
@@ -140,6 +144,8 @@ namespace VXI11Net
                         string str = Encoding.GetEncoding("ASCII").GetString(data);
                         StringBuilder buff = new StringBuilder(str);
                         int rlen = data.Length;
+                        Console.WriteLine("== device_read ==");
+                        Console.WriteLine(" Call : device_read : ret=0");
                     }
                 }
                 if (a == "7")
@@ -149,58 +155,92 @@ namespace VXI11Net
                         int xid = 123;
                         int lid = 0;
                         Client.destroy_link(socket, xid++, lid);
+                        Console.WriteLine("== destroy_link ==");
+                        Console.WriteLine(" Call : viOpen : ret=0");
                     }
                 }
                 if (a == "8")
                 {
+                    Console.WriteLine("== device_readstb ==");
+                    Console.WriteLine(" Call : device_readstb : ret=0");
                 }
                 if (a == "9")
                 {
+                    Console.WriteLine("== device_trigger ==");
+                    Console.WriteLine(" Call : device_trigger : ret=0");
                 }
                 if (a == "10")
                 {
+                    Console.WriteLine("== device_clear ==");
+                    Console.WriteLine(" Call : device_clear : ret=0");
                 }
                 if (a == "11")
                 {
+                    Console.WriteLine("== device_remote ==");
+                    Console.WriteLine(" Call : device_remote : ret=0");
                 }
                 if (a == "12")
                 {
+                    Console.WriteLine("== device_local ==");
+                    Console.WriteLine(" Call : device_local : ret=0");
                 }
                 if (a == "13")
                 {
+                    Console.WriteLine("== device_lock ==");
+                    Console.WriteLine(" Call : device_lock : ret=0");
                 }
                 if (a == "14")
                 {
+                    Console.WriteLine("== device_unlock ==");
+                    Console.WriteLine(" Call : device_unlock : ret=0");
                 }
                 if (a == "15")
                 {
+                    Console.WriteLine("== device_enable_srq ==");
+                    Console.WriteLine(" Call : device_enable_srq : ret=0");
                 }
                 if (a == "16")
                 {
+                    Console.WriteLine("== device_docmd ==");
+                    Console.WriteLine(" Call : device_docmd : ret=0");
                 }
                 if (a == "17")
                 {
+                    Console.WriteLine("== create_intr_chan ==");
+                    Console.WriteLine(" Call : create_intr_chan : ret=0");
                 }
                 if (a == "18")
                 {
+                    Console.WriteLine("== destroy_intr_chan ==");
+                    Console.WriteLine(" Call : destroy_intr_chan : ret=0");
                 }
                 if (a == "19")
                 {
+                    Console.WriteLine("== device_abort ==");
+                    Console.WriteLine(" Call : device_abort : ret=0");
                 }
                 if (a == "20")
                 {
+                    Console.WriteLine("== device_intr_srq ==");
+                    Console.WriteLine(" Call : device_intr_srq : ret=0");
                 }
                 if (a == "21")
                 {
+                    Console.WriteLine("== close RPC server (interrupt channel) ==");
+                    Console.WriteLine(" Call : close RPC server (interrupt channel) : ret=0");
                 }
                 if (a == "22")
                 {
+                    Console.WriteLine("== close RPC client (abort channel) ==");
+                    Console.WriteLine(" Call : close RPC client (abort channel) : ret=0");
                 }
                 if (a == "23")
                 {
                     if (socket != null)
                     {
                         socket.Close();
+                        Console.WriteLine("== close RPC client (core channel) ==");
+                        Console.WriteLine(" Call : close RPC client (core channel) : ret=0");
                     }
                 }
                 if ((a == "B") || (a == "b"))
@@ -218,7 +258,7 @@ namespace VXI11Net
         public static void VisaConsole()
         {
             bool isLoop = true;
-            if (isLoop)
+            while (isLoop)
             {
                 Console.WriteLine("Select VISA Function");
                 Console.WriteLine("   1:viOpenDefaultRM");
@@ -236,60 +276,51 @@ namespace VXI11Net
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
-                    Console.ReadLine();
                     Console.WriteLine("==viOpenDefaultRM==");
                     Console.WriteLine(" Call : viOpenDefaultRM : ret=0");
                 }
                 if (a == "2")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viOpen==");
+                    Console.WriteLine("== viOpen ==");
                     Console.WriteLine(" Call : viOpen : ret=0");
                 }
                 if (a == "3")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viClose==");
+                    Console.WriteLine("== viClose ==");
                     Console.WriteLine(" Call : viClose : ret=0");
                 }
                 if (a == "4")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viWrite==");
+                    Console.WriteLine("== viWrite ==");
                     Console.WriteLine(" Call : viWrite : retCnt=5 ret=0");
                 }
                 if (a == "5")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viRead==");
+                    Console.WriteLine("== viRead ==");
                     Console.WriteLine(" Call : viRead : retCnt=32 ret=0");
                     Console.WriteLine(" Response");
                     Console.WriteLine("        Message=XYZCO,246B,S000-0123-02,0");
                 }
                 if (a == "6")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viAssertTrigger==");
+                    Console.WriteLine("== viAssertTrigger ==");
                     Console.WriteLine(" Call : viAssertTrigger : ret=0");
                 }
                 if (a == "7")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viReadSTB==");
+                    Console.WriteLine("== viReadSTB ==");
                     Console.WriteLine(" Call : viReadSTB : ret=0");
                     Console.WriteLine(" Response");
                     Console.WriteLine("        status=68(0x44)");
                 }
                 if (a == "8")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viClear==");
+                    Console.WriteLine("== viClear ==");
                     Console.WriteLine(" Call : viClear : ret=0");
                 }
                 if (a == "9")
                 {
-                    Console.ReadLine();
-                    Console.WriteLine("==viGpibControlREN==");
+                    Console.WriteLine("== viGpibControlREN ==");
                     Console.WriteLine(" Call : viGpibControlREN : ret=0");
                 }
                 if (a == "100")
@@ -299,7 +330,7 @@ namespace VXI11Net
 
                     string deviceResource = "TCPIP::XXX.XXX.XXX.XXX::INSTR";
 
-                    inst.IO = (IMessage)rm.Open(deviceResource, AccessMode.NO_LOCK, 0, "");
+                    inst.IO = (IMessage)rm.Open(deviceResource, AccessMode.None, 0, "");
                     inst.IO.Timeout = 10000;
                     inst.WriteString("*IDN?");
                     string returnStr = inst.ReadString();
@@ -318,7 +349,7 @@ namespace VXI11Net
         public static void TmctlConsole()
         {
             bool isLoop = true;
-            if (isLoop)
+            while (isLoop)
             {
                 Console.WriteLine("Select Tmctl Function");
                 Console.WriteLine("   1:TmcInitialize");
@@ -334,38 +365,41 @@ namespace VXI11Net
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
-                    Console.WriteLine("==TmcInitialize==");
+                    Console.WriteLine("== TmcInitialize ==");
                     Console.WriteLine(" Call : TmcInitialize : ret=0,  id=0");
                 }
                 if (a == "2")
                 {
                     Console.ReadLine();
-                    Console.WriteLine("==TmcFinish==");
+                    Console.WriteLine("== TmcFinish ==");
                     Console.WriteLine(" Call : TmcFinish : ret=0");
                 }
                 if (a == "3")
                 {
                     Console.ReadLine();
-                    Console.WriteLine("==TmcSend==");
+                    Console.WriteLine("== TmcSend ==");
                     Console.WriteLine(" Call : TmcSend : ret=0");
                 }
                 if (a == "4")
                 {
+                    Console.WriteLine("== TmcReceive ==");
+                    Console.WriteLine(" Call : TmcReceive : ret=0,  id=0");
                 }
                 if (a == "5")
                 {
+                    Console.WriteLine("== TmcSetRen ==");
+                    Console.WriteLine(" Call : TmcSetRen : ret=0,  id=0");
                 }
                 if (a == "6")
                 {
                     Console.ReadLine();
-                    Console.WriteLine("==TmcDeviceClear==");
+                    Console.WriteLine("== TmcDeviceClear ==");
                     Console.WriteLine(" Call : TmcDeviceClear : ret=0");
                 }
                 if (a == "7")
                 {
-                }
-                if (a == "9")
-                {
+                    Console.WriteLine("== TmcDeviceTrigger ==");
+                    Console.WriteLine(" Call : TmcDeviceTrigger : ret=0,  id=0");
                 }
                 if ((a == "B") || (a == "b"))
                 {

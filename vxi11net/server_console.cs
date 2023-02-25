@@ -42,7 +42,7 @@ namespace VXI11Net
                 Console.WriteLine("  26:unregister core channel with portmapper");
                 Console.WriteLine("  27:close RPC server (core channel)");
                 Console.WriteLine("  28:close RPC server (abort channel)");
-                Console.WriteLine("  29:Run demo server)");
+                Console.WriteLine("  29:Run demo server");
                 Console.WriteLine(" E/Q:Exit program");
                 Console.WriteLine("");
                 Console.Write("Input fuction number? : ");
