@@ -46,6 +46,12 @@ namespace VXI11Net
             Socket? core = null;
             Socket? abort = null;
             Socket? interrupt = null;
+            int xid = 0;
+            int lid = 0;
+            int abortPort = 0;
+            int maxRecvSize = 0;
+            int lock_timeout = 0;
+
             bool isLoop = true;
             while (isLoop)
             {
@@ -113,19 +119,16 @@ namespace VXI11Net
                     if (core != null)
                     {
                         Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
+                        xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
+                        lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  clientId? : ");
                         int cliendId = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lockDevice? : ");
                         int lockDevice = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  handle? : ");
                         String handle = new String(Console.ReadLine());
-                        int lid = 0;
-                        int abortPort = 0;
-                        int maxRecvSize = 0;
-                        Client.create_link(core, xid, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
+                        Client.create_link(core, xid++, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
                         Console.WriteLine("== create_link ==");
                         Console.WriteLine(" Call : create_link : ret=0");
                     }
@@ -134,19 +137,13 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  msg? : ");
                         String msg = new String(Console.ReadLine());
                         int data_len;
-                        Client.device_write(core, xid, lid, flags, lock_timeout, io_timeout, msg, out data_len);
+                        Client.device_write(core, xid++, lid, flags, lock_timeout, io_timeout, msg, out data_len);
                         Console.WriteLine("== device_write ==");
                         Console.WriteLine(" Call : device_write : ret=0");
                     }
@@ -155,13 +152,7 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  requestSize? : ");
@@ -170,24 +161,17 @@ namespace VXI11Net
                         int ch = Convert.ToInt32(Console.ReadLine());
                         Client.TermChar term = (Client.TermChar)Enum.ToObject(typeof(Client.TermChar), ch);
                         int reason;
-                        byte[] data;
-                        Client.device_read(core, xid, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
-                        string str = Encoding.GetEncoding("ASCII").GetString(data);
-                        StringBuilder buff = new StringBuilder(str);
-                        int rlen = data.Length;
+                        string data;
+                        Client.device_read(core, xid++, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
                         Console.WriteLine("== device_read ==");
-                        Console.WriteLine(" Call : device_read : ret=0");
+                        Console.WriteLine(" Call : device_read : ret={0}", data);
                     }
                 }
                 if (a == "7")
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
-                        Client.destroy_link(core, xid, lid);
+                        Client.destroy_link(core, xid++, lid);
                         Console.WriteLine("== destroy_link ==");
                         Console.WriteLine(" Call : destroy_link : ret=0");
                     }
@@ -196,17 +180,11 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         char stb;
-                        Client.device_readstb(core, xid, lid, flags, lock_timeout, io_timeout, out stb);
+                        Client.device_readstb(core, xid++, lid, flags, lock_timeout, io_timeout, out stb);
                         Console.WriteLine("== device_readstb ==");
                         Console.WriteLine(" Call : device_readstb : ret=0");
                     }
@@ -215,16 +193,10 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_trigger(core, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_trigger(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_trigger ==");
                         Console.WriteLine(" Call : device_trigger : ret=0");
                     }
@@ -233,16 +205,10 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_clear(core, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_clear(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_clear ==");
                         Console.WriteLine(" Call : device_clear : ret=0");
                     }
@@ -251,16 +217,10 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_remote(core, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_remote(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_remote ==");
                         Console.WriteLine(" Call : device_remote : ret=0");
                     }
@@ -269,16 +229,10 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_local(core, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_local(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_local ==");
                         Console.WriteLine(" Call : device_local : ret=0");
                     }
@@ -287,14 +241,10 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_lock(core, xid, lid, flags, lock_timeout);
+                        Console.Write("  lid? : ");
+                        int lid2 = Convert.ToInt32(Console.ReadLine());
+                        Client.device_lock(core, xid++, lid2, flags, lock_timeout);
                         Console.WriteLine("== device_lock ==");
                         Console.WriteLine(" Call : device_lock : ret=0");
                     }
@@ -303,11 +253,9 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
-                        Client.device_unlock(core, xid, lid);
+                        int lid2 = Convert.ToInt32(Console.ReadLine());
+                        Client.device_unlock(core, xid++, lid2);
                         Console.WriteLine("== device_unlock ==");
                         Console.WriteLine(" Call : device_unlock : ret=0");
                     }
@@ -316,15 +264,11 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  enable? : ");
                         int enable = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  handle? : ");
                         string handle = new String(Console.ReadLine());
-                        Client.device_enable_srq(core, xid, lid, enable, handle);
+                        Client.device_enable_srq(core, xid++, lid, enable, handle);
                         Console.WriteLine("== device_enable_srq ==");
                         Console.WriteLine(" Call : device_enable_srq : ret=0");
                     }
@@ -333,13 +277,7 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  cmd? : ");
@@ -361,8 +299,6 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  host address? : ");
                         int hostaddr = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  host port? : ");
@@ -373,7 +309,7 @@ namespace VXI11Net
                         int progvers = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  program family? : ");
                         int progfamily = Convert.ToInt32(Console.ReadLine());
-                        Client.create_intr_chan(core, xid, hostaddr, hostport, prognum, progvers, progfamily);
+                        Client.create_intr_chan(core, xid++, hostaddr, hostport, prognum, progvers, progfamily);
                         Console.WriteLine("== create_intr_chan ==");
                         Console.WriteLine(" Call : create_intr_chan : ret=0");
                     }
@@ -382,8 +318,6 @@ namespace VXI11Net
                 {
                     if (core != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
                         Client.destroy_intr_chan(core, xid);
                         Console.WriteLine("== destroy_intr_chan ==");
                         Console.WriteLine(" Call : destroy_intr_chan : ret=0");
@@ -393,16 +327,12 @@ namespace VXI11Net
                 {
                     if (abort != null)
                     {
-                        Console.Write("  xid? : ");
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lid? : ");
-                        int lid = Convert.ToInt32(Console.ReadLine());
                         Client.Flags flags = Client.Flags.none;
-                        Console.Write("  lock_timeout? : ");
-                        int lock_timeout = Convert.ToInt32(Console.ReadLine());
+                        Console.Write("  lid? : ");
+                        int lid2 = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_abort(abort, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_abort(abort, xid++, lid2, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_abort ==");
                         Console.WriteLine(" Call : device_abort : ret=0");
                     }

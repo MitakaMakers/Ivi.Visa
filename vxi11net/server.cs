@@ -247,9 +247,8 @@ namespace VXI11Net
         }
         public static CREATE_LINK_PARAMS receive_create_link(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] handle)
         {
-            byte[] buffer = new byte[size];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(CREATE_LINK_PARAMS))];
             int byteCount = so.Receive(buffer, SocketFlags.None);
-
             CREATE_LINK_PARAMS args = new CREATE_LINK_PARAMS();
             args.clientId      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.lockDevice    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -257,6 +256,11 @@ namespace VXI11Net
             args.handle_len    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             handle             = new Byte[args.handle_len];
             byteCount          = so.Receive(handle, SocketFlags.None);
+
+            int remain         = size - Marshal.SizeOf(typeof(CREATE_LINK_PARAMS)) - args.handle_len;
+            buffer             = new Byte[remain];
+            byteCount          = so.Receive(buffer, SocketFlags.None);
+
             return args;
         }
         public static void reply_create_link(Socket so, int xid, int lid, int abortPort, int maxRecvSize)
@@ -291,9 +295,8 @@ namespace VXI11Net
         }
         public static DEVICE_WRITE_PARAMS receive_device_write(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] data)
         {
-            byte[] buffer = new byte[size];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(DEVICE_WRITE_PARAMS))];
             int byteCount = so.Receive(buffer, SocketFlags.None);
-
             DEVICE_WRITE_PARAMS args = new DEVICE_WRITE_PARAMS();
             args.lid           = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.flags         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -302,6 +305,10 @@ namespace VXI11Net
             args.data_len      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             data               = new Byte[args.data_len];
             byteCount          = so.Receive(data, SocketFlags.None);
+
+            int remain         = size - Marshal.SizeOf(typeof(DEVICE_WRITE_PARAMS)) - args.data_len;
+            buffer             = new Byte[remain];
+            byteCount          = so.Receive(buffer, SocketFlags.None);
             return args;
         }
         public static void reply_device_write(Socket so, int xid, int data_len)
@@ -327,9 +334,8 @@ namespace VXI11Net
         // reply device_read
         public static DEVICE_READ_PARAMS receive_device_read(Socket so, RPC_MESSAGE_PARAMS msg, int size)
         {
-            byte[] buffer = new byte[size];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(DEVICE_READ_PARAMS))];
             int byteCount = so.Receive(buffer, SocketFlags.None);
-
             DEVICE_READ_PARAMS args = new DEVICE_READ_PARAMS();
             args.lid           = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.requestSize   = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -449,23 +455,26 @@ namespace VXI11Net
         }
         public static DEVICE_ENABLE_SRQ_PARAMS receive_device_enable_srq(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] handle)
         {
-            byte[] buffer = new byte[size];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(DEVICE_ENABLE_SRQ_PARAMS))];
             int byteCount = so.Receive(buffer, SocketFlags.None);
-
             DEVICE_ENABLE_SRQ_PARAMS args = new DEVICE_ENABLE_SRQ_PARAMS();
             args.lid           = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.enable        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             args.handle_len    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             handle             = new Byte[args.handle_len];
             byteCount          = so.Receive(handle, SocketFlags.None);
+
+            int remain         = size - Marshal.SizeOf(typeof(DEVICE_ENABLE_SRQ_PARAMS)) - args.handle_len;
+            buffer             = new Byte[remain];
+            byteCount          = so.Receive(buffer, SocketFlags.None);
+
             return args;
         }
         // reply device_docmd
         public static DEVICE_DOCMD_PARAMS receive_device_docmd(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] data_in)
         {
-            byte[] buffer = new byte[size];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(DEVICE_DOCMD_PARAMS))];
             int byteCount = so.Receive(buffer, SocketFlags.None);
-
             DEVICE_DOCMD_PARAMS args = new DEVICE_DOCMD_PARAMS();
             args.lid           = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.flags         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -477,6 +486,11 @@ namespace VXI11Net
             args.data_in_len   = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             data_in            = new Byte[args.data_in_len];
             byteCount          = so.Receive(data_in, SocketFlags.None);
+
+            int remain         = size - Marshal.SizeOf(typeof(DEVICE_DOCMD_PARAMS)) - args.data_in_len;
+            buffer             = new Byte[remain];
+            byteCount          = so.Receive(buffer, SocketFlags.None);
+
             return args;
         }
         public static void reply_device_docmd(Socket so, int xid, int data_out_len)
@@ -523,10 +537,17 @@ namespace VXI11Net
         {
             byte[] buffer = new byte[1000];
             int byteCount = 1;
-            while (1 <= byteCount)
+            int timeout = so.ReceiveTimeout;
+            so.ReceiveTimeout = 1;
+            try
             {
-                byteCount = so.Receive(buffer, SocketFlags.None);
-            }
+                while (1 <= byteCount)
+                {
+                    byteCount = so.Receive(buffer, SocketFlags.None);
+
+                }
+            } catch (Exception e)  { Console.WriteLine(e)   ; }
+            so.ReceiveTimeout = timeout;
         }
     }
 }

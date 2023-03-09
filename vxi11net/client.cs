@@ -502,7 +502,7 @@ namespace VXI11Net
             arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
-            arg.termChar       = (char)term;
+            arg.termChar       = IPAddress.HostToNetworkOrder((int)term);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_READ_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);

@@ -350,120 +350,128 @@ namespace VXI11Net
                 if (a == "29")
                 {
                     Console.Write("  IP address? : ");
-                    string adress = new String(Console.ReadLine());
+                    string address = new String(Console.ReadLine());
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
 
-                    core_server = Server.create_core_channel(adress, port);
-                    core_channel = Server.accept_connection_requests(core_server);
-
                     Console.WriteLine("== Run demo server ==");
+                    core_server = Server.create_core_channel(address, port);
+                    Console.WriteLine("  listen({0}:{1})...", address, port);
+                    core_channel = Server.accept_connection_requests(core_server);
+                    Console.WriteLine("  accept()...");
+
                     while (true)
                     {
                         int size;
+                        Console.WriteLine("  == Wait RPC ==");
                         Server.RPC_MESSAGE_PARAMS msg = Server.receive_message(core_channel, out size);
+                        Console.WriteLine("    received--.");
+                        Console.WriteLine("      xid     = {0}", msg.xid);
+                        Console.WriteLine("      proc    = {0}", msg.proc);
+                        Console.WriteLine("      size    = {0}", size);
                         if (msg.proc == Server.CREATE_LINK)
                         {
+                            Console.WriteLine("  == CREATE_LINK ==");
                             string handle;
                             Server.receive_create_link(core_channel, msg, size, out handle);
                             Server.reply_create_link(core_channel, msg.xid, 123, 456, 789);
-                            Console.WriteLine("  == CREATE_LINK ==");
                         }
-                        if (msg.proc == Server.DEVICE_WRITE)
+                        else if (msg.proc == Server.DEVICE_WRITE)
                         {
+                            Console.WriteLine("  == DEVICE_WRITE ==");
                             string data;
                             Server.DEVICE_WRITE_PARAMS wrt = Server.receive_device_write(core_channel, msg, size, out data);
                             Server.reply_device_write(core_channel, msg.xid, wrt.data_len);
-                            Console.WriteLine("  == DEVICE_WRITE ==");
                         }
-                        if (msg.proc == Server.DEVICE_READ)
+                        else if (msg.proc == Server.DEVICE_READ)
                         {
-                            string data = "XYZCO,246B,S000-0123-02,0";
-                            Server.receive_device_read(core_channel, msg, size);
-                            Server.reply_device_read(core_channel, msg.xid, 1, data);
                             Console.WriteLine("  == DEVICE_READ ==");
+                            Server.receive_device_read(core_channel, msg, size);
+                            string data = "XYZCO,246B,S000-0123-02,0";
+                            Server.reply_device_read(core_channel, msg.xid, 1, data);
                         }
-                        if (msg.proc == Server.DEVICE_READSTB)
+                        else if (msg.proc == Server.DEVICE_READSTB)
                         {
+                            Console.WriteLine("  == DEVICE_READSTB ==");
                             Server.DEVICE_GENERIC_PARAMS gen = Server.receive_generic_params(core_channel, msg, size);
                             Server.reply_device_readstb(core_channel, msg.xid, 8);
-                            Console.WriteLine("  == DEVICE_READSTB ==");
                         }
-                        if (msg.proc == Server.DEVICE_TRIGGER)
+                        else if (msg.proc == Server.DEVICE_TRIGGER)
                         {
-                            Server.DEVICE_GENERIC_PARAMS gen = Server.receive_generic_params(core_channel, msg, size);
-                            Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
                             Console.WriteLine("  == DEVICE_TRIGGER ==");
-                        }
-                        if (msg.proc == Server.DEVICE_CLEAR)
-                        {
                             Server.DEVICE_GENERIC_PARAMS gen = Server.receive_generic_params(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
+                        }
+                        else if (msg.proc == Server.DEVICE_CLEAR)
+                        {
                             Console.WriteLine("  == DEVICE_CLEAR ==");
-                        }
-                        if (msg.proc == Server.DEVICE_REMOTE)
-                        {
                             Server.DEVICE_GENERIC_PARAMS gen = Server.receive_generic_params(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
+                        }
+                        else if (msg.proc == Server.DEVICE_REMOTE)
+                        {
                             Console.WriteLine("  == DEVICE_REMOTE ==");
-                        }
-                        if (msg.proc == Server.DEVICE_LOCAL)
-                        {
                             Server.DEVICE_GENERIC_PARAMS gen = Server.receive_generic_params(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == DEVICE_LOCAL ==");
                         }
-                        if (msg.proc == Server.DEVICE_LOCK)
+                        else if (msg.proc == Server.DEVICE_LOCAL)
                         {
+                            Console.WriteLine("  == DEVICE_LOCAL ==");
+                            Server.DEVICE_GENERIC_PARAMS gen = Server.receive_generic_params(core_channel, msg, size);
+                            Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
+                        }
+                        else if (msg.proc == Server.DEVICE_LOCK)
+                        {
+                            Console.WriteLine("  == DEVICE_LOCK ==");
                             Server.receive_device_lock(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == DEVICE_LOCK ==");
                         }
-                        if (msg.proc == Server.DEVICE_UNLOCK)
+                        else if (msg.proc == Server.DEVICE_UNLOCK)
                         {
+                            Console.WriteLine("  == DEVICE_UNLOCK ==");
                             int link = Server.receive_device_link(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == DEVICE_UNLOCK ==");
                         }
-                        if (msg.proc == Server.DEVICE_ENABLE_SRQ)
+                        else if (msg.proc == Server.DEVICE_ENABLE_SRQ)
                         {
+                            Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
                             string handle;
                             Server.receive_device_enable_srq(core_channel, msg, size, out handle);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
                         }
-                        if (msg.proc == Server.DEVICE_DOCMD)
+                        else if (msg.proc == Server.DEVICE_DOCMD)
                         {
+                            Console.WriteLine("  == DEVICE_DOCMD ==");
                             byte[] data_in;
                             Server.DEVICE_DOCMD_PARAMS dcm = Server.receive_device_docmd(core_channel, msg, size, out data_in);
                             Server.reply_device_docmd(core_channel, msg.xid, dcm.data_in_len);
-                            Console.WriteLine("  == DEVICE_DOCMD ==");
                         }
-                        if (msg.proc == Server.DESTROY_LINK)
+                        else if (msg.proc == Server.DESTROY_LINK)
                         {
+                            Console.WriteLine("  == DESTROY_LINK ==");
                             int link = Server.receive_device_link(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == DESTROY_LINK ==");
                         }
-                        if (msg.proc == Server.CREATE_INTR_CHAN)
+                        else if (msg.proc == Server.CREATE_INTR_CHAN)
                         {
+                            Console.WriteLine("  == CREATE_INTR_CHAN ==");
                             Server.receive_create_intr_chan(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == CREATE_INTR_CHAN ==");
                         }
-                        if (msg.proc == Server.DESTROY_INTR_CHAN)
+                        else if (msg.proc == Server.DESTROY_INTR_CHAN)
                         {
-                            Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
                             Console.WriteLine("  == DESTROY_INTR_CHAN ==");
+                            Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
                         }
-                        if (msg.proc == Server.DEVICE_ABORT)
+                        else if (msg.proc == Server.DEVICE_ABORT)
                         {
+                            Console.WriteLine("  == DEVICE_ABORT ==");
                             int link = Server.receive_device_link(core_channel, msg, size);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
-                            Console.WriteLine("  == DEVICE_ABORT ==");
                         }
                         else
                         {
+                            Console.WriteLine("  == clear buffer ==");
                             Server.clear_buffer(core_channel);
                         }
                     }
