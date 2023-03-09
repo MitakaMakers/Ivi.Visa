@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Drawing;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Ivi.Visa;
@@ -15,7 +16,7 @@ namespace VXI11Net
             {
                 Console.WriteLine("Select Test target");
                 Console.WriteLine("   1:Test VXI-11 Functions");
-                Console.WriteLine("   2:Test VISA.Net Functions");
+                Console.WriteLine("   2:Test VISA.NET Functions");
                 Console.WriteLine("   3:Test TmctlAPINet Functions");
                 Console.WriteLine(" E/Q:exit program");
                 Console.WriteLine("");
@@ -27,7 +28,7 @@ namespace VXI11Net
                 }
                 if (a == "2")
                 {
-                    VisaConsole();
+                    VisaNetConsole();
                 }
                 if (a == "3")
                 {
@@ -42,10 +43,12 @@ namespace VXI11Net
         }
         public static void ClientConsole()
         {
+            Socket? core = null;
+            Socket? abort = null;
+            Socket? interrupt = null;
             bool isLoop = true;
             while (isLoop)
             {
-                Socket? socket = null;
                 Console.WriteLine("Select VXI-11 client Function");
                 Console.WriteLine("   1:create RPC client (core channel.)");
                 Console.WriteLine("   2:create RPC client (abort channel)");
@@ -81,22 +84,33 @@ namespace VXI11Net
                     string address = new String(Console.ReadLine());
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(remoteEP);
-                    socket.NoDelay = true;
+                    core = Client.create_rpc_client_core_channel(address, port);
+                    Console.WriteLine("== create RPC client (core channel.) ==");
+                    Console.WriteLine(" Call : create_rpc_client_core_channel : ret=0");
                 }
                 if (a == "2")
                 {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+                    abort = Client.create_rpc_client_abort_channel(address, port);
+                    Console.WriteLine("== create RPC client (abort channel.) ==");
+                    Console.WriteLine(" Call : create_rpc_client_abort_channel : ret=0");
                 }
                 if (a == "3")
                 {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+                    interrupt = Client.create_rpc_server_interrupt_channel(address, port);
+                    Console.WriteLine("== create RPC server (interrupt channel.) ==");
+                    Console.WriteLine(" Call : create_rpc_server_interrupt_channel : ret=0");
                 }
                 if (a == "4")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
@@ -111,21 +125,20 @@ namespace VXI11Net
                         int lid = 0;
                         int abortPort = 0;
                         int maxRecvSize = 0;
-                        Client.create_link(socket, xid, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
+                        Client.create_link(core, xid, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
                         Console.WriteLine("== create_link ==");
                         Console.WriteLine(" Call : create_link : ret=0");
                     }
                 }
                 if (a == "5")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
@@ -133,32 +146,32 @@ namespace VXI11Net
                         Console.Write("  msg? : ");
                         String msg = new String(Console.ReadLine());
                         int data_len;
-                        Client.device_write(socket, xid, lid, flags, lock_timeout, io_timeout, msg, out data_len);
+                        Client.device_write(core, xid, lid, flags, lock_timeout, io_timeout, msg, out data_len);
                         Console.WriteLine("== device_write ==");
                         Console.WriteLine(" Call : device_write : ret=0");
                     }
                 }
                 if (a == "6")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  requestSize? : ");
                         int requestSize = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  termchar? : ");
-                        int termchar = Convert.ToInt32(Console.ReadLine());
-                        int reason = 0;
+                        Console.Write("  terminate character? : ");
+                        int ch = Convert.ToInt32(Console.ReadLine());
+                        Client.TermChar term = (Client.TermChar)Enum.ToObject(typeof(Client.TermChar), ch);
+                        int reason;
                         byte[] data;
-                        Client.device_read(socket, xid, lid, requestSize, flags, lock_timeout, io_timeout, termchar, out reason, out data);
+                        Client.device_read(core, xid, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
                         string str = Encoding.GetEncoding("ASCII").GetString(data);
                         StringBuilder buff = new StringBuilder(str);
                         int rlen = data.Length;
@@ -168,146 +181,140 @@ namespace VXI11Net
                 }
                 if (a == "7")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Client.destroy_link(socket, xid++, lid);
+                        Client.destroy_link(core, xid, lid);
                         Console.WriteLine("== destroy_link ==");
                         Console.WriteLine(" Call : destroy_link : ret=0");
                     }
                 }
                 if (a == "8")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         char stb;
-                        Client.device_readstb(socket, xid, lid, flags, lock_timeout, io_timeout, out stb);
+                        Client.device_readstb(core, xid, lid, flags, lock_timeout, io_timeout, out stb);
                         Console.WriteLine("== device_readstb ==");
                         Console.WriteLine(" Call : device_readstb : ret=0");
                     }
                 }
                 if (a == "9")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_trigger(socket, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_trigger(core, xid, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_trigger ==");
                         Console.WriteLine(" Call : device_trigger : ret=0");
                     }
                 }
                 if (a == "10")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_clear(socket, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_clear(core, xid, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_clear ==");
                         Console.WriteLine(" Call : device_clear : ret=0");
                     }
                 }
                 if (a == "11")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_remote(socket, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_remote(core, xid, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_remote ==");
                         Console.WriteLine(" Call : device_remote : ret=0");
                     }
                 }
                 if (a == "12")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_local(socket, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_local(core, xid, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_local ==");
                         Console.WriteLine(" Call : device_local : ret=0");
                     }
                 }
                 if (a == "13")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_lock(socket, xid, lid, flags, lock_timeout);
+                        Client.device_lock(core, xid, lid, flags, lock_timeout);
                         Console.WriteLine("== device_lock ==");
                         Console.WriteLine(" Call : device_lock : ret=0");
                     }
                 }
                 if (a == "14")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Client.device_unlock(socket, xid, lid);
+                        Client.device_unlock(core, xid, lid);
                         Console.WriteLine("== device_unlock ==");
                         Console.WriteLine(" Call : device_unlock : ret=0");
                     }
                 }
                 if (a == "15")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
@@ -317,21 +324,20 @@ namespace VXI11Net
                         int enable = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  handle? : ");
                         string handle = new String(Console.ReadLine());
-                        Client.device_enable_srq(socket, xid, lid, enable, handle);
+                        Client.device_enable_srq(core, xid, lid, enable, handle);
                         Console.WriteLine("== device_enable_srq ==");
                         Console.WriteLine(" Call : device_enable_srq : ret=0");
                     }
                 }
                 if (a == "16")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
@@ -344,66 +350,66 @@ namespace VXI11Net
                         int datasize = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  data? : ");
                         String str = new String(Console.ReadLine());
-                        byte[] data = System.Text.Encoding.ASCII.GetBytes(str);
-                        Client.device_docmd(socket, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data);
+                        byte[] data_in = System.Text.Encoding.ASCII.GetBytes(str);
+                        byte[] data_out;
+                        Client.device_docmd(core, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
                         Console.WriteLine("== device_docmd ==");
                         Console.WriteLine(" Call : device_docmd : ret=0");
                     }
                 }
                 if (a == "17")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  hostaddr? : ");
+                        Console.Write("  host address? : ");
                         int hostaddr = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  hostport? : ");
+                        Console.Write("  host port? : ");
                         int hostport = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  prognum? : ");
+                        Console.Write("  program number? : ");
                         int prognum = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  progvers? : ");
+                        Console.Write("  program version? : ");
                         int progvers = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  progfamily? : ");
+                        Console.Write("  program family? : ");
                         int progfamily = Convert.ToInt32(Console.ReadLine());
-                        Client.create_intr_chan(socket, xid, hostaddr, hostport, prognum, progvers, progfamily);
+                        Client.create_intr_chan(core, xid, hostaddr, hostport, prognum, progvers, progfamily);
                         Console.WriteLine("== create_intr_chan ==");
                         Console.WriteLine(" Call : create_intr_chan : ret=0");
                     }
                 }
                 if (a == "18")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Client.destroy_intr_chan(socket, xid);
+                        Client.destroy_intr_chan(core, xid);
                         Console.WriteLine("== destroy_intr_chan ==");
                         Console.WriteLine(" Call : destroy_intr_chan : ret=0");
                     }
                 }
                 if (a == "19")
                 {
-                    if (socket != null)
+                    if (abort != null)
                     {
                         Console.Write("  xid? : ");
                         int xid = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  lid? : ");
                         int lid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  flags? : ");
-                        int flags = Convert.ToInt32(Console.ReadLine());
+                        Client.Flags flags = Client.Flags.none;
                         Console.Write("  lock_timeout? : ");
                         int lock_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Client.device_abort(socket, xid, lid, flags, lock_timeout, io_timeout);
+                        Client.device_abort(abort, xid, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_abort ==");
                         Console.WriteLine(" Call : device_abort : ret=0");
                     }
                 }
                 if (a == "20")
                 {
-                    if (socket != null)
+                    if (interrupt != null)
                     {
                         Console.WriteLine("== device_intr_srq ==");
                         Console.WriteLine(" Call : device_intr_srq : ret=0");
@@ -411,25 +417,27 @@ namespace VXI11Net
                 }
                 if (a == "21")
                 {
-                    if (socket != null)
+                    if (interrupt != null)
                     {
+                        Client.close_rpc_server_interrupt_channel(interrupt);
                         Console.WriteLine("== close RPC server (interrupt channel) ==");
                         Console.WriteLine(" Call : close RPC server (interrupt channel) : ret=0");
                     }
                 }
                 if (a == "22")
                 {
-                    if (socket != null)
+                    if (abort != null)
                     {
+                        Client.close_rpc_client_abort_channel(abort);
                         Console.WriteLine("== close RPC client (abort channel) ==");
                         Console.WriteLine(" Call : close RPC client (abort channel) : ret=0");
                     }
                 }
                 if (a == "23")
                 {
-                    if (socket != null)
+                    if (core != null)
                     {
-                        socket.Close();
+                        Client.close_rpc_client_core_channel(core);
                         Console.WriteLine("== close RPC client (core channel) ==");
                         Console.WriteLine(" Call : close RPC client (core channel) : ret=0");
                     }
@@ -446,85 +454,49 @@ namespace VXI11Net
             }
         }
 
-        public static void VisaConsole()
+        public static void VisaNetConsole()
         {
+            ResourceManager rm = new ResourceManager();
+            Ivi.Visa.IMessageBasedSession? session = null;
+
             bool isLoop = true;
             while (isLoop)
             {
-                Console.WriteLine("Select VISA Function");
-                Console.WriteLine("   1:viOpenDefaultRM");
-                Console.WriteLine("   2:viOpen");
-                Console.WriteLine("   3:viClose");
-                Console.WriteLine("   4:viWrite");
-                Console.WriteLine("   5:viRead");
-                Console.WriteLine("   6:viAssertTrigger");
-                Console.WriteLine("   7:viReadSTB");
-                Console.WriteLine("   8:viClear");
-                Console.WriteLine("   9:viGpibControlREN");
+                Console.WriteLine("Select VISA.NET Function");
+                Console.WriteLine("   1:GlobalResourceManager.Open");
+                Console.WriteLine("   2:FormattedIO.WriteLine");
+                Console.WriteLine("   3:FormattedIO.ReadLine");
                 Console.WriteLine("   B:back to Main menu");
                 Console.WriteLine(" E/Q:Exit program");
                 Console.Write("Input fuction number? : ");
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
-                    Console.WriteLine("==viOpenDefaultRM==");
-                    Console.WriteLine(" Call : viOpenDefaultRM : ret=0");
+                    Console.Write("  rsrc? : ");
+                    string rsrc = new String(Console.ReadLine());
+                    session = (IMessageBasedSession)Ivi.Visa.GlobalResourceManager.Open(rsrc);
+                    Console.WriteLine("== GlobalResourceManager.Open ==");
+                    Console.WriteLine(" Call : GlobalResourceManager.Open : ret=(0");
                 }
                 if (a == "2")
                 {
-                    Console.WriteLine("== viOpen ==");
-                    Console.WriteLine(" Call : viOpen : ret=0");
+                    if (session != null)
+                    {
+                        Console.Write("  msg? : ");
+                        string msg = new String(Console.ReadLine());
+                        session.FormattedIO.WriteLine(msg);
+                        Console.WriteLine("== FormattedIO.WriteLine ==");
+                        Console.WriteLine(" Call : FormattedIO.WriteLine : ret=0");
+                    }
                 }
                 if (a == "3")
                 {
-                    Console.WriteLine("== viClose ==");
-                    Console.WriteLine(" Call : viClose : ret=0");
-                }
-                if (a == "4")
-                {
-                    Console.WriteLine("== viWrite ==");
-                    Console.WriteLine(" Call : viWrite : retCnt=5 ret=0");
-                }
-                if (a == "5")
-                {
-                    Console.WriteLine("== viRead ==");
-                    Console.WriteLine(" Call : viRead : retCnt=32 ret=0");
-                    Console.WriteLine(" Response");
-                    Console.WriteLine("        Message=XYZCO,246B,S000-0123-02,0");
-                }
-                if (a == "6")
-                {
-                    Console.WriteLine("== viAssertTrigger ==");
-                    Console.WriteLine(" Call : viAssertTrigger : ret=0");
-                }
-                if (a == "7")
-                {
-                    Console.WriteLine("== viReadSTB ==");
-                    Console.WriteLine(" Call : viReadSTB : ret=0");
-                    Console.WriteLine(" Response");
-                    Console.WriteLine("        status=68(0x44)");
-                }
-                if (a == "8")
-                {
-                    Console.WriteLine("== viClear ==");
-                    Console.WriteLine(" Call : viClear : ret=0");
-                }
-                if (a == "9")
-                {
-                    Console.WriteLine("== viGpibControlREN ==");
-                    Console.WriteLine(" Call : viGpibControlREN : ret=0");
-                }
-                if (a == "100")
-                {
-                    ResourceManager rm = new ResourceManager();
-                    FormattedIO488 inst = new FormattedIO488();
-
-                    string deviceResource = "TCPIP::XXX.XXX.XXX.XXX::INSTR";
-
-                    inst.IO = (IMessage)rm.Open(deviceResource, AccessMode.None, 0, "");
-                    inst.IO.Timeout = 10000;
-                    inst.WriteString("*IDN?");
-                    string returnStr = inst.ReadString();
+                    if (session != null)
+                    {
+                        string msg = session.FormattedIO.ReadLine();
+                        Console.WriteLine("== FormattedIO.ReadLine ==");
+                        Console.WriteLine(" Call : FormattedIO.ReadLine : ret=0");
+                    }
                 }
                 if ((a == "B") || (a == "b"))
                 {
@@ -542,6 +514,7 @@ namespace VXI11Net
             bool isLoop = true;
             while (isLoop)
             {
+                TMCTL tmctl = new TMCTL();
                 Console.WriteLine("Select Tmctl Function");
                 Console.WriteLine("   1:TmcInitialize");
                 Console.WriteLine("   2:TmcFinish");
@@ -556,39 +529,69 @@ namespace VXI11Net
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
+                    Console.Write("  wire? : ");
+                    int wire = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  adr? : ");
+                    string adr = new String(Console.ReadLine());
+                    int id;
+                    int re = tmctl.Initialize(wire, adr, out id);
                     Console.WriteLine("== TmcInitialize ==");
                     Console.WriteLine(" Call : TmcInitialize : ret=0,  id=0");
                 }
                 if (a == "2")
                 {
+                    Console.Write("  id? : ");
+                    int id = Convert.ToInt32(Console.ReadLine());
+                    int re = tmctl.Finish(id);
                     Console.ReadLine();
                     Console.WriteLine("== TmcFinish ==");
                     Console.WriteLine(" Call : TmcFinish : ret=0");
                 }
                 if (a == "3")
                 {
-                    Console.ReadLine();
+                    Console.Write("  id? : ");
+                    int id = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  msg? : ");
+                    string msg = new String(Console.ReadLine());
+                    int ret = tmctl.Send(id, msg);
                     Console.WriteLine("== TmcSend ==");
                     Console.WriteLine(" Call : TmcSend : ret=0");
                 }
                 if (a == "4")
                 {
+                    Console.Write("  id? : ");
+                    int id = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  blen? : ");
+                    int blen = Convert.ToInt32(Console.ReadLine());
+                    StringBuilder buff = new StringBuilder(blen);
+                    int rlen = 0;
+                    int ret = tmctl.Receive(id, ref  buff ,blen, ref rlen);
                     Console.WriteLine("== TmcReceive ==");
                     Console.WriteLine(" Call : TmcReceive : ret=0,  id=0");
                 }
                 if (a == "5")
                 {
+                    Console.Write("  id? : ");
+                    int id = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  flag? : ");
+                    int flag = Convert.ToInt32(Console.ReadLine());
+                    int ret = tmctl.SetRen(id, flag);
                     Console.WriteLine("== TmcSetRen ==");
                     Console.WriteLine(" Call : TmcSetRen : ret=0,  id=0");
                 }
                 if (a == "6")
                 {
-                    Console.ReadLine();
+                    Console.Write("  id? : ");
+                    int id = Convert.ToInt32(Console.ReadLine());
+                    int ret = tmctl.DeviceClear(id);
                     Console.WriteLine("== TmcDeviceClear ==");
                     Console.WriteLine(" Call : TmcDeviceClear : ret=0");
                 }
                 if (a == "7")
                 {
+                    Console.Write("  id? : ");
+                    int id = Convert.ToInt32(Console.ReadLine());
+                    int ret = tmctl.DeviceTrigger(id);
                     Console.WriteLine("== TmcDeviceTrigger ==");
                     Console.WriteLine(" Call : TmcDeviceTrigger : ret=0,  id=0");
                 }

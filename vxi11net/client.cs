@@ -1,7 +1,9 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace VXI11Net
 {
@@ -30,13 +32,61 @@ namespace VXI11Net
         public const int DEVICE_ASYNC         = 395184;
         public const int DEVICE_ASYNC_VERSION = 1;
         public const int DEVICE_ABORT         = 1;
-
+        public enum Flags
+        {
+            termchrset = 0x0080,
+            end        = 0x0008,
+            waitlock   = 0x0001,
+            none       = 0x0000
+        }
+        public enum TermChar
+        {
+            CR         = 0x0A,
+            LF         = 0x0D,
+            None       = 0x00
+        }
+        public enum reason
+        {
+            END        = 0x04,
+            CHR        = 0x02,
+            REQCNT     = 0x01,
+            NONE       = 0x00
+        }
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct GET_PORT_CALL
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int prognum;
+            public int progvers;
+            public int proto;
+            public int port;
+        };
+        public struct GET_PORT_REPLY
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int stat;
+            public int verf_flavor;
+            public int verf_len;
+            public int accept_stat;
+            public int port;
+        };
         public struct CREATE_LINK_CALL
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -54,7 +104,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int stat;
             public int verf_flavor;
             public int verf_len;
@@ -68,7 +118,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -87,7 +137,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int stat;
             public int verf_flavor;
             public int verf_len;
@@ -99,7 +149,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -119,7 +169,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int stat;
             public int verf_flavor;
             public int verf_len;
@@ -132,7 +182,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -150,7 +200,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int stat;
             public int verf_flavor;
             public int verf_len;
@@ -161,7 +211,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -178,7 +228,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -193,7 +243,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -212,7 +262,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -226,7 +276,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -243,7 +293,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int stat;
             public int verf_flavor;
             public int verf_len;
@@ -255,7 +305,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int rpcvers;
             public int prog;
             public int vers;
@@ -277,7 +327,7 @@ namespace VXI11Net
         {
             public int fheader;
             public int xid;
-            public int mtype;
+            public int msg_type;
             public int stat;
             public int verf_flavor;
             public int verf_len;
@@ -285,31 +335,71 @@ namespace VXI11Net
             public int error;
             public int data_out_len;
         };
-         // call create_link
-        public static void create_link(Socket so, int xid, int cliendId, int lockDevice, int lock_timeout, string handle, out int lid, out int abortPort, out int maxRecvSize)
+
+        public static Socket create_rpc_client_core_channel(string address, int port)
         {
-            CREATE_LINK_CALL args = new CREATE_LINK_CALL();
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+            IPAddress   ipAddress  = ipHostInfo.AddressList[0];
+            IPEndPoint  remoteEP   = new IPEndPoint(ipAddress, port);
+
+            Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(remoteEP);
+            socket.NoDelay = true;
+            return socket;
+        }
+        public static void close_rpc_client_core_channel(Socket socket)
+        {
+            socket.Close();
+        }
+        public static Socket create_rpc_client_abort_channel(string address, int port)
+        {
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+            IPAddress   ipAddress  = ipHostInfo.AddressList[0];
+            IPEndPoint  remoteEP   = new IPEndPoint(ipAddress, port);
+            
+            Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(remoteEP);
+            socket.NoDelay = true;
+            return socket;
+        }
+        public static void close_rpc_client_abort_channel(Socket socket)
+        {
+            socket.Close();
+        }
+        public static Socket create_rpc_server_interrupt_channel(string address, int port)
+        {
+            throw new NotImplementedException();
+        }
+        public static void close_rpc_server_interrupt_channel(Socket socket)
+        {
+            socket.Close();
+        }
+
+        // call create_link
+        public static int create_link(Socket so, int xid, int cliendId, int lockDevice, int lock_timeout, string handle, out int lid, out int abortPort, out int maxRecvSize)
+        {
+            CREATE_LINK_CALL arg = new CREATE_LINK_CALL();
             byte[] str = System.Text.Encoding.ASCII.GetBytes(handle);
             int size = Marshal.SizeOf(typeof(CREATE_LINK_CALL)) + str.Length;
             size = ((size / 4) + 1) * 4;
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(CREATE_LINK);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.clientId      = IPAddress.HostToNetworkOrder(cliendId);
-            args.lockDevice    = IPAddress.HostToNetworkOrder(lockDevice);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.handle_len    = IPAddress.HostToNetworkOrder(str.Length);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(CREATE_LINK);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.clientId       = IPAddress.HostToNetworkOrder(cliendId);
+            arg.lockDevice     = IPAddress.HostToNetworkOrder(lockDevice);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.handle_len     = IPAddress.HostToNetworkOrder(str.Length);
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(str, 0, packet, Marshal.SizeOf(typeof(CREATE_LINK_CALL)), str.Length);
             int byteCount = so.Send(packet);
             gchw.Free();
@@ -319,7 +409,7 @@ namespace VXI11Net
             CREATE_LINK_REPLY reply = new CREATE_LINK_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -331,34 +421,40 @@ namespace VXI11Net
             lid                = reply.lid;
             abortPort          = reply.abortPort;
             maxRecvSize        = reply.maxRecvSize;
+
+            return reply.error;
         }
         // call device_write
-        public static void device_write(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout, string data, out int data_len)
+        public static int device_write(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout, string data, out int data_len)
         {
-            DEVICE_WRITE_CALL args = new DEVICE_WRITE_CALL();
-            byte[] str = System.Text.Encoding.ASCII.GetBytes(data);
-            int size = Marshal.SizeOf(typeof(DEVICE_WRITE_CALL)) + str.Length;
+            byte[] bytes = System.Text.Encoding.ASCII.GetBytes(data);
+            return device_write(so, xid, lid, flags, lock_timeout, io_timeout, bytes, out data_len);
+        }
+        public static int device_write(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout, byte[] data, out int data_len)
+        {
+            DEVICE_WRITE_CALL arg = new DEVICE_WRITE_CALL();
+            int size = Marshal.SizeOf(typeof(DEVICE_WRITE_CALL)) + data.Length;
             size = ((size / 4) + 1) * 4;
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_WRITE);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
-            args.data_len      = IPAddress.HostToNetworkOrder(str.Length);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_WRITE);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.data_len       = IPAddress.HostToNetworkOrder(data.Length);
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
-            Buffer.BlockCopy(str, 0, packet, Marshal.SizeOf(typeof(DEVICE_WRITE_CALL)), str.Length);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(data, 0, packet, Marshal.SizeOf(typeof(DEVICE_WRITE_CALL)), data.Length);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -367,7 +463,7 @@ namespace VXI11Net
             DEVICE_WRITE_REPLY reply = new DEVICE_WRITE_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -375,32 +471,41 @@ namespace VXI11Net
             reply.error        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             reply.data_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 32));
             data_len           = reply.data_len;
+
+            return reply.error;
         }
         // call device_read
-        public static void device_read(Socket so, int xid, int lid, int requestSize, int flags, int lock_timeout, int io_timeout, int termchar, out int reason, out byte[] data)
+        public static int device_read(Socket so, int xid, int lid, int requestSize, Flags flags, int lock_timeout, int io_timeout, TermChar term, out int reason, out string data)
         {
-            DEVICE_READ_CALL args = new DEVICE_READ_CALL();
+            byte[] buf;
+            int ret = device_read(so, xid, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out buf);
+            data = System.Text.Encoding.ASCII.GetString(buf);
+            return ret;
+        }
+        public static int device_read(Socket so, int xid, int lid, int requestSize, Flags flags, int lock_timeout, int io_timeout, TermChar term, out int reason, out byte[] data)
+        {
+            DEVICE_READ_CALL arg = new DEVICE_READ_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_READ_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_READ);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.requestSize   = IPAddress.HostToNetworkOrder(requestSize);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.termChar      = IPAddress.HostToNetworkOrder(termchar);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_READ);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.requestSize    = IPAddress.HostToNetworkOrder(requestSize);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.termChar       = (char)term;
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_READ_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -409,7 +514,7 @@ namespace VXI11Net
             DEVICE_READ_REPLY reply = new DEVICE_READ_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -417,34 +522,35 @@ namespace VXI11Net
             reply.error        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             reply.reason       = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 32));
             reply.data_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 36));
-            byte[] reply_data = new Byte[reply.data_len];
-            byteCount = so.Receive(reply_data, SocketFlags.None);
             reason             = reply.reason;
-            data               = reply_data;
+            data               = new Byte[reply.data_len];
+            byteCount          = so.Receive(data, SocketFlags.None);
+
+            return reply.error;
         }
         // call device_readstb
-        public static void device_readstb(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout, out char stb)
+        public static int device_readstb(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout, out char stb)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_READSTB);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_READSTB);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -453,7 +559,7 @@ namespace VXI11Net
             DEVICE_READSTB_REPLY reply = new DEVICE_READSTB_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -461,30 +567,32 @@ namespace VXI11Net
             reply.error        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             reply.stb          = (char)buffer[32];
             stb                = reply.stb;
+
+            return reply.error;
         }
         // call device_trigger
-        public static int device_trigger(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout)
+        public static int device_trigger(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_TRIGGER);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_TRIGGER);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -493,7 +601,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -503,28 +611,28 @@ namespace VXI11Net
             return reply.error;
         }
         // call device_clear
-        public static int device_clear(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout)
+        public static int device_clear(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_CLEAR);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_CLEAR);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -533,7 +641,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -543,28 +651,28 @@ namespace VXI11Net
             return reply.error;
         }
         // call device_remote
-        public static int device_remote(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout)
+        public static int device_remote(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_REMOTE);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_REMOTE);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -573,7 +681,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -583,28 +691,28 @@ namespace VXI11Net
             return reply.error;
         }
         // call device_local
-        public static int device_local(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout)
+        public static int device_local(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_LOCAL);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_LOCAL);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -613,7 +721,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -623,27 +731,27 @@ namespace VXI11Net
             return reply.error;
         }
         // call device_lock
-        public static int device_lock(Socket so, int xid, int lid, int flags, int lock_timeout)
+        public static int device_lock(Socket so, int xid, int lid, Flags flags, int lock_timeout)
         {
-            DEVICE_LOCK_CALL args = new DEVICE_LOCK_CALL();
+            DEVICE_LOCK_CALL arg = new DEVICE_LOCK_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_LOCK_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_LOCK);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_LOCK);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_LOCK_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -652,7 +760,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -664,23 +772,23 @@ namespace VXI11Net
         // call device_unlock
         public static int device_unlock(Socket so, int xid, int lid)
         {
-            DEVICE_UNLOCK_CALL args = new DEVICE_UNLOCK_CALL();
+            DEVICE_UNLOCK_CALL arg = new DEVICE_UNLOCK_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_UNLOCK_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_UNLOCK);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_UNLOCK);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_UNLOCK_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -689,7 +797,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -701,27 +809,27 @@ namespace VXI11Net
         // call create_intr_chan
         public static int create_intr_chan(Socket so, int xid, int hostaddr, int hostport, int prognum, int progvers, int progfamily)
         {
-            CREATE_INTR_CHAN_CALL args = new CREATE_INTR_CHAN_CALL();
+            CREATE_INTR_CHAN_CALL arg = new CREATE_INTR_CHAN_CALL();
             int size = Marshal.SizeOf(typeof(CREATE_INTR_CHAN_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(CREATE_INTR_CHAN);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.hostaddr      = IPAddress.HostToNetworkOrder(hostaddr);
-            args.hostport      = IPAddress.HostToNetworkOrder(hostport);
-            args.prognum       = IPAddress.HostToNetworkOrder(prognum);
-            args.progvers      = IPAddress.HostToNetworkOrder(progvers);
-            args.progfamily    = IPAddress.HostToNetworkOrder(progfamily);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(CREATE_INTR_CHAN);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.hostaddr       = IPAddress.HostToNetworkOrder(hostaddr);
+            arg.hostport       = IPAddress.HostToNetworkOrder(hostport);
+            arg.prognum        = IPAddress.HostToNetworkOrder(prognum);
+            arg.progvers       = IPAddress.HostToNetworkOrder(progvers);
+            arg.progfamily     = IPAddress.HostToNetworkOrder(progfamily);
             byte[] packet = new byte[Marshal.SizeOf(typeof(CREATE_INTR_CHAN_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -730,7 +838,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -742,22 +850,22 @@ namespace VXI11Net
         // call destroy_intr_chan
         public static int destroy_intr_chan(Socket so, int xid)
         {
-            DESTROY_INTR_CHAN_CALL args = new DESTROY_INTR_CHAN_CALL();
+            DESTROY_INTR_CHAN_CALL arg = new DESTROY_INTR_CHAN_CALL();
             int size = Marshal.SizeOf(typeof(DESTROY_INTR_CHAN_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DESTROY_INTR_CHAN);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DESTROY_INTR_CHAN);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DESTROY_INTR_CHAN_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -766,7 +874,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -778,27 +886,27 @@ namespace VXI11Net
         // call device_enable_srq
         public static int device_enable_srq(Socket so, int xid, int lid, int enable, string handle)
         {
-            DEVICE_ENABLE_SRQ_CALL args = new DEVICE_ENABLE_SRQ_CALL();
+            DEVICE_ENABLE_SRQ_CALL arg = new DEVICE_ENABLE_SRQ_CALL();
             byte[] str = System.Text.Encoding.ASCII.GetBytes(handle);
             int size = Marshal.SizeOf(typeof(DEVICE_ENABLE_SRQ_CALL)) + str.Length;
             size = ((size / 4) + 1) * 4;
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_ENABLE_SRQ);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.enable        = IPAddress.HostToNetworkOrder(enable);
-            args.handle_len    = IPAddress.HostToNetworkOrder(handle.Length);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_ENABLE_SRQ);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.enable         = IPAddress.HostToNetworkOrder(enable);
+            arg.handle_len     = IPAddress.HostToNetworkOrder(handle.Length);
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(str, 0, packet, Marshal.SizeOf(typeof(DEVICE_ENABLE_SRQ_CALL)), str.Length);
             int byteCount = so.Send(packet);
             gchw.Free();
@@ -808,7 +916,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -818,34 +926,34 @@ namespace VXI11Net
             return reply.error;
         }
         // call device_docmd
-        public static void device_docmd(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data)
+        public static void device_docmd(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
         {
-            DEVICE_DOCMD_CALL args = new DEVICE_DOCMD_CALL();
-            int size = Marshal.SizeOf(typeof(DEVICE_DOCMD_CALL)) + data.Length;
+            DEVICE_DOCMD_CALL arg = new DEVICE_DOCMD_CALL();
+            int size = Marshal.SizeOf(typeof(DEVICE_DOCMD_CALL)) + data_in.Length;
             size = ((size / 4) + 1) * 4;
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_DOCMD);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.cmd           = IPAddress.HostToNetworkOrder(cmd);
-            args.network_order = IPAddress.HostToNetworkOrder(network_order);
-            args.datasize      = IPAddress.HostToNetworkOrder(datasize);
-            args.data_in_len   = IPAddress.HostToNetworkOrder(data.Length);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_DOCMD);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.cmd            = IPAddress.HostToNetworkOrder(cmd);
+            arg.network_order  = IPAddress.HostToNetworkOrder(network_order);
+            arg.datasize       = IPAddress.HostToNetworkOrder(datasize);
+            arg.data_in_len    = IPAddress.HostToNetworkOrder(data_in.Length);
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
-            Buffer.BlockCopy(data, 0, packet, Marshal.SizeOf(typeof(DEVICE_DOCMD_CALL)), data.Length);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(data_in, 0, packet, Marshal.SizeOf(typeof(DEVICE_DOCMD_CALL)), data_in.Length);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -854,37 +962,36 @@ namespace VXI11Net
             DEVICE_DOCMD_REPLY reply = new DEVICE_DOCMD_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             reply.accept_stat  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
             reply.error        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             reply.data_out_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 32));
-            byte[] reply_data = new Byte[reply.data_out_len];
-            byteCount = so.Receive(reply_data, SocketFlags.None);
-            data               = reply_data;
+            data_out           = new Byte[reply.data_out_len];
+            byteCount          = so.Receive(data_out, SocketFlags.None);
         }
         // call destroy_link
         public static int destroy_link(Socket so, int xid, int lid)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_CORE);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DESTROY_LINK);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_CORE);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_CORE_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DESTROY_LINK);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -893,7 +1000,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
@@ -903,28 +1010,28 @@ namespace VXI11Net
             return reply.error;
         }
         // call device_abort
-        public static int device_abort(Socket so, int xid, int lid, int flags, int lock_timeout, int io_timeout)
+        public static int device_abort(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
         {
-            DEVICE_GENERIC_CALL args = new DEVICE_GENERIC_CALL();
+            DEVICE_GENERIC_CALL arg = new DEVICE_GENERIC_CALL();
             int size = Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL));
-            args.fheader       = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
-            args.xid           = IPAddress.HostToNetworkOrder(xid);
-            args.mtype         = IPAddress.HostToNetworkOrder(CALL);
-            args.rpcvers       = IPAddress.HostToNetworkOrder(RPC_VER);
-            args.prog          = IPAddress.HostToNetworkOrder(DEVICE_ASYNC);
-            args.vers          = IPAddress.HostToNetworkOrder(DEVICE_ASYNC_VERSION);
-            args.proc          = IPAddress.HostToNetworkOrder(DEVICE_ABORT);
-            args.cred_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.cred_len      = IPAddress.HostToNetworkOrder(0);
-            args.verf_flavor   = IPAddress.HostToNetworkOrder(0);
-            args.verf_len      = IPAddress.HostToNetworkOrder(0);
-            args.lid           = IPAddress.HostToNetworkOrder(lid);
-            args.flags         = IPAddress.HostToNetworkOrder(flags);
-            args.lock_timeout  = IPAddress.HostToNetworkOrder(lock_timeout);
-            args.io_timeout    = IPAddress.HostToNetworkOrder(io_timeout);
+            arg.fheader        = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid            = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type       = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers        = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog           = IPAddress.HostToNetworkOrder(DEVICE_ASYNC);
+            arg.vers           = IPAddress.HostToNetworkOrder(DEVICE_ASYNC_VERSION);
+            arg.proc           = IPAddress.HostToNetworkOrder(DEVICE_ABORT);
+            arg.cred_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len       = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor    = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len       = IPAddress.HostToNetworkOrder(0);
+            arg.lid            = IPAddress.HostToNetworkOrder(lid);
+            arg.flags          = IPAddress.HostToNetworkOrder((int)flags);
+            arg.lock_timeout   = IPAddress.HostToNetworkOrder(lock_timeout);
+            arg.io_timeout     = IPAddress.HostToNetworkOrder(io_timeout);
             byte[] packet = new byte[Marshal.SizeOf(typeof(DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(args, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             int byteCount = so.Send(packet);
             gchw.Free();
 
@@ -933,7 +1040,7 @@ namespace VXI11Net
             DEVICE_GENERIC_REPLY reply = new DEVICE_GENERIC_REPLY();
             reply.fheader      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.xid          = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            reply.mtype        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.msg_type     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             reply.stat         = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_flavor  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.verf_len     = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));

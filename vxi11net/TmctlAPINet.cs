@@ -52,7 +52,7 @@ namespace TmctlAPINet
         {
             if (this.socket != null)
             {
-                VXI11Net.Client.destroy_link(this.socket, this.xid++, this.lid);
+                Client.destroy_link(this.socket, this.xid++, this.lid);
                 this.socket.Close();
             }
             return 0;
@@ -72,7 +72,7 @@ namespace TmctlAPINet
         }
         public int Send(int id, string msg)
         {
-            int flags = 0;
+            Client.Flags flags = Client.Flags.none;
             int data_len;
             if (this.socket != null)
             {
@@ -83,8 +83,8 @@ namespace TmctlAPINet
         public int Receive(int id, ref StringBuilder buff, int blen, ref int rlen)
         {
             int requestSize = blen;
-            int flags = 0;
-            int termchar = 0;
+            Client.Flags flags = Client.Flags.none;
+            Client.TermChar termchar = Client.TermChar.LF;
             int reason;
             byte[] data ;
             if (this.socket == null)
@@ -111,7 +111,7 @@ namespace TmctlAPINet
         }
         public int SetRen(int id, int flag)
         {
-            int flags = 0;
+            Client.Flags flags = Client.Flags.none;
             if (this.socket == null)
             {
                 return 0;
@@ -128,7 +128,7 @@ namespace TmctlAPINet
         }
         public int DeviceClear(int id)
         {
-            int flags = 0;
+            Client.Flags flags = Client.Flags.none;
             if (this.socket != null)
             {
                 VXI11Net.Client.device_clear(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
@@ -137,7 +137,7 @@ namespace TmctlAPINet
         }
         public int DeviceTrigger(int id)
         {
-            int flags = 0;
+            Client.Flags flags = Client.Flags.none;
             if (this.socket != null)
             {
                 VXI11Net.Client.device_trigger(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);

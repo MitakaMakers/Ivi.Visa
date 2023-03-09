@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Reflection.Metadata;
 using System.Runtime.InteropServices;
 
 namespace VXI11Net
@@ -237,7 +238,14 @@ namespace VXI11Net
             return msg;
         }
         // reply create_link
-        public static CREATE_LINK_PARAMS receive_create_link(Socket so, RPC_MESSAGE_PARAMS msg, int size)
+        public static CREATE_LINK_PARAMS receive_create_link(Socket so, RPC_MESSAGE_PARAMS msg, int size, out string handle)
+        {
+            byte[] buf;
+            CREATE_LINK_PARAMS args = receive_create_link(so, msg, size, out buf);
+            handle = System.Text.Encoding.ASCII.GetString(buf);
+            return args;
+        }
+        public static CREATE_LINK_PARAMS receive_create_link(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] handle)
         {
             byte[] buffer = new byte[size];
             int byteCount = so.Receive(buffer, SocketFlags.None);
@@ -247,6 +255,8 @@ namespace VXI11Net
             args.lockDevice    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             args.lock_timeout  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             args.handle_len    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
+            handle             = new Byte[args.handle_len];
+            byteCount          = so.Receive(handle, SocketFlags.None);
             return args;
         }
         public static void reply_create_link(Socket so, int xid, int lid, int abortPort, int maxRecvSize)
@@ -272,7 +282,14 @@ namespace VXI11Net
             gchw.Free();
         }
         // reply device_write
-        public static DEVICE_WRITE_PARAMS receive_device_write(Socket so, RPC_MESSAGE_PARAMS msg, int size)
+        public static DEVICE_WRITE_PARAMS receive_device_write(Socket so, RPC_MESSAGE_PARAMS msg, int size, out string data)
+        {
+            byte[] buf;
+            DEVICE_WRITE_PARAMS args = receive_device_write(so, msg, size, out buf);
+            data = System.Text.Encoding.ASCII.GetString(buf);
+            return args;
+        }
+        public static DEVICE_WRITE_PARAMS receive_device_write(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] data)
         {
             byte[] buffer = new byte[size];
             int byteCount = so.Receive(buffer, SocketFlags.None);
@@ -283,6 +300,8 @@ namespace VXI11Net
             args.lock_timeout  = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             args.io_timeout    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             args.data_len      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
+            data               = new Byte[args.data_len];
+            byteCount          = so.Receive(data, SocketFlags.None);
             return args;
         }
         public static void reply_device_write(Socket so, int xid, int data_len)
@@ -320,10 +339,14 @@ namespace VXI11Net
             args.termChar      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             return args;
         }
-        public static void reply_device_read(Socket so, int xid, int reason, string str)
+        public static void reply_device_read(Socket so, int xid, int reason, string data)
+        {
+            byte[] buf = System.Text.Encoding.ASCII.GetBytes(data);
+            reply_device_read(so, xid, reason, buf);
+        }
+        public static void reply_device_read(Socket so, int xid, int reason, byte[] data)
         {
             DEVICE_READ_REPLY reply = new DEVICE_READ_REPLY();
-            byte[] data = System.Text.Encoding.ASCII.GetBytes(str);
             int size = Marshal.SizeOf(typeof(DEVICE_READ_REPLY)) + data.Length;
             size = ((size / 4) + 1) * 4;
             reply.fheader      = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
@@ -340,7 +363,7 @@ namespace VXI11Net
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-            Buffer.BlockCopy(data, 0, packet, 40, str.Length);
+            Buffer.BlockCopy(data, 0, packet, 40, data.Length);
             gchw.Free();
             int byteCount = so.Send(packet);
         }
@@ -397,8 +420,8 @@ namespace VXI11Net
         // reply device_unlock
         public static int receive_device_link(Socket so, RPC_MESSAGE_PARAMS msg, int size)
         {
-            byte[] buffer = new byte[size];
-            int byteCount = so.Receive(buffer, SocketFlags.None);
+            byte[] buffer     = new byte[size];
+            int byteCount     = so.Receive(buffer, SocketFlags.None);
             int lid           = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             return lid;
         }
@@ -417,7 +440,14 @@ namespace VXI11Net
             return args;
         }
         // reply device_enable_srq
-        public static DEVICE_ENABLE_SRQ_PARAMS receive_device_enable_srq(Socket so, RPC_MESSAGE_PARAMS msg, int size)
+        public static DEVICE_ENABLE_SRQ_PARAMS receive_device_enable_srq(Socket so, RPC_MESSAGE_PARAMS msg, int size, out string handle)
+        {
+            byte[] buf;
+            DEVICE_ENABLE_SRQ_PARAMS args = receive_device_enable_srq(so, msg, size, out buf);
+            handle = System.Text.Encoding.ASCII.GetString(buf);
+            return args;
+        }
+        public static DEVICE_ENABLE_SRQ_PARAMS receive_device_enable_srq(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] handle)
         {
             byte[] buffer = new byte[size];
             int byteCount = so.Receive(buffer, SocketFlags.None);
@@ -426,10 +456,12 @@ namespace VXI11Net
             args.lid           = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.enable        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             args.handle_len    = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            handle             = new Byte[args.handle_len];
+            byteCount          = so.Receive(handle, SocketFlags.None);
             return args;
         }
         // reply device_docmd
-        public static DEVICE_DOCMD_PARAMS receive_device_docmd(Socket so, RPC_MESSAGE_PARAMS msg, int size)
+        public static DEVICE_DOCMD_PARAMS receive_device_docmd(Socket so, RPC_MESSAGE_PARAMS msg, int size, out byte[] data_in)
         {
             byte[] buffer = new byte[size];
             int byteCount = so.Receive(buffer, SocketFlags.None);
@@ -443,6 +475,8 @@ namespace VXI11Net
             args.network_order = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             args.datasize      = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
             args.data_in_len   = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
+            data_in            = new Byte[args.data_in_len];
+            byteCount          = so.Receive(data_in, SocketFlags.None);
             return args;
         }
         public static void reply_device_docmd(Socket so, int xid, int data_out_len)

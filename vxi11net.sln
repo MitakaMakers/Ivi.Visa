@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server", "vxi11net\server.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server_console", "vxi11net\server_console.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "client", "vxi11net\client.csproj", "{3C56A198-977C-4D89-A843-25EA522FE258}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "client_console", "vxi11net\client_console.csproj", "{3C56A198-977C-4D89-A843-25EA522FE258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "visa", "vxi11net\visa32.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivi.Visa", "vxi11net\Ivi.Visa.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmctl", "vxi11net\tmctl.csproj", "{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmctlAPINet", "vxi11net\TmctlAPINet.csproj", "{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

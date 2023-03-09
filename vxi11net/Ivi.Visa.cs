@@ -1,9 +1,125 @@
-﻿using System;
+﻿using System.Net.Sockets;
 using System.Runtime.Serialization;
 using VXI11Net;
 
 namespace Ivi.Visa
 {
+    public enum ApiType
+    {
+        CAndCom = 0,
+        DotNet = 1
+    }
+    public enum FlushBehavior
+    {
+        OverwriteAlways = 0,
+        WriteIfFileOnDiskUnchanged = 1,
+        WriteOrReload = 2
+    }
+    public enum HandlerType
+    {
+        NotChosen = 0,
+        ChosenByResourceManager = 1,
+        ChosenByUser = 2
+    }
+    public sealed class HardwareInterface : IEquatable<HardwareInterface>
+    {
+        public Int16 Number { get; private set; }
+        public String ResourceClass { get; private set; } = String.Empty;
+        public Int32 Type { get; private set; }
+        public HardwareInterface(Int32 type, Int16 number, String resourceClass) {}
+        public static Boolean operator ==(HardwareInterface intf1, HardwareInterface intf2)
+        {
+            throw new NotImplementedException();
+        }
+        public static Boolean operator !=(HardwareInterface intf1, HardwareInterface intf2)
+        {
+            throw new NotImplementedException();
+        }
+        public override Boolean Equals(object? o)
+        {
+            throw new NotImplementedException();
+        }
+        public Boolean Equals(HardwareInterface? other)
+        {
+            throw new NotImplementedException();
+        }
+        public override int GetHashCode() { return 0; }
+    }
+    public sealed class VisaImplementation : IEquatable<VisaImplementation>
+    {
+        public ApiType ApiType { get; private set; }
+        public String Comments { get; private set; } = String.Empty;    
+        public Boolean Enabled { get; set; }
+        public String FriendlyName { get; private set; } = String.Empty;
+        public Guid HandlerId { get; private set; }
+        public String Location { get; private set; } = String.Empty;
+        public Int32 ResourceManufacturerId { get; private set; }
+        public VisaImplementation(Guid handlerId, Int32 resourceManufacturerId, String location, String friendlyName, String comments, ApiType apiType) {}
+        public static Boolean operator ==(VisaImplementation visa1, VisaImplementation visa2)
+        {
+            throw new NotImplementedException();
+        }
+        public static Boolean operator !=(VisaImplementation visa1, VisaImplementation visa2)
+        {
+            throw new NotImplementedException();
+        }
+        public override Boolean Equals(object? o)
+        {
+            throw new NotImplementedException();
+        }
+        public Boolean Equals(VisaImplementation? other)
+        {
+            throw new NotImplementedException();
+        }
+        public override int GetHashCode() { return 0; }
+    }
+    public sealed class ConflictManager : IDisposable
+    {
+        public Boolean StoreConflictsOnly { get; set; }
+        public String ConflictFilePath { get; } = String.Empty;
+        public Boolean IsDirty { get; }
+        public ConflictManager() {}
+        ~ConflictManager() {}
+        public void Dispose() {}
+        public void ClearTable() {}
+        public void CreateHandler(HardwareInterface intf, VisaImplementation visa, HandlerType type) {}
+        public void CreateHandler(HardwareInterface intf, VisaImplementation visa, HandlerType type, String comments) {}
+        public void FlushConflictFile(FlushBehavior behavior) {}
+        public void FlushConflictFile(FlushBehavior behavior, out Boolean fileOnDiskWasNewer)
+        {
+            throw new NotImplementedException();
+        }
+        public VisaImplementation GetChosenHandler(ApiType apiType, HardwareInterface intf)
+        {
+            throw new NotImplementedException();
+        }
+        public VisaImplementation GetChosenHandler(ApiType apiType, HardwareInterface intf, out HandlerType handlerType)
+        {
+            throw new NotImplementedException();
+        }
+        public List<VisaImplementation> GetHandlers(ApiType apiType, HardwareInterface intf)
+        {
+            throw new NotImplementedException();
+        }
+        public List<VisaImplementation> GetInstalledVisas(ApiType apiType)
+        {
+            throw new NotImplementedException();
+        }
+        public List<HardwareInterface> GetInterfaces(ApiType apiType)
+        {
+            throw new NotImplementedException();
+        }
+        public VisaImplementation GetPreferredVisa(ApiType apiType)
+        {
+            throw new NotImplementedException();
+        }
+        public void ReloadFile() {}
+        public void RemoveHandler(HardwareInterface intf, VisaImplementation visa) {}
+        public void RemoveHandlers(ApiType apiType) {}
+        public void RemoveHandlers(ApiType apiType, HardwareInterface intf) {}
+        public void RemoveHandlers(VisaImplementation visa) {}
+        public void SetPreferredVisa(VisaImplementation visa) {}
+    }
     public enum AccessMode
     {
         None = 0,
@@ -497,21 +613,27 @@ namespace Ivi.Visa
     {
         public VisaException() { }
         public VisaException(String message) { }
-        public VisaException(String message, System.Exception innerException)
-        { }
-        protected VisaException(SerializationInfo info, StreamingContext context)
-        { }
+        public VisaException(String message, System.Exception innerException) { }
+        protected VisaException(SerializationInfo info, StreamingContext context) { }
     }
     public class IOTimeoutException : VisaException
     {
-        public IOTimeoutException(Int64 actualCount, Byte[] actualData) { }
-        public IOTimeoutException(Int64 actualCount, Byte[] actualData, String message)
-        { }
-        public IOTimeoutException(Int64 actualCount, Byte[] actualData, String message,
-        System.Exception innerException)
-        { }
+        public IOTimeoutException(Int64 actualCount, Byte[] actualData)
+        {
+            ActualData = new byte[0];
+        }
+    public IOTimeoutException(Int64 actualCount, Byte[] actualData, String message)
+        {
+            ActualData = new byte[0];
+        }
+        public IOTimeoutException(Int64 actualCount, Byte[] actualData, String message, System.Exception innerException)
+        {
+            ActualData = new byte[0];
+        }
         protected IOTimeoutException(SerializationInfo info, StreamingContext context)
-        { }
+        {
+            ActualData = new byte[0];
+        }
         public Int64 ActualCount { get; protected set; }
         public Byte[] ActualData { get; protected set; }
     }
@@ -519,10 +641,8 @@ namespace Ivi.Visa
     {
         public NativeVisaException(int errorCode) { }
         public NativeVisaException(int errorCode, String message) { }
-        public NativeVisaException(int errorCode, String message, System.Exception innerException)
-        { }
-        protected NativeVisaException(SerializationInfo info, StreamingContext context)
-        { }
+        public NativeVisaException(int errorCode, String message, System.Exception innerException) { }
+        protected NativeVisaException(SerializationInfo info, StreamingContext context) { }
         public int ErrorCode { get; protected set; }
     }
     public class TypeFormatterException : System.Exception
@@ -530,17 +650,12 @@ namespace Ivi.Visa
         public TypeFormatterException() { }
         public TypeFormatterException(System.Exception innerException) { }
         public TypeFormatterException(Type type) { }
-        public TypeFormatterException(Type type, System.Exception innerException)
-        { }
-        public TypeFormatterException(Type type, String instrumentResponse)
-        { }
-        public TypeFormatterException(Type type, String instrumentResponse, System.Exception innerException)
-        { }
+        public TypeFormatterException(Type type, System.Exception innerException) { }
+        public TypeFormatterException(Type type, String instrumentResponse) { }
+        public TypeFormatterException(Type type, String instrumentResponse, System.Exception innerException) { }
         public TypeFormatterException(Object obj) { }
-        public TypeFormatterException(Object obj, System.Exception innerException)
-        { }
-        protected TypeFormatterException(SerializationInfo info, StreamingContext context)
-        { }
+        public TypeFormatterException(Object obj, System.Exception innerException) { }
+        protected TypeFormatterException(SerializationInfo info, StreamingContext context) { }
     }
     public class NativeErrorCode
     {
@@ -654,7 +769,10 @@ namespace Ivi.Visa
     }
     public class UsbInterruptEventArgs : VisaEventArgs
     {
-        public UsbInterruptEventArgs(EventType eventType) : base(eventType) { }
+        public UsbInterruptEventArgs(EventType eventType) : base(eventType)
+        {
+            Data = new byte[0];
+        }
         //public UsbInterruptEventArgs(Boolean exceededMaximumSize, Byte[] data) { }
         public Boolean ExceededMaximumSize { get; private set; }
         public Byte[] Data { get; private set; }
@@ -775,6 +893,10 @@ namespace Ivi.Visa
         IMessageBasedFormattedIO FormattedIO { get; }
         IMessageBasedRawIO RawIO { get; }
     }
+    public interface VisaAsyncCallback
+    {
+        Boolean IsAborted { get; }
+    }
     public interface IVisaAsyncResult : IAsyncResult
     {
         Boolean IsAborted { get; }
@@ -790,11 +912,46 @@ namespace Ivi.Visa
     }
     public interface IMessageBasedFormattedIO
     {
-
+        void WriteLine(string msg);
+        string ReadLine();
     }
     public interface IMessageBasedRawIO
     {
-
+        Byte[] Read();
+        Byte[] Read(Int64 count);
+        Byte[] Read(Int64 count, out ReadStatus readStatus);
+        void Read(Byte[] buffer, Int64 index, Int64 count, out Int64 actualCount, out ReadStatus readStatus);
+        // unsafe void Read(Byte* buffer, Int64 index, Int64 count, out Int64 actualCount, out ReadStatus readStatus);
+        String ReadString();
+        String ReadString(Int64 count);
+        String ReadString(Int64 count, out ReadStatus readStatus);
+        void Write(Byte[] buffer);
+        void Write(Byte[] buffer, Int64 index, Int64 count);
+        void Write(String buffer);
+        void Write(String buffer, Int64 index, Int64 count);
+        // unsafe void Write(Byte* buffer, Int64 index, Int64 count);
+        void AbortAsyncOperation(IVisaAsyncResult result);
+        IVisaAsyncResult BeginRead(Int32 count);
+        IVisaAsyncResult BeginRead(Int32 count, Object state);
+        IVisaAsyncResult BeginRead(Int32 count, VisaAsyncCallback callback, Object state);
+        IVisaAsyncResult BeginRead(Byte[] buffer);
+        IVisaAsyncResult BeginRead(Byte[] buffer, Object state);
+        IVisaAsyncResult BeginRead(Byte[] buffer, Int64 index, Int64 count);
+        IVisaAsyncResult BeginRead(Byte[] buffer, Int64 index, Int64 count, Object state);
+        IVisaAsyncResult BeginRead(Byte[] buffer, VisaAsyncCallback callback, Object state);
+        IVisaAsyncResult BeginRead(Byte[] buffer, Int64 index, Int64 count, VisaAsyncCallback callback, Object state);
+        IVisaAsyncResult BeginWrite(String buffer);
+        IVisaAsyncResult BeginWrite(String buffer, Object state);
+        IVisaAsyncResult BeginWrite(String buffer, VisaAsyncCallback callback, Object state);
+        IVisaAsyncResult BeginWrite(Byte[] buffer);
+        IVisaAsyncResult BeginWrite(Byte[] buffer, Object state);
+        IVisaAsyncResult BeginWrite(Byte[] buffer, Int64 index, Int64 count);
+        IVisaAsyncResult BeginWrite(Byte[] buffer, Int64 index, Int64 count, Object state);
+        IVisaAsyncResult BeginWrite(Byte[] buffer, VisaAsyncCallback callback, Object state);
+        IVisaAsyncResult BeginWrite(Byte[] buffer, Int64 index, Int64 count, VisaAsyncCallback callback, Object state);
+        Int64 EndRead(IVisaAsyncResult result);
+        String EndReadString(IVisaAsyncResult result);
+        void EndWrite(IVisaAsyncResult result);
     }
     public interface IRegisterBasedSession : IVisaSession
     {
@@ -904,7 +1061,6 @@ namespace Ivi.Visa
         Int16 SlotWidth { get; }
         Int16 SlotOffset { get; }
     }
-
     public interface ISerialSession : IMessageBasedSession
     {
         Int32 BytesAvailable { get; }
@@ -964,20 +1120,9 @@ namespace Ivi.Visa
         Int16 UsbInterfaceNumber { get; }
         Int16 UsbProtocol { get; }
         String UsbSerialNumber { get; }
-        Byte[] ControlIn(Int16 requestType,
-        Int16 request,
-       Int16 value,
-       Int16 index,
-       Int16 length);
-        void ControlOut(Int16 requestType,
-        Int16 request,
-        Int16 value,
-        Int16 index);
-        void ControlOut(Int16 requestType,
-        Int16 request,
-        Int16 value,
-        Int16 index,
-        Byte[] data);
+        Byte[] ControlIn(Int16 requestType, Int16 request, Int16 value, Int16 index, Int16 length);
+        void ControlOut(Int16 requestType, Int16 request, Int16 value, Int16 index);
+        void ControlOut(Int16 requestType, Int16 request, Int16 value, Int16 index, Byte[] data);
         void SendRemoteLocalCommand(RemoteLocalMode mode);
     }
 
@@ -1064,7 +1209,6 @@ namespace Ivi.Visa
         Int32 SendCommand(Byte[] data);
         void SendRemoteLocalCommand(GpibInterfaceRemoteLocalMode mode);
         void SendInterfaceClear();
-
         IMessageBasedRawIO RawIO { get; }
     }
     public interface ITcpipSocketSession : IMessageBasedSession
@@ -1094,14 +1238,10 @@ namespace Ivi.Visa
         void ReserveTrigger(Int16 bus, TriggerLine line);
         void ReserveTriggers(Int16[] buses, TriggerLine[] lines);
         void UnreserveTrigger(Int16 bus, TriggerLine line);
-        void MapTrigger(Int16 sourceBus, TriggerLine sourceLine,
-        Int16 destinationBus, TriggerLine destinationLine);
-        void MapTrigger(Int16 sourceBus, TriggerLine sourceLine,
-        Int16 destinationBus, TriggerLine destinationLine,
-        out Boolean alreadyMapped);
+        void MapTrigger(Int16 sourceBus, TriggerLine sourceLine, Int16 destinationBus, TriggerLine destinationLine);
+        void MapTrigger(Int16 sourceBus, TriggerLine sourceLine, Int16 destinationBus, TriggerLine destinationLine, out Boolean alreadyMapped);
         void UnmapTrigger(Int16 sourceBus, TriggerLine sourceLine);
-        void UnmapTrigger(Int16 sourceBus, TriggerLine sourceLine,
-        Int16 destinationBus, TriggerLine destinationLine);
+        void UnmapTrigger(Int16 sourceBus, TriggerLine sourceLine, Int16 destinationBus, TriggerLine destinationLine);
     }
     public interface IVxiBackplaneSession : IVisaSession
     {
@@ -1117,8 +1257,7 @@ namespace Ivi.Visa
         void AssertTrigger(TriggerLine line, VxiTriggerProtocol protocol);
         void AssertUtilitySignal(VxiUtilitySignal signal);
         void MapTrigger(TriggerLine sourceLine, TriggerLine destinationLine);
-        void MapTrigger(TriggerLine sourceLine, TriggerLine destinationLine,
-        out Boolean alreadyMapped);
+        void MapTrigger(TriggerLine sourceLine, TriggerLine destinationLine, out Boolean alreadyMapped);
         void UnmapTrigger(TriggerLine sourceLine);
         void UnmapTrigger(TriggerLine sourceLine, TriggerLine destinationLine);
     }
@@ -1135,30 +1274,353 @@ namespace Ivi.Visa
         Version SpecificationVersion { get; }
     }
 
-    public class IDummySession : IVisaSession
+    public class ParseResult
     {
+        public String OriginalResourceName { get; private set; } = String.Empty;
+        public HardwareInterfaceType InterfaceType { get; private set; }
+        public Int32 InterfaceNumber { get; private set; }
+        public String ResourceClass { get; private set; } = String.Empty;
+        public String ExpandedUnaliasedName { get; private set; } = String.Empty;
+        public String AliasIfExists { get; private set; } = String.Empty;
+        public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists) { }
+        public static Boolean operator ==(ParseResult parse1, ParseResult parse2) { return true; }
+        public static Boolean operator !=(ParseResult parse1, ParseResult parse2) { return true; }
+        public override bool Equals(object? o) { return true; }
+        public override int GetHashCode() { return 0; }
+    }
+    public class IMessage
+    {
+        public int Timeout { get; set; }
+    }
+    public static class GlobalResourceManager
+    {
+        public static IEnumerable<String> Find()
+        {
+            throw new NotImplementedException();
+        }
+        public static IEnumerable<String> Find(String pattern)
+        {
+            throw new NotImplementedException();
+        }
+        public static ParseResult Parse(String resourceName)
+        {
+            throw new NotImplementedException();
+        }
+        public static Boolean TryParse(String resourceName, out ParseResult result)
+        {
+            throw new NotImplementedException();
+        }
+        public static IVisaSession Open(String resourceName)
+        {
+            return Open(resourceName, AccessMode.None, 10 * 1000);
+        }
+        public static IVisaSession Open(String resourceName, AccessMode accessMode, Int32 timeoutMilliseconds)
+        {
+            ResourceOpenStatus openStatus;
+            return Open(resourceName, accessMode, timeoutMilliseconds, out openStatus);
+        }
+        public static IVisaSession Open(String resourceName, AccessMode accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)
+        {
+            IVisaSession sesn = new Vxi11Session(resourceName);
+            openStatus = ResourceOpenStatus.Success;
+            return sesn;
+        }
+        public static String ManufacturerName { get; } = String.Empty;
+        public static Int16 ManufacturerId { get; }
+        public static Version ImplementationVersion { get; } = Environment.Version;
+        public static Version SpecificationVersion { get; } = Environment.Version;
+    }
+    public class ResourceManager : IResourceManager
+    {
+        private bool disposedValue;
+
+        public string ManufacturerName => throw new NotImplementedException();
+
+        public short ManufacturerId => throw new NotImplementedException();
+
+        public Version ImplementationVersion => throw new NotImplementedException();
+
+        public Version SpecificationVersion => throw new NotImplementedException();
+
+        public IEnumerable<string> Find(string pattern)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IMessage Open(string str, AccessMode mode, int a, string b)
+        {
+            return new IMessage();
+        }
+
+        public IVisaSession Open(string resourceName)
+        {
+            return Open(resourceName, AccessMode.None, 10 * 1000);
+        }
+
+        public IVisaSession Open(string resourceName, AccessMode accessMode, int timeoutMilliseconds)
+        {
+            ResourceOpenStatus openStatus;
+            return Open(resourceName, accessMode, timeoutMilliseconds, out openStatus);
+        }
+
+        public IVisaSession Open(string resourceName, AccessMode accessModes, int timeoutMilliseconds, out ResourceOpenStatus openStatus)
+        {
+            IVisaSession sesn = new Vxi11Session(resourceName);
+            openStatus = ResourceOpenStatus.Success;
+            return sesn;
+        }
+
+        public ParseResult Parse(string resourceName)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)
+                }
+
+                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
+                // TODO: 大きなフィールドを null に設定します
+                disposedValue = true;
+            }
+        }
+
+ 
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
+    public class Vxi11RawIO488 : IMessageBasedRawIO
+    {
+        private Vxi11Session sesn;
+        public Vxi11RawIO488(Vxi11Session sesn)
+        {
+            this.sesn = sesn;
+        }
+
+        public void AbortAsyncOperation(IVisaAsyncResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(int count, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(int count, VisaAsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(byte[] buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(byte[] buffer, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(byte[] buffer, long index, long count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(byte[] buffer, long index, long count, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(byte[] buffer, VisaAsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginRead(byte[] buffer, long index, long count, VisaAsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(string buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(string buffer, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(string buffer, VisaAsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(byte[] buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(byte[] buffer, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(byte[] buffer, long index, long count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(byte[] buffer, long index, long count, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(byte[] buffer, VisaAsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IVisaAsyncResult BeginWrite(byte[] buffer, long index, long count, VisaAsyncCallback callback, object state)
+        {
+            throw new NotImplementedException();
+        }
+
+        public long EndRead(IVisaAsyncResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string EndReadString(IVisaAsyncResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EndWrite(IVisaAsyncResult result)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] Read()
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] Read(long count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] Read(long count, out ReadStatus readStatus)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Read(byte[] buffer, long index, long count, out long actualCount, out ReadStatus readStatus)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ReadString()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ReadString(long count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ReadString(long count, out ReadStatus readStatus)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(byte[] buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(byte[] buffer, long index, long count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string buffer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Write(string buffer, long index, long count)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Vxi11FormattedIO488 : IMessageBasedFormattedIO
+    {
+        private Vxi11Session sesn;
+        public IMessage IO = new IMessage();
+        public Vxi11FormattedIO488(Vxi11Session sesn)
+        {
+            this.sesn = sesn;
+        }
+        public void WriteLine(string msg)
+        {
+            throw new NotImplementedException();
+        }
+        public void WriteString(string str) { }
+
+        public string ReadLine()
+        {
+            throw new NotImplementedException();
+        }
+        public string ReadString()
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Vxi11Session : ITcpipSocketSession
+    {
+        public const int default_timeout_value = 2000;
         public Int32 TimeoutMilliseconds { get; set; }
-        public String ResourceName { get; }
-        public String HardwareInterfaceName { get; }
+        public String ResourceName { get; } = string.Empty;
+        public String HardwareInterfaceName { get; } = string.Empty;
         public HardwareInterfaceType HardwareInterfaceType { get; }
         public Int16 HardwareInterfaceNumber { get; }
-        public String ResourceClass { get; }
-        public String ResourceManufacturerName { get; }
+        public String ResourceClass { get; } = string.Empty;
+        public String ResourceManufacturerName { get; } = string.Empty;
         public Int16 ResourceManufacturerId { get; }
-        public Version ResourceImplementationVersion { get; }
-        public Version ResourceSpecificationVersion { get; }
+        public Version ResourceImplementationVersion { get; } = Environment.Version;
+        public Version ResourceSpecificationVersion { get; } = Environment.Version;
         public ResourceLockState ResourceLockState { get; }
-        public void LockResource() {}
-        public void LockResource(TimeSpan timeout) {}
-        public void LockResource(Int32 timeoutMilliseconds) {}
+
+        public event EventHandler<VisaEventArgs> ServiceRequest;
+
+        public void LockResource() { }
+        public void LockResource(TimeSpan timeout) { }
+        public void LockResource(Int32 timeoutMilliseconds) { }
         public string LockResource(TimeSpan timeout, String sharedKey) { return ""; }
         public string LockResource(Int32 timeoutMilliseconds, String sharedKey) { return ""; }
-        public void UnlockResource() {}
+        public void UnlockResource() { }
         public Int32 EventQueueCapacity { get; set; }
         public Boolean SynchronizeCallbacks { get; set; }
-        public void EnableEvent(EventType eventType) {}
-        public void DisableEvent(EventType eventType) {}
-        public void DiscardEvent(EventType eventType) {}
+        public void EnableEvent(EventType eventType) { }
+        public void DisableEvent(EventType eventType) { }
+        public void DiscardEvent(EventType eventType) { }
         public VisaEventArgs WaitOnEvent(EventType eventType)
         {
             return new VisaEventArgs(EventType.Custom);
@@ -1186,52 +1648,77 @@ namespace Ivi.Visa
             status = EventQueueStatus.Empty;
             return new VisaEventArgs(EventType.Custom);
         }
-        public void Dispose() {}
-    }
-    public static class GlobalResourceManager
-    {
-        // public static IEnumerable<String> Find() { }
-        // public static IEnumerable<String> Find(String pattern) { }
-        // public static ParseResult Parse(String resourceName) { }
-        // public static Boolean TryParse(String resourceName, out ParseResult result) {}
-        // public static IVisaSession Open(String resourceName) { }
-        // public static IVisaSession Open(String resourceName, AccessMode accessMode, Int32 timeoutMilliseconds) { }
-        // public static IVisaSession Open(String resourceName, AccessMode accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus) { }
-        public static String ManufacturerName { get; }
-        public static Int16 ManufacturerId { get; }
-        public static Version ImplementationVersion { get; }
-        public static Version SpecificationVersion { get; }
-    }
-    public class ParseResult
-    {
-        public String OriginalResourceName { get; private set; }
-        public HardwareInterfaceType InterfaceType { get; private set; }
-        public Int32 InterfaceNumber { get; private set; }
-        public String ResourceClass { get; private set; }
-        public String ExpandedUnaliasedName { get; private set; }
-        public String AliasIfExists { get; private set; }
-        public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists) { }
-        public static Boolean operator ==(ParseResult parse1, ParseResult parse2) { return true; }
-        public static Boolean operator !=(ParseResult parse1, ParseResult parse2) { return true; }
-    }
-    public class IMessage
-    {
-        public int Timeout { get; set; }
-    }
-    public class ResourceManager
-    {
-        public IMessage Open(string str, AccessMode mode, int a, string b)
+        public void Dispose() { }
+
+        public String Address { get; } = string.Empty;
+        public String HostName { get; } = string.Empty;
+        public Boolean KeepAlive { get; set; }
+        public Boolean NoDelay { get; set; }
+        public Int16 Port { get; }
+        public void Flush(IOBuffers buffers, Boolean discard) { }
+        public Boolean SetBufferSize(IOBuffers buffers, Int32 size) { return true;  }
+        public IOProtocol IOProtocol { get; set; }
+        public Boolean SendEndEnabled { get; set; }
+        public Byte TerminationCharacter { get; set; }
+        public Boolean TerminationCharacterEnabled { get; set; }
+        public void AssertTrigger() { }
+        public void Clear() { }
+        public StatusByteFlags ReadStatusByte()
         {
-            return new IMessage();
+            throw new NotImplementedException();
         }
-    }
-    public class FormattedIO488
-    {
-        public IMessage IO = new IMessage();
-        public void WriteString(string str) { }
-        public string ReadString()
+        public IMessageBasedFormattedIO FormattedIO { get; }
+        public IMessageBasedRawIO RawIO { get; }
+        private Socket core;
+        private Socket? abort;
+        private int xid;
+        private int lock_timeout = default_timeout_value;
+        private int io_timeout = default_timeout_value;
+        private int lid;
+        private int abortPort;
+        private int maxRecvSize;
+        public static void ServiceRequestHandler(object? sender, VisaEventArgs args)
         {
-            return "";
+            return;
+        }
+        public Vxi11Session(string resourceName)
+        {
+            // TCPIP[board]::host address[::LAN device name][::INSTR]
+            this.Address = "127.0.0.1";
+            this.Port = 10240;
+            string deviceName = "inst0";
+            this.core = Client.create_rpc_client_core_channel(this.Address, this.Port);
+            this.abort = null;
+            int clientId = 0;
+            int lockDevice = 0;
+            VXI11Net.Client.create_link(this.core, this.xid++, clientId, lockDevice, this.lock_timeout, deviceName, out this.lid, out this.abortPort, out this.maxRecvSize);
+
+            this.FormattedIO = new Vxi11FormattedIO488(this);
+            this.RawIO = new Vxi11RawIO488(this);
+            this.ServiceRequest = ServiceRequestHandler;
+        }
+        public int Read(string buf, int count, out int retCount)
+        {
+            Client.Flags flags = Client.Flags.end;
+            Client.TermChar term = Client.TermChar.None;
+            int reason = 0;
+            byte[] data = new byte[count];
+            VXI11Net.Client.device_read(this.core, this.xid++, this.lid, count, flags, this.lock_timeout, this.io_timeout, term, out reason, out data);
+            retCount = data.Length;
+            return 0;
+        }
+        public int Write(string buf, int count, out int retCount)
+        {
+            Client.Flags flags = Client.Flags.end;
+            VXI11Net.Client.device_write(this.core, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout, buf, out retCount);
+            return 0;
+        }
+        public int Terminate()
+        {
+            this.abort = Client.create_rpc_client_abort_channel(this.Address, this.abortPort);
+            Client.Flags flags = Client.Flags.end;
+            VXI11Net.Client.device_abort(this.abort, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+            return 0;
         }
     }
 }

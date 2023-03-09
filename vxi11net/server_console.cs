@@ -90,12 +90,14 @@ namespace VXI11Net
                         Server.RPC_MESSAGE_PARAMS msg = Server.receive_message(core_channel, out size);
                         if (msg.proc == Server.CREATE_LINK)
                         {
-                            Server.receive_create_link(core_channel, msg, size);
+                            string handle;
+                            Server.receive_create_link(core_channel, msg, size, out handle);
                             Console.WriteLine("== CREATE_LINK ==");
                         }
                         if (msg.proc == Server.DEVICE_WRITE)
                         {
-                            Server.DEVICE_WRITE_PARAMS wrt = Server.receive_device_write(core_channel, msg, size);
+                            string data;
+                            Server.DEVICE_WRITE_PARAMS wrt = Server.receive_device_write(core_channel, msg, size, out data);
                             Console.WriteLine("== DEVICE_WRITE ==");
                         }
                         if (msg.proc == Server.DEVICE_READ)
@@ -140,12 +142,14 @@ namespace VXI11Net
                         }
                         if (msg.proc == Server.DEVICE_ENABLE_SRQ)
                         {
-                            Server.receive_device_enable_srq(core_channel, msg, size);
+                            string handle;
+                            Server.receive_device_enable_srq(core_channel, msg, size, out handle);
                             Console.WriteLine("== DEVICE_ENABLE_SRQ ==");
                         }
                         if (msg.proc == Server.DEVICE_DOCMD)
                         {
-                            Server.DEVICE_DOCMD_PARAMS dcm = Server.receive_device_docmd(core_channel, msg, size);
+                            byte[] data_in; 
+                            Server.DEVICE_DOCMD_PARAMS dcm = Server.receive_device_docmd(core_channel, msg, size, out data_in);
                             Console.WriteLine("== DEVICE_DOCMD ==");
                         }
                         if (msg.proc == Server.DESTROY_LINK)
@@ -360,20 +364,23 @@ namespace VXI11Net
                         Server.RPC_MESSAGE_PARAMS msg = Server.receive_message(core_channel, out size);
                         if (msg.proc == Server.CREATE_LINK)
                         {
-                            Server.receive_create_link(core_channel, msg, size);
+                            string handle;
+                            Server.receive_create_link(core_channel, msg, size, out handle);
                             Server.reply_create_link(core_channel, msg.xid, 123, 456, 789);
                             Console.WriteLine("  == CREATE_LINK ==");
                         }
                         if (msg.proc == Server.DEVICE_WRITE)
                         {
-                            Server.DEVICE_WRITE_PARAMS wrt = Server.receive_device_write(core_channel, msg, size);
+                            string data;
+                            Server.DEVICE_WRITE_PARAMS wrt = Server.receive_device_write(core_channel, msg, size, out data);
                             Server.reply_device_write(core_channel, msg.xid, wrt.data_len);
                             Console.WriteLine("  == DEVICE_WRITE ==");
                         }
                         if (msg.proc == Server.DEVICE_READ)
                         {
+                            string data = "XYZCO,246B,S000-0123-02,0";
                             Server.receive_device_read(core_channel, msg, size);
-                            Server.reply_device_read(core_channel, msg.xid, 1, "XYZCO,246B,S000-0123-02,0");
+                            Server.reply_device_read(core_channel, msg.xid, 1, data);
                             Console.WriteLine("  == DEVICE_READ ==");
                         }
                         if (msg.proc == Server.DEVICE_READSTB)
@@ -420,13 +427,15 @@ namespace VXI11Net
                         }
                         if (msg.proc == Server.DEVICE_ENABLE_SRQ)
                         {
-                            Server.receive_device_enable_srq(core_channel, msg, size);
+                            string handle;
+                            Server.receive_device_enable_srq(core_channel, msg, size, out handle);
                             Server.reply_device_error(core_channel, msg.xid, Server.SUCCESS);
                             Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
                         }
                         if (msg.proc == Server.DEVICE_DOCMD)
                         {
-                            Server.DEVICE_DOCMD_PARAMS dcm = Server.receive_device_docmd(core_channel, msg, size);
+                            byte[] data_in;
+                            Server.DEVICE_DOCMD_PARAMS dcm = Server.receive_device_docmd(core_channel, msg, size, out data_in);
                             Server.reply_device_docmd(core_channel, msg.xid, dcm.data_in_len);
                             Console.WriteLine("  == DEVICE_DOCMD ==");
                         }
