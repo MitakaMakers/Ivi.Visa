@@ -3,21 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "server_console", "vxi11net\server_console.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "server_console", "vxi11net\server_console.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "client_console", "vxi11net\client_console.csproj", "{3C56A198-977C-4D89-A843-25EA522FE258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "client_console", "vxi11net\client_console.csproj", "{3C56A198-977C-4D89-A843-25EA522FE258}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivi.Visa", "vxi11net\Ivi.Visa.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa", "vxi11net\Ivi.Visa.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TmctlAPINet", "vxi11net\TmctlAPINet.csproj", "{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TmctlAPINet", "vxi11net\TmctlAPINet.csproj", "{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TmctlAPINet.Tests", "TmctlAPINet.Tests\TmctlAPINet.Tests.csproj", "{A4A6F9FA-0BB1-4C03-A0A9-4F55CAB500C0}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20} = {5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivi.Visa.Tests", "Ivi.Visa.Tests\Ivi.Visa.Tests.csproj", "{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BC56A198-977C-4D89-A843-25EA522FE250} = {BC56A198-977C-4D89-A843-25EA522FE250}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -36,5 +43,19 @@ Global
 		{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4A6F9FA-0BB1-4C03-A0A9-4F55CAB500C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4A6F9FA-0BB1-4C03-A0A9-4F55CAB500C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4A6F9FA-0BB1-4C03-A0A9-4F55CAB500C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4A6F9FA-0BB1-4C03-A0A9-4F55CAB500C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2356540B-F046-4600-99B5-E97360906195}
 	EndGlobalSection
 EndGlobal

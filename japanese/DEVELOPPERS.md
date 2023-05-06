@@ -3,15 +3,26 @@
 ## 開発環境
 マイクロソフト社製の無償ツールを標準開発環境とします。
 - OS：Windows 11
-- コンパイラ：Net 6 SDK
-- テキストエディタ：Visual Studio Code, Japanese Language Pack for Visual Studio Code
+- コンパイラ：Net 6 SDK(C#7)
+  - xunit
+  - coverlet
+- テキストエディタ：Visual Studio Code
+  - Japanese Language Pack for Visual Studio Code
+  - Markdown Preview Mermaid Support
+  - Mermaid MArkdown Syntax Highlighting
 - デバッガ：C# extension for Visual Studio Code
-- 構成管理ツール：Git for Windows, TortoiseGit
+- API 設計文書生成ツール：doxygen
+- UML 設計図生成ツール：Mermeid
+- 構成管理ツール：Git for Windows
+  - TortoiseGit
 - リポジトリ：GitHub
 - CI/CD：GitHub Actions
 
 ## 品質目標
 - ソースコードの記法について C# コーディングガイドを尊重します。
+  - コメント
+    - [Documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/)
+    - [C# Language Specification annex on documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments)
 - Github Actions を使って、Win, Linux, ホスト上でビルドを確認します
 - テストでは xUnit を使って動作を確認します。
 - テストカバレッジは正常動作パスのカバレッジ 100%、異常動作パスのカバレッジ0%をリリース指標とします。
@@ -21,7 +32,11 @@
 
 ## 将来検討メモ
 - RS232 通信に対応する
-  - ![System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/) 
+  - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/) 
 - USB 通信に対応する
-  - ![Usb.Net](https://www.nuget.org/packages/Usb.Net/)
-  - ![LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
+  - [Usb.Net](https://www.nuget.org/packages/Usb.Net/)
+  - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
+- C# DLL から C言語用DLL を作成する
+  - [DllExport](https://github.com/3F/DllExport)
+- C# DLL をネイティブコンパイルする
+  - [Natvive AOT](https://learn.microsoft.com/ja-jp/dotnet/core/deploying/native-aot/)

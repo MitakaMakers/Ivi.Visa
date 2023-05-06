@@ -1,6 +1,7 @@
 ﻿using System.Drawing;
 using System.Net;
 using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using Ivi.Visa;
 using TmctlAPINet;
@@ -16,8 +17,9 @@ namespace VXI11Net
             {
                 Console.WriteLine("Select Test target");
                 Console.WriteLine("   1:Test VXI-11 Functions");
-                Console.WriteLine("   2:Test VISA.NET Functions");
-                Console.WriteLine("   3:Test TmctlAPINet Functions");
+                Console.WriteLine("   2:Test Portmap Functions");
+                Console.WriteLine("   3:Test VISA.NET Functions");
+                Console.WriteLine("   4:Test TmctlAPINet Functions");
                 Console.WriteLine(" E/Q:exit program");
                 Console.WriteLine("");
                 Console.Write("Input fuction number? : ");
@@ -26,15 +28,19 @@ namespace VXI11Net
                 {
                     ClientConsole();
                 }
-                if (a == "2")
+                else if (a == "2")
+                {
+                    PortmapConsole();
+                }
+                else if (a == "3")
                 {
                     VisaNetConsole();
                 }
-                if (a == "3")
+                else if (a == "4")
                 {
                     TmctlConsole();
                 }
-                if ((a == "Q") || (a == "q") || (a == "E") || (a == "e"))
+                else if ((a == "Q") || (a == "q") || (a == "E") || (a == "e"))
                 {
                     Console.WriteLine("== Exit program ==");
                     Environment.Exit(0);
@@ -371,6 +377,181 @@ namespace VXI11Net
                         Console.WriteLine("== close RPC client (core channel) ==");
                         Console.WriteLine(" Call : close RPC client (core channel) : ret=0");
                     }
+                }
+                if ((a == "B") || (a == "b"))
+                {
+                    isLoop = false;
+                }
+                if ((a == "Q") || (a == "q") || (a == "E") || (a == "e"))
+                {
+                    Console.WriteLine("== Exit program ==");
+                    Environment.Exit(0);
+                }
+            }
+        }
+
+        public static void PortmapConsole()
+        {
+            int xid = 12345;
+            bool isLoop = true;
+            while (isLoop)
+            {
+                Console.WriteLine("Select Portmap Function");
+                Console.WriteLine("   1: pmap_set (TCP connection)");
+                Console.WriteLine("   2: pmap_unset (TCP connection)");
+                Console.WriteLine("   3: pmap_getport (TCP connection)");
+                Console.WriteLine("   4: pmap_dump (TCP connection)");
+                Console.WriteLine("   5: pmap_set (UDP connection)");
+                Console.WriteLine("   6: pmap_unset (UDP connection)");
+                Console.WriteLine("   7: pmap_getport (UDP connection)");
+                Console.WriteLine("   8: pmap_dump (UDP connection)");
+                Console.WriteLine("   B: back to Main menu");
+                Console.WriteLine(" E/Q:Exit program");
+                Console.Write("Input fuction number? : ");
+                string a = new String(Console.ReadLine());
+                if (a == "1")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_set(socket, xid++, Client.DEVICE_CORE, Client.DEVICE_CORE_VERSION, Portmap.IPPROTO_UDP, port);
+                    Console.WriteLine("== pmap_set ==");
+                    Console.WriteLine(" Call : pmap_set : ret=0");
+                    socket.Close();
+                }
+                if (a == "2")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_unset(socket, xid++, Client.DEVICE_CORE, Client.DEVICE_CORE_VERSION, Portmap.IPPROTO_UDP);
+                    Console.WriteLine("== pmap_unset ==");
+                    Console.WriteLine(" Call : pmap_unset : ret=0");
+                    socket.Close();
+                }
+                if (a == "3")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_getport(socket, xid++, Client.DEVICE_CORE, Client.DEVICE_CORE_VERSION, Portmap.IPPROTO_UDP);
+                    Console.WriteLine("== pmap_getport ==");
+                    Console.WriteLine(" Call : pmap_getport : ret=0");
+                    socket.Close();
+                }
+                if (a == "4")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_dump(socket, xid++);
+                    Console.WriteLine("== pmap_dump ==");
+                    Console.WriteLine(" Call : pmap_dump : ret=0");
+                    socket.Close();
+                }
+                if (a == "5")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_set(socket, xid++, Client.DEVICE_CORE, Client.DEVICE_CORE_VERSION, Portmap.IPPROTO_UDP, port);
+                    Console.WriteLine("== pmap_set ==");
+                    Console.WriteLine(" Call : pmap_set : ret=0");
+                    socket.Close();
+                }
+                if (a == "6")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_unset(socket, xid++, Client.DEVICE_CORE, Client.DEVICE_CORE_VERSION, Portmap.IPPROTO_UDP);
+                    Console.WriteLine("== pmap_unset ==");
+                    Console.WriteLine(" Call : pmap_unset : ret=0");
+                    socket.Close();
+                }
+                if (a == "7")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_getport(socket, xid++, Client.DEVICE_CORE, Client.DEVICE_CORE_VERSION, Portmap.IPPROTO_UDP);
+                    Console.WriteLine("== pmap_getport ==");
+                    Console.WriteLine(" Call : pmap_getport : ret=0");
+                    socket.Close();
+                }
+                if (a == "8")
+                {
+                    Console.Write("  IP address? : ");
+                    string address = new String(Console.ReadLine());
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+
+                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
+                    IPAddress ipAddress = ipHostInfo.AddressList[0];
+                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
+                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+                    socket.Connect(remoteEP);
+
+                    Portmap.pmapproc_dump(socket, xid++);
+                    Console.WriteLine("== pmap_dump ==");
+                    Console.WriteLine(" Call : pmap_dump : ret=0");
+                    socket.Close();
                 }
                 if ((a == "B") || (a == "b"))
                 {

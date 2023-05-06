@@ -7,6 +7,269 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace VXI11Net
 {
+    public class Portmap
+    {
+        public const int CALL = 0;
+        public const int RPC_VER = 2;
+        public const int PMAP_PORT = 111;     /* port mapper port number     */
+        public const int IPPROTO_TCP = 6;      /* protocol number for TCP/IP     */
+        public const int IPPROTO_UDP = 17;     /* protocol number for UDP        */
+        public const int PMAP_PROG = 100000;
+        public const int PMAP_VERS = 2;
+        public const int PMAPPROC_NULL = 0;
+        public const int PMAPPROC_SET = 1;
+        public const int PMAPPROC_UNSET = 2;
+        public const int PMAPPROC_GETPORT = 3;
+        public const int PMAPPROC_DUMP = 4;
+        public const int PMAPPROC_CALLIT = 5;
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+
+        public struct PMAP_SET_CALL
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int prognum;
+            public int progvers;
+            public int proto;
+            public int port;
+        };
+        public struct PMAP_SET_REPLY
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int stat;
+            public int verf_flavor;
+            public int verf_len;
+            public int accept_stat;
+            public int boolean;
+        };
+        public struct PMAP_GETPORT_CALL
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int prognum;
+            public int progvers;
+            public int proto;
+            public int port;
+        };
+        public struct PMAP_GETPORT_REPLY
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int stat;
+            public int verf_flavor;
+            public int verf_len;
+            public int accept_stat;
+            public int port;
+        };
+        public struct PMAP_DUMP_CALL
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+        };
+        public struct PMAP_DUMP_REPLY
+        {
+            public int fheader;
+            public int xid;
+            public int msg_type;
+            public int stat;
+            public int verf_flavor;
+            public int verf_len;
+            public int accept_stat;
+        };
+        public struct MAPPING
+        {
+            public int prog;
+            public int vers;
+            public int prot;
+            public int port;
+        };
+
+        public static int pmapproc_set(Socket so, int xid, int prognum, int progvers, int proto, int port)
+        {
+            PMAP_SET_CALL arg = new PMAP_SET_CALL();
+            int size = Marshal.SizeOf(typeof(PMAP_SET_CALL));
+            arg.fheader = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog = IPAddress.HostToNetworkOrder(PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(PMAPPROC_SET);
+            arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len = IPAddress.HostToNetworkOrder(0);
+            arg.prognum = IPAddress.HostToNetworkOrder(prognum);
+            arg.progvers = IPAddress.HostToNetworkOrder(progvers);
+            arg.proto = IPAddress.HostToNetworkOrder(proto);
+            arg.port = IPAddress.HostToNetworkOrder(port);
+            byte[] packet = new byte[Marshal.SizeOf(typeof(PMAP_SET_CALL))];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
+            int byteCount = so.Send(packet);
+            gchw.Free();
+        
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(PMAP_SET_REPLY))];
+            byteCount = so.Receive(buffer, SocketFlags.None);
+            PMAP_SET_REPLY reply = new PMAP_SET_REPLY();
+            reply.fheader = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
+            reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
+            reply.verf_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
+            reply.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
+            reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
+            reply.boolean = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
+
+            return reply.boolean;
+        }
+
+        public static int pmapproc_unset(Socket so, int xid, int prognum, int progvers, int proto)
+        {
+            PMAP_SET_CALL arg = new PMAP_SET_CALL();
+            int size = Marshal.SizeOf(typeof(PMAP_SET_CALL));
+            arg.fheader = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog = IPAddress.HostToNetworkOrder(PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(PMAPPROC_UNSET);
+            arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len = IPAddress.HostToNetworkOrder(0);
+            arg.prognum = IPAddress.HostToNetworkOrder(prognum);
+            arg.progvers = IPAddress.HostToNetworkOrder(progvers);
+            arg.proto = IPAddress.HostToNetworkOrder(proto);
+            arg.port = IPAddress.HostToNetworkOrder(0);
+            byte[] packet = new byte[Marshal.SizeOf(typeof(PMAP_SET_CALL))];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
+            int byteCount = so.Send(packet);
+            gchw.Free();
+
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(PMAP_SET_REPLY))];
+            byteCount = so.Receive(buffer, SocketFlags.None);
+            PMAP_SET_REPLY reply = new PMAP_SET_REPLY();
+            reply.fheader = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
+            reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
+            reply.verf_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
+            reply.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
+            reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
+            reply.boolean = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
+
+            return reply.boolean;
+        }
+
+        public static int pmapproc_getport(Socket so, int xid, int prognum, int progvers, int proto)
+        {
+            PMAP_GETPORT_CALL arg = new PMAP_GETPORT_CALL();
+            int size = Marshal.SizeOf(typeof(PMAP_GETPORT_CALL));
+            arg.fheader = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog = IPAddress.HostToNetworkOrder(PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(PMAPPROC_UNSET);
+            arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len = IPAddress.HostToNetworkOrder(0);
+            arg.prognum = IPAddress.HostToNetworkOrder(prognum);
+            arg.progvers = IPAddress.HostToNetworkOrder(progvers);
+            arg.proto = IPAddress.HostToNetworkOrder(proto);
+            arg.port = IPAddress.HostToNetworkOrder(0);
+            byte[] packet = new byte[Marshal.SizeOf(typeof(PMAP_GETPORT_CALL))];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
+            int byteCount = so.Send(packet);
+            gchw.Free();
+
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(PMAP_GETPORT_REPLY))];
+            byteCount = so.Receive(buffer, SocketFlags.None);
+            PMAP_GETPORT_REPLY reply = new PMAP_GETPORT_REPLY();
+            reply.fheader = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
+            reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
+            reply.verf_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
+            reply.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
+            reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
+            reply.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
+
+            return reply.port;
+        }
+
+        public static List<MAPPING> pmapproc_dump(Socket so, int xid)
+        {
+            PMAP_DUMP_CALL arg = new PMAP_DUMP_CALL();
+            int size = Marshal.SizeOf(typeof(PMAP_DUMP_CALL));
+            arg.fheader = IPAddress.HostToNetworkOrder(size - 4 + int.MinValue);
+            arg.xid = IPAddress.HostToNetworkOrder(xid);
+            arg.msg_type = IPAddress.HostToNetworkOrder(CALL);
+            arg.rpcvers = IPAddress.HostToNetworkOrder(RPC_VER);
+            arg.prog = IPAddress.HostToNetworkOrder(PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(PMAPPROC_DUMP);
+            arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.cred_len = IPAddress.HostToNetworkOrder(0);
+            arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
+            arg.verf_len = IPAddress.HostToNetworkOrder(0);
+            byte[] packet = new byte[Marshal.SizeOf(typeof(PMAP_DUMP_CALL))];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
+            int byteCount = so.Send(packet);
+            gchw.Free();
+
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(PMAP_DUMP_REPLY))];
+            byteCount = so.Receive(buffer, SocketFlags.None);
+            PMAP_DUMP_REPLY reply = new PMAP_DUMP_REPLY();
+            reply.fheader = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
+            reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
+            reply.verf_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
+            reply.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
+            reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
+
+            throw new NotImplementedException();
+        }
+    }
     public class Client
     {
         public const int CALL                 = 0;
@@ -1048,6 +1311,22 @@ namespace VXI11Net
             reply.error        = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
 
             return reply.error;
+        }
+        public static int pmapproc_set(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
+        {
+            return 0;
+        }
+        public static int pmapproc_unset(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
+        {
+            return 0;
+        }
+        public static int pmapproc_getport(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
+        {
+            return 0;
+        }
+        public static int pmapproc_dump(Socket so, int xid, int lid, Flags flags, int lock_timeout, int io_timeout)
+        {
+            return 0;
         }
      }
 }
