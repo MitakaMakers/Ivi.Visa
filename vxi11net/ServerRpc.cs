@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Drawing;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -111,20 +113,19 @@ namespace Vxi11Net
         public RPC.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
             int size = Marshal.SizeOf(typeof(RPC.RPC_MESSAGE_PARAMS));
-            byte[] buffer = new byte[size];
             if (so.SocketType == SocketType.Stream)
             {
                 if (so.Connected == false)
                 {
                     so = server.Accept();
                 }
-                recvsize = ReceiveTcp(buffer, 0, size, SocketFlags.None, true);
+                ReceiveTcp(raw_buf, 0, size, SocketFlags.None, true);
             }
             else
             {
                 IPEndPoint sender = new IPEndPoint(IPAddress.IPv6Any, 0);
                 EndPoint senderRemote = (EndPoint)sender;
-                recvsize = ReceiveUdp(buffer, 0, size, true);
+                ReceiveUdp(raw_buf, 0, size, true);
             }
 
             RPC.RPC_MESSAGE_PARAMS msg = new RPC.RPC_MESSAGE_PARAMS();
@@ -144,7 +145,7 @@ namespace Vxi11Net
         }
         public int GetArgs(byte[] buffer)
         {
-            int recvsize = 0;
+            int rlen = 0;
             if (so.SocketType == SocketType.Stream)
             {
                 int pos = 0;
@@ -152,18 +153,43 @@ namespace Vxi11Net
                 while (size > 0)
                 {
                     int ret = ReceiveTcp(buffer, pos, size, SocketFlags.None, false);
-                    pos += ret;
-                    size -= ret;
-                    recvsize += ret;
+                    if (ret > 0)
+                    {
+                        pos += ret;
+                        size -= ret;
+                        rlen += ret;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
             }
             else
             {
                 IPEndPoint sender = new IPEndPoint(IPAddress.IPv6Any, 0);
                 EndPoint senderRemote = (EndPoint)sender;
-                recvsize = ReceiveUdp(buffer, 0, buffer.Length, false);
+                rlen = ReceiveUdp(buffer, 0, buffer.Length, false);
             }
-            return recvsize;
+            return rlen;
+        }
+        public void ClearArgs()
+        {
+            if (so.SocketType == SocketType.Stream)
+            {
+                int ret;
+                do
+                {
+                    ret = ReceiveTcp(raw_buf, 0, UDPMSGSIZE, SocketFlags.None, false);
+
+                } while (ret > 0);
+            }
+            else
+            {
+                readsize = 0;
+                recvsize = 0;
+                last_fragment = true;
+            }
         }
 
         public void Reply(byte[] reply, bool IsFirst, bool IsLast)
@@ -207,8 +233,7 @@ namespace Vxi11Net
             return so.SendTo(buffer, size, socketFlags, remoteEP);
         }
 
-        
-        public void ClearArgs()
+        public void Flush()
         {
             byte[] buffer = new byte[UDPMSGSIZE];
             int byteCount = 1;

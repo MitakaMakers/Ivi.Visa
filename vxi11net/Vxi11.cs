@@ -39,7 +39,6 @@ namespace Vxi11Net
         };
         public struct CREATE_LINK_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -61,7 +60,6 @@ namespace Vxi11Net
         };
         public struct DEVICE_WRITE_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -82,7 +80,6 @@ namespace Vxi11Net
         };
         public struct DEVICE_READ_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -102,7 +99,6 @@ namespace Vxi11Net
         };
         public struct DEVICE_GENERIC_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -133,7 +129,6 @@ namespace Vxi11Net
         };
         public struct DEVICE_READSTB_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -156,7 +151,6 @@ namespace Vxi11Net
         };
         public struct DEVICE_DOCMD_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;

@@ -6,23 +6,78 @@ namespace Vxi11Net
 {
     public class ServerPortmap
     {
-        private ServerRPC rpc = new ServerRPC();
-        public int remain_count = 0;
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private static List<Pmap.MAPPING> pmaplist = new List<Pmap.MAPPING>();
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-        public Socket Create(string host, int port, Pmap.IPPROTO prot)
+        public static bool Set(int prog, int vers, Pmap.IPPROTO prot, int port)
+        {
+            bool ret = false;
+            Pmap.MAPPING? find = null;
+            for (int i = 0; i < pmaplist.Count; i++)
+            {
+                Pmap.MAPPING map = pmaplist[i];
+                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
+                {
+                    find = map;
+                    break;
+                }
+            }
+            if (find == null)
+            {
+                Pmap.MAPPING map = new Pmap.MAPPING();
+                map.vers = vers;
+                map.prog = prog;
+                map.prot = prot;
+                map.port = port;
+                pmaplist.Add(map);
+                ret = true;
+            }
+            return ret;
+        }
+
+        public static bool Unset(int prog, int vers, Pmap.IPPROTO prot)
+        {
+            bool ret = false;
+            for (int i = 0; i < pmaplist.Count; i++)
+            {
+                Pmap.MAPPING map = pmaplist[i];
+                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
+                {
+                    pmaplist.Remove(map);
+                    ret = true;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        public static int Getport(int prog, int vers, Pmap.IPPROTO prot)
+        {
+            int port = 0; ;
+            for (int i = 0; i < pmaplist.Count; i++)
+            {
+                Pmap.MAPPING map = pmaplist[i];
+                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
+                {
+                    port = map.port;
+                    break;
+                }
+            }
+            return port;
+        }
+
+        private ServerRPC rpc = new ServerRPC();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+        public void Create(string host, int port, Pmap.IPPROTO prot)
         {
             if (prot == Pmap.IPPROTO.TCP)
             {
-                socket = rpc.CreateTcp(host, port);
+                rpc.CreateTcp(host, port);
             }
             else
             {
-                socket = rpc.CreateUdp(host, port); 
+                rpc.CreateUdp(host, port); 
             }
-            return socket;
         }
         public void Destroy()
         {
@@ -32,9 +87,7 @@ namespace Vxi11Net
         }
         public RPC.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
-            RPC.RPC_MESSAGE_PARAMS msg = rpc.ReceiveMsg();
-            remain_count = rpc.remain_count();
-            return msg;
+            return rpc.ReceiveMsg();
         }
 
         public void ReceiveNull()
@@ -50,6 +103,7 @@ namespace Vxi11Net
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
             rpc.GetArgs(buffer);
+
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -78,6 +132,7 @@ namespace Vxi11Net
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
             rpc.GetArgs(buffer);
+
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -105,6 +160,7 @@ namespace Vxi11Net
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
             rpc.GetArgs(buffer);
+
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -127,7 +183,6 @@ namespace Vxi11Net
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             rpc.Reply(packet, true, true);
-            return;
         }
         public void ReceiveDump()
         {
@@ -210,63 +265,6 @@ namespace Vxi11Net
         public void Shutdown()
         {
             tokenSource.Cancel();
-            socket.Close();
-        }
-        public static bool Set(int prog, int vers, Pmap.IPPROTO prot, int port)
-        {
-            bool ret = false;
-            Pmap.MAPPING? find = null;
-            for (int i = 0; i < pmaplist.Count; i++)
-            {
-                Pmap.MAPPING map = pmaplist[i];
-                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
-                {
-                    find = map;
-                    break;
-                }
-            }
-            if (find == null)
-            {
-                Pmap.MAPPING map = new Pmap.MAPPING();
-                map.vers = vers;
-                map.prog = prog;
-                map.prot = prot;
-                map.port = port;
-                pmaplist.Add(map);
-                ret = true;
-            }
-            return ret;
-        }
-
-        public static bool Unset(int prog, int vers, Pmap.IPPROTO prot)
-        {
-            bool ret = false;
-            for (int i = 0; i < pmaplist.Count; i++)
-            {
-                Pmap.MAPPING map = pmaplist[i];
-                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
-                {
-                    pmaplist.Remove(map);
-                    ret = true;
-                    break;
-                }
-            }
-            return ret;
-        }
-
-        public static int Getport(int prog, int vers, Pmap.IPPROTO prot)
-        {
-            int port = 0; ;
-            for (int i = 0; i < pmaplist.Count; i++)
-            {
-                Pmap.MAPPING map = pmaplist[i];
-                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
-                {
-                    port = map.port;
-                    break;
-                }
-            }
-            return port;
         }
     }
 }

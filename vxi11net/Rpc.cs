@@ -20,7 +20,6 @@ namespace Vxi11Net
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct RPC_MESSAGE_PARAMS
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int rpcvers;

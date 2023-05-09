@@ -22,7 +22,6 @@ namespace Vxi11Net
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct PMAP_NULL_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -32,7 +31,6 @@ namespace Vxi11Net
         };
         public struct PMAP_SETUNSET_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -43,7 +41,6 @@ namespace Vxi11Net
         };
         public struct PMAP_GETPORT_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
@@ -54,7 +51,6 @@ namespace Vxi11Net
         };
         public struct PMAP_DUMP_REPLY
         {
-            public int fheader;
             public int xid;
             public int msg_type;
             public int stat;
