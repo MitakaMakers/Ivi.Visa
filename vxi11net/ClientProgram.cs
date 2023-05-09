@@ -26,7 +26,7 @@ namespace Vxi11Net
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
-                    ClientConsole();
+                    Vxi11Console();
                 }
                 else if (a == "2")
                 {
@@ -47,7 +47,7 @@ namespace Vxi11Net
                 }
             }
         }
-        public static void ClientConsole()
+        public static void Vxi11Console()
         {
             Socket? core = null;
             Socket? abort = null;
@@ -134,7 +134,7 @@ namespace Vxi11Net
                         int lockDevice = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  handle? : ");
                         String handle = new String(Console.ReadLine());
-                        ClientVxi11.create_link(core, xid++, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
+                        ClientVxi11.CreateLink(core, xid++, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
                         Console.WriteLine("== create_link ==");
                         Console.WriteLine(" Call : create_link : ret=0");
                     }
@@ -143,13 +143,13 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  msg? : ");
                         String msg = new String(Console.ReadLine());
                         int data_len;
-                        ClientVxi11.device_write(core, xid++, lid, flags, lock_timeout, io_timeout, msg, out data_len);
+                        ClientVxi11.DeviceWrite(core, xid++, lid, flags, lock_timeout, io_timeout, msg, out data_len);
                         Console.WriteLine("== device_write ==");
                         Console.WriteLine(" Call : device_write : ret=0");
                     }
@@ -158,17 +158,17 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  requestSize? : ");
                         int requestSize = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  terminate character? : ");
                         int ch = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.TermChar term = (ClientVxi11.TermChar)Enum.ToObject(typeof(ClientVxi11.TermChar), ch);
+                        Vxi11.TermChar term = (Vxi11.TermChar)Enum.ToObject(typeof(Vxi11.TermChar), ch);
                         int reason;
                         string data;
-                        ClientVxi11.device_read(core, xid++, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
+                        ClientVxi11.DeviceRead(core, xid++, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
                         Console.WriteLine("== device_read ==");
                         Console.WriteLine(" Call : device_read : ret={0}", data);
                     }
@@ -177,7 +177,7 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.destroy_link(core, xid++, lid);
+                        ClientVxi11.DestroyLink(core, xid++, lid);
                         Console.WriteLine("== destroy_link ==");
                         Console.WriteLine(" Call : destroy_link : ret=0");
                     }
@@ -186,11 +186,11 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         char stb;
-                        ClientVxi11.device_readstb(core, xid++, lid, flags, lock_timeout, io_timeout, out stb);
+                        ClientVxi11.DeviceReadstb(core, xid++, lid, flags, lock_timeout, io_timeout, out stb);
                         Console.WriteLine("== device_readstb ==");
                         Console.WriteLine(" Call : device_readstb : ret=0");
                     }
@@ -199,10 +199,10 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_trigger(core, xid++, lid, flags, lock_timeout, io_timeout);
+                        ClientVxi11.DeviceTrigger(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_trigger ==");
                         Console.WriteLine(" Call : device_trigger : ret=0");
                     }
@@ -211,10 +211,10 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_clear(core, xid++, lid, flags, lock_timeout, io_timeout);
+                        ClientVxi11.DeviceClear(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_clear ==");
                         Console.WriteLine(" Call : device_clear : ret=0");
                     }
@@ -223,10 +223,10 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_remote(core, xid++, lid, flags, lock_timeout, io_timeout);
+                        ClientVxi11.DeviceRemote(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_remote ==");
                         Console.WriteLine(" Call : device_remote : ret=0");
                     }
@@ -235,10 +235,10 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_local(core, xid++, lid, flags, lock_timeout, io_timeout);
+                        ClientVxi11.DeviceLocal(core, xid++, lid, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_local ==");
                         Console.WriteLine(" Call : device_local : ret=0");
                     }
@@ -247,10 +247,10 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  lid? : ");
                         int lid2 = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_lock(core, xid++, lid2, flags, lock_timeout);
+                        ClientVxi11.DeviceLock(core, xid++, lid2, flags, lock_timeout);
                         Console.WriteLine("== device_lock ==");
                         Console.WriteLine(" Call : device_lock : ret=0");
                     }
@@ -261,7 +261,7 @@ namespace Vxi11Net
                     {
                         Console.Write("  lid? : ");
                         int lid2 = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_unlock(core, xid++, lid2);
+                        ClientVxi11.DeviceUnlock(core, xid++, lid2);
                         Console.WriteLine("== device_unlock ==");
                         Console.WriteLine(" Call : device_unlock : ret=0");
                     }
@@ -274,7 +274,7 @@ namespace Vxi11Net
                         int enable = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  handle? : ");
                         string handle = new String(Console.ReadLine());
-                        ClientVxi11.device_enable_srq(core, xid++, lid, enable, handle);
+                        ClientVxi11.DeviceEnableSrq(core, xid++, lid, enable, handle);
                         Console.WriteLine("== device_enable_srq ==");
                         Console.WriteLine(" Call : device_enable_srq : ret=0");
                     }
@@ -283,7 +283,7 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  cmd? : ");
@@ -296,7 +296,7 @@ namespace Vxi11Net
                         String str = new String(Console.ReadLine());
                         byte[] data_in = System.Text.Encoding.ASCII.GetBytes(str);
                         byte[] data_out;
-                        ClientVxi11.device_docmd(core, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
+                        ClientVxi11.DeviceDocmd(core, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
                         Console.WriteLine("== device_docmd ==");
                         Console.WriteLine(" Call : device_docmd : ret=0");
                     }
@@ -315,7 +315,7 @@ namespace Vxi11Net
                         int progvers = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  program family? : ");
                         int progfamily = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.create_intr_chan(core, xid++, hostaddr, hostport, prognum, progvers, progfamily);
+                        ClientVxi11.CreateIntrChan(core, xid++, hostaddr, hostport, prognum, progvers, progfamily);
                         Console.WriteLine("== create_intr_chan ==");
                         Console.WriteLine(" Call : create_intr_chan : ret=0");
                     }
@@ -324,7 +324,7 @@ namespace Vxi11Net
                 {
                     if (core != null)
                     {
-                        ClientVxi11.destroy_intr_chan(core, xid);
+                        ClientVxi11.DestroyIntrChan(core, xid);
                         Console.WriteLine("== destroy_intr_chan ==");
                         Console.WriteLine(" Call : destroy_intr_chan : ret=0");
                     }
@@ -333,12 +333,12 @@ namespace Vxi11Net
                 {
                     if (abort != null)
                     {
-                        ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+                        Vxi11.Flags flags = Vxi11.Flags.none;
                         Console.Write("  lid? : ");
                         int lid2 = Convert.ToInt32(Console.ReadLine());
                         Console.Write("  io_timeout? : ");
                         int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.device_abort(abort, xid++, lid2, flags, lock_timeout, io_timeout);
+                        ClientVxi11.DeviceAbort(abort, xid++, lid2, flags, lock_timeout, io_timeout);
                         Console.WriteLine("== device_abort ==");
                         Console.WriteLine(" Call : device_abort : ret=0");
                     }
@@ -392,19 +392,17 @@ namespace Vxi11Net
 
         public static void PortmapConsole()
         {
-            int xid = 12345;
+            ClientPortmap client = new ClientPortmap();
+
             bool isLoop = true;
             while (isLoop)
             {
                 Console.WriteLine("Select Portmap Function");
-                Console.WriteLine("   1: pmap_set (TCP connection)");
-                Console.WriteLine("   2: pmap_unset (TCP connection)");
-                Console.WriteLine("   3: pmap_getport (TCP connection)");
-                Console.WriteLine("   4: pmap_dump (TCP connection)");
-                Console.WriteLine("   5: pmap_set (UDP connection)");
-                Console.WriteLine("   6: pmap_unset (UDP connection)");
-                Console.WriteLine("   7: pmap_getport (UDP connection)");
-                Console.WriteLine("   8: pmap_dump (UDP connection)");
+                Console.WriteLine("   1: create pmap client ");
+                Console.WriteLine("   2: pmap_set");
+                Console.WriteLine("   3: pmap_unset");
+                Console.WriteLine("   4: pmap_getport");
+                Console.WriteLine("   5: pmap_dump");
                 Console.WriteLine("   B: back to Main menu");
                 Console.WriteLine(" E/Q:Exit program");
                 Console.Write("Input fuction number? : ");
@@ -412,146 +410,82 @@ namespace Vxi11Net
                 if (a == "1")
                 {
                     Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
+                    string host = new　String(Console.ReadLine());
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_set(socket, xid++, ClientVxi11.DEVICE_CORE, ClientVxi11.DEVICE_CORE_VERSION, ClientPortmap.IPPROTO_UDP, port);
-                    Console.WriteLine("== pmap_set ==");
-                    Console.WriteLine(" Call : pmap_set : ret=0");
-                    socket.Close();
+                    Console.Write("  protocol?(6:TCP, 17:UDP) : ");
+                    int prot = Convert.ToInt32(Console.ReadLine());
+                    Pmap.IPPROTO ipprot;
+                    if (prot == 6)
+                    {
+                        ipprot = Pmap.IPPROTO.TCP;
+                    }
+                    else
+                    {
+                        ipprot = Pmap.IPPROTO.UDP;
+                    }
+                    client.Create(host, port, ipprot);
+                    Console.WriteLine("== pmap client(TCP) ==");
+                    Console.WriteLine(" Call : pmap client(TCP) : ret=0");
                 }
                 if (a == "2")
                 {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_unset(socket, xid++, ClientVxi11.DEVICE_CORE, ClientVxi11.DEVICE_CORE_VERSION, ClientPortmap.IPPROTO_UDP);
-                    Console.WriteLine("== pmap_unset ==");
-                    Console.WriteLine(" Call : pmap_unset : ret=0");
-                    socket.Close();
+                    Console.Write("  protocol?(6:TCP, 17:UDP) : ");
+                    int prot = Convert.ToInt32(Console.ReadLine());
+                    Pmap.IPPROTO ipprot;
+                    if (prot == 6)
+                    {
+                        ipprot = Pmap.IPPROTO.TCP;
+                    }
+                    else
+                    {
+                        ipprot = Pmap.IPPROTO.UDP;
+                    }
+                    int err = client.Set(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, ipprot, port);
+                    Console.WriteLine("== pmap_set ==");
+                    Console.WriteLine(" Call : pmap_set : ret=0");
                 }
                 if (a == "3")
                 {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_getport(socket, xid++, ClientVxi11.DEVICE_CORE, ClientVxi11.DEVICE_CORE_VERSION, ClientPortmap.IPPROTO_UDP);
-                    Console.WriteLine("== pmap_getport ==");
-                    Console.WriteLine(" Call : pmap_getport : ret=0");
-                    socket.Close();
+                    Console.Write("  protocol?(6:TCP, 17:UDP) : ");
+                    int prot = Convert.ToInt32(Console.ReadLine());
+                    Pmap.IPPROTO ipprot;
+                    if (prot == 6)
+                    {
+                        ipprot = Pmap.IPPROTO.TCP;
+                    }
+                    else
+                    {
+                        ipprot = Pmap.IPPROTO.UDP;
+                    }
+                    int err = client.Unset(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, ipprot);
+                    Console.WriteLine("== pmap_unset ==");
+                    Console.WriteLine(" Call : pmap_set : ret=0");
                 }
                 if (a == "4")
                 {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_dump(socket, xid++);
-                    Console.WriteLine("== pmap_dump ==");
-                    Console.WriteLine(" Call : pmap_dump : ret=0");
-                    socket.Close();
+                    Console.Write("  protocol?(6:TCP, 17:UDP) : ");
+                    int prot = Convert.ToInt32(Console.ReadLine());
+                    Pmap.IPPROTO ipprot;
+                    if (prot == 6)
+                    {
+                        ipprot = Pmap.IPPROTO.TCP;
+                    }
+                    else
+                    {
+                        ipprot = Pmap.IPPROTO.UDP;
+                    }
+                    int err = client.Getport(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, ipprot);
+                    Console.WriteLine("== pmap_getport ==");
+                    Console.WriteLine(" Call : pmap_getport : ret=0");
                 }
                 if (a == "5")
                 {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_set(socket, xid++, ClientVxi11.DEVICE_CORE, ClientVxi11.DEVICE_CORE_VERSION, ClientPortmap.IPPROTO_UDP, port);
-                    Console.WriteLine("== pmap_set ==");
-                    Console.WriteLine(" Call : pmap_set : ret=0");
-                    socket.Close();
-                }
-                if (a == "6")
-                {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_unset(socket, xid++, ClientVxi11.DEVICE_CORE, ClientVxi11.DEVICE_CORE_VERSION, ClientPortmap.IPPROTO_UDP);
-                    Console.WriteLine("== pmap_unset ==");
-                    Console.WriteLine(" Call : pmap_unset : ret=0");
-                    socket.Close();
-                }
-                if (a == "7")
-                {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_getport(socket, xid++, ClientVxi11.DEVICE_CORE, ClientVxi11.DEVICE_CORE_VERSION, ClientPortmap.IPPROTO_UDP);
-                    Console.WriteLine("== pmap_getport ==");
-                    Console.WriteLine(" Call : pmap_getport : ret=0");
-                    socket.Close();
-                }
-                if (a == "8")
-                {
-                    Console.Write("  IP address? : ");
-                    string address = new String(Console.ReadLine());
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-
-                    IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
-                    IPAddress ipAddress = ipHostInfo.AddressList[0];
-                    IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-                    Socket socket = new Socket(ipAddress.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-                    socket.Connect(remoteEP);
-
-                    ClientPortmap.pmapproc_dump(socket, xid++);
+                    List<Pmap.MAPPING> map = client.Dump();
                     Console.WriteLine("== pmap_dump ==");
                     Console.WriteLine(" Call : pmap_dump : ret=0");
-                    socket.Close();
                 }
                 if ((a == "B") || (a == "b"))
                 {

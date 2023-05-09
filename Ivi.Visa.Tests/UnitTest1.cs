@@ -1,8 +1,5 @@
+using Vxi11Net;
 using Xunit;
-using Ivi.Visa;
-using VXI11Net;
-using System.Net.Sockets;
-using System.Net;
 
 namespace Ivi.Visa
 {
@@ -11,18 +8,18 @@ namespace Ivi.Visa
         [Fact]
         public void Test1()
         {
-            //VXI11Net.Server.run_demo_server("127.0.0.1", 5024);
+            //Vxi11Net.Server.run_demo_server("127.0.0.1", 5024);
 
             int port = 5024;
             Console.WriteLine("== Run demo server ==");
-            TcpPortmapServer tcp_server = new TcpPortmapServer();
-            UdpPortmapServer udp_server = new UdpPortmapServer();
-            CoreServer coreServer = new CoreServer();
-            AbortServer abortServer = new AbortServer();
-            tcp_server.Run("127.0.0.1", port);
-            udp_server.Run("127.0.0.1", port);
-            coreServer.Run("127.0.0.1", port);
-            abortServer.Run("127.0.0.1", port + 1);
+            ServerPortmap tcp_server = new ServerPortmap();
+            ServerPortmap udp_server = new ServerPortmap();
+            ServerVxi11 coreServer = new ServerVxi11();
+            ServerVxi11 abortServer = new ServerVxi11();
+            //tcp_server.Run("127.0.0.1", port, Pmap.IPPROTO.TCP);
+            //udp_server.Run("127.0.0.1", port, Pmap.IPPROTO.UDP);
+            coreServer.RunCoreChannel("127.0.0.1", port);
+            abortServer.RunAbortChannel("127.0.0.1", port + 1);
 
             string rsrc = new String(Console.ReadLine());
             // IMessageBasedSession session1 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP0::1.2.3.4::5025::SOCKET");

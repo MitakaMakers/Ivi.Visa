@@ -7,14 +7,14 @@ namespace Vxi11Net
 {
     public class ServerVxi11
     {
-        private ServerRPC rpc = new ServerRPC();
+        private ServerRpc rpc = new ServerRpc();
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         public void Create(string host, int port)
         {
             rpc.CreateTcp(host, port);
         }
-        public RPC.RPC_MESSAGE_PARAMS ReceiveMsg()
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
             return rpc.ReceiveMsg();
         }
@@ -42,12 +42,12 @@ namespace Vxi11Net
         {
             Vxi11.CREATE_LINK_REPLY reply = new Vxi11.CREATE_LINK_REPLY();
             int size = Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_REPLY));
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
-            reply.error = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
+            reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.lid = IPAddress.HostToNetworkOrder(lid);
             reply.abortPort = IPAddress.HostToNetworkOrder(abortPort);
             reply.maxRecvSize = IPAddress.HostToNetworkOrder(maxRecvSize);
@@ -81,12 +81,12 @@ namespace Vxi11Net
         public void ReplyDeviceWrite(int data_len)
         {
             Vxi11.DEVICE_WRITE_REPLY reply = new Vxi11.DEVICE_WRITE_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
-            reply.error = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
+            reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.data_len = IPAddress.HostToNetworkOrder(data_len);
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_REPLY))];
@@ -115,12 +115,12 @@ namespace Vxi11Net
             byte[] buf = System.Text.Encoding.ASCII.GetBytes(data);
 
             Vxi11.DEVICE_READ_REPLY reply = new Vxi11.DEVICE_READ_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
-            reply.error = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
+            reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.reason = IPAddress.HostToNetworkOrder(reason);
             reply.data_len = IPAddress.HostToNetworkOrder(buf.Length);
 
@@ -154,12 +154,12 @@ namespace Vxi11Net
         public void ReplyDeviceReadStb(byte stb)
         {
             Vxi11.DEVICE_READSTB_REPLY reply = new Vxi11.DEVICE_READSTB_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
-            reply.error = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
+            reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.stb = stb;
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READSTB_REPLY))];
@@ -236,12 +236,12 @@ namespace Vxi11Net
         public void ReplyDeviceDoCmd(int data_out_len)
         {
             Vxi11.DEVICE_DOCMD_REPLY reply = new Vxi11.DEVICE_DOCMD_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
-            reply.error = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
+            reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.data_out_len = IPAddress.HostToNetworkOrder(data_out_len);
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_REPLY))];
@@ -263,11 +263,11 @@ namespace Vxi11Net
         public void ReplyDeviceError(int error)
         {
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.error = IPAddress.HostToNetworkOrder(error);
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
@@ -287,7 +287,7 @@ namespace Vxi11Net
 
             Console.WriteLine("== Run demo server ==");
             Create(host, port);
-            ServerPortmap.Set(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
+            ServerPortmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
 
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
@@ -296,7 +296,7 @@ namespace Vxi11Net
                 while (!tokenSource.Token.IsCancellationRequested)
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    RPC.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
                     Console.WriteLine("    received--.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      prog    = {0}", msg.prog);
@@ -333,44 +333,44 @@ namespace Vxi11Net
                     {
                         Console.WriteLine("  == DEVICE_TRIGGER ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_CLEAR)
                     {
                         Console.WriteLine("  == DEVICE_CLEAR ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_REMOTE)
                     {
                         Console.WriteLine("  == DEVICE_REMOTE ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_LOCAL)
                     {
                         Console.WriteLine("  == DEVICE_LOCAL ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_LOCK)
                     {
                         Console.WriteLine("  == DEVICE_LOCK ==");
                         Vxi11.DEVICE_LOCK_PARAMS loc = ReceiveDeviceLock();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_UNLOCK)
                     {
                         Console.WriteLine("  == DEVICE_UNLOCK ==");
                         long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_ENABLE_SRQ)
                     {
                         Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
                         string handle;
                         ReceiveDeviceEnableSrq(out handle);
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_DOCMD)
                     {
@@ -383,18 +383,18 @@ namespace Vxi11Net
                     {
                         Console.WriteLine("  == DESTROY_LINK ==");
                         long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.CREATE_INTR_CHAN)
                     {
                         Console.WriteLine("  == CREATE_INTR_CHAN ==");
                         ReceiveCreateIntrchan();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DESTROY_INTR_CHAN)
                     {
                         Console.WriteLine("  == DESTROY_INTR_CHAN ==");
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else
                     {
@@ -410,7 +410,7 @@ namespace Vxi11Net
 
             Console.WriteLine("== Run demo server ==");
             Create(host, port);
-            ServerPortmap.Set(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
+            ServerPortmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
 
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
@@ -419,7 +419,7 @@ namespace Vxi11Net
                 while (!tokenSource.Token.IsCancellationRequested)
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    RPC.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
                     Console.WriteLine("    received--.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      proc    = {0}", msg.proc);
@@ -427,7 +427,7 @@ namespace Vxi11Net
                     {
                         Console.WriteLine("  == DEVICE_ABORT ==");
                         long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(RPC.SUCCESS);
+                        ReplyDeviceError(Rpc.SUCCESS);
                     }
                     else
                     {

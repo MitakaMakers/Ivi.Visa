@@ -8,7 +8,7 @@ namespace Vxi11Net
     {
         private static List<Pmap.MAPPING> pmaplist = new List<Pmap.MAPPING>();
 
-        public static bool Set(int prog, int vers, Pmap.IPPROTO prot, int port)
+        public static bool AddPort(int prog, int vers, Pmap.IPPROTO prot, int port)
         {
             bool ret = false;
             Pmap.MAPPING? find = null;
@@ -34,7 +34,7 @@ namespace Vxi11Net
             return ret;
         }
 
-        public static bool Unset(int prog, int vers, Pmap.IPPROTO prot)
+        public static bool RemovePort(int prog, int vers, Pmap.IPPROTO prot)
         {
             bool ret = false;
             for (int i = 0; i < pmaplist.Count; i++)
@@ -50,7 +50,7 @@ namespace Vxi11Net
             return ret;
         }
 
-        public static int Getport(int prog, int vers, Pmap.IPPROTO prot)
+        public static int FindPort(int prog, int vers, Pmap.IPPROTO prot)
         {
             int port = 0; ;
             for (int i = 0; i < pmaplist.Count; i++)
@@ -65,7 +65,7 @@ namespace Vxi11Net
             return port;
         }
 
-        private ServerRPC rpc = new ServerRPC();
+        private ServerRpc rpc = new ServerRpc();
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         public void Create(string host, int port, Pmap.IPPROTO prot)
@@ -85,7 +85,7 @@ namespace Vxi11Net
             rpc.Destroy();
             pmaplist.Clear();
         }
-        public RPC.RPC_MESSAGE_PARAMS ReceiveMsg()
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
             return rpc.ReceiveMsg();
         }
@@ -114,15 +114,15 @@ namespace Vxi11Net
 
         public void ReplySet(bool status)
         {
-            Pmap.PMAP_SETUNSET_REPLY reply = new Pmap.PMAP_SETUNSET_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.boolean = (status == true) ? 1 : 0;
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SETUNSET_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
@@ -142,15 +142,15 @@ namespace Vxi11Net
         }
         public void ReplyUnset(bool status)
         {
-            Pmap.PMAP_SETUNSET_REPLY reply = new Pmap.PMAP_SETUNSET_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.boolean = (status == true) ? 1 : 0;
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SETUNSET_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
@@ -171,11 +171,11 @@ namespace Vxi11Net
         public void ReplyGetport(int port)
         {
             Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.port = port;
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
@@ -191,11 +191,11 @@ namespace Vxi11Net
         public void ReplyDump(List<Pmap.MAPPING> pmaplist)
         {
             Pmap.PMAP_DUMP_REPLY reply = new Pmap.PMAP_DUMP_REPLY();
-            reply.msg_type = IPAddress.HostToNetworkOrder(RPC.REPLY);
-            reply.stat = IPAddress.HostToNetworkOrder(RPC.MSG_ACCEPTED);
+            reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
+            reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
-            reply.accept_stat = IPAddress.HostToNetworkOrder(RPC.SUCCESS);
+            reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -215,14 +215,14 @@ namespace Vxi11Net
             Console.WriteLine("== Run PortmapServer ==");
             Create(host, port, type);
  
-            Set(Pmap.PROG, Pmap.VERS, type, port);
+            AddPort(Pmap.PROG, Pmap.VERS, type, port);
 
             Task.Run(() =>
             {
                 while (!tokenSource.Token.IsCancellationRequested)
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    RPC.RPC_MESSAGE_PARAMS msg = rpc.ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = rpc.ReceiveMsg();
                     Console.WriteLine("    received--.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      proc    = {0}", msg.proc);
@@ -231,21 +231,21 @@ namespace Vxi11Net
                     {
                         Console.WriteLine("  == PMAPPROC_SET ==");
                         Pmap.MAPPING map = ReceiveSet();
-                        bool status = ServerPortmap.Set(map.prog, map.vers, map.prot, map.port);
+                        bool status = AddPort(map.prog, map.vers, map.prot, map.port);
                         ReplySet(status);
                     }
                     else if (msg.proc == Pmap.PROC_UNSET)
                     {
                         Console.WriteLine("  == PMAPPROC_UNSET ==");
                         Pmap.MAPPING map = ReceiveUnset();
-                        bool status = ServerPortmap.Unset(map.prog, map.vers, map.prot);
+                        bool status = RemovePort(map.prog, map.vers, map.prot);
                         ReplyUnset(status);
                     }
                     else if (msg.proc == Pmap.PROC_GETPORT)
                     {
                         Console.WriteLine("  == PMAPPROC_GETPORT ==");
                         Pmap.MAPPING map = ReceiveGetport();
-                        int prog_port = ServerPortmap.Getport(map.prog, map.vers, map.prot);
+                        int prog_port = FindPort(map.prog, map.vers, map.prot);
                         ReplyGetport(prog_port);
                     }
                     else if (msg.proc == Pmap.PROC_DUMP)

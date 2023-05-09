@@ -28,8 +28,46 @@ namespace Vxi11Net
         public const int DEVICE_INTR_PROG = 395185;
         public const int DEVICE_INTR_VERSION = 1;
         public const int DEVICE_INTR_SRQ = 30;
+        public const int DEVICE_CORE = 395183;
 
+        public enum Flags
+        {
+            termchrset = 0x0080,
+            end = 0x0008,
+            waitlock = 0x0001,
+            none = 0x0000
+        }
+        public enum TermChar
+        {
+            CR = 0x0A,
+            LF = 0x0D,
+            None = 0x00
+        }
+        public enum reason
+        {
+            END = 0x04,
+            CHR = 0x02,
+            REQCNT = 0x01,
+            NONE = 0x00
+        }
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct CREATE_LINK_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int clientId;
+            public int lockDevice;
+            public int lock_timeout;
+            public int handle_len;
+        };
         public struct CREATE_LINK_PARAMS
         {
             public int clientId;
@@ -50,6 +88,24 @@ namespace Vxi11Net
             public int abortPort;
             public int maxRecvSize;
         };
+        public struct DEVICE_WRITE_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+            public int flags;
+            public int lock_timeout;
+            public int io_timeout;
+            public int data_len;
+        };
         public struct DEVICE_WRITE_PARAMS
         {
             public int lid;
@@ -68,6 +124,25 @@ namespace Vxi11Net
             public int accept_stat;
             public int error;
             public int data_len;
+        };
+        public struct DEVICE_READ_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+            public int requestSize;
+            public int io_timeout;
+            public int lock_timeout;
+            public int flags;
+            public int termChar;
         };
         public struct DEVICE_READ_PARAMS
         {
@@ -90,6 +165,23 @@ namespace Vxi11Net
             public int reason;
             public int data_len;
         };
+        public struct DEVICE_GENERIC_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+            public int flags;
+            public int lock_timeout;
+            public int io_timeout;
+        };
         public struct DEVICE_GENERIC_PARAMS
         {
             public int lid;
@@ -107,11 +199,59 @@ namespace Vxi11Net
             public int accept_stat;
             public int error;
         };
+        public struct DEVICE_LOCK_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+            public int flags;
+            public int lock_timeout;
+        };
         public struct DEVICE_LOCK_PARAMS
         {
             public int lid;
             public int flags;
             public int lock_timeout;
+        };
+        public struct DEVICE_UNLOCK_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+        };
+        public struct CREATE_INTR_CHAN_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int hostaddr;
+            public int hostport;
+            public int prognum;
+            public int progvers;
+            public int progfamily;
         };
         public struct CREATE_INTR_CHAN_PARAMS
         {
@@ -120,6 +260,22 @@ namespace Vxi11Net
             public int prognum;
             public int progvers;
             public int progfamily;
+        };
+        public struct DEVICE_ENABLE_SRQ_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+            public int enable;
+            public int handle_len;
         };
         public struct DEVICE_ENABLE_SRQ_PARAMS
         {
@@ -137,6 +293,27 @@ namespace Vxi11Net
             public int accept_stat;
             public int error;
             public byte stb;
+        };
+        public struct DEVICE_DOCMD_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
+            public int lid;
+            public int flags;
+            public int io_timeout;
+            public int lock_timeout;
+            public int cmd;
+            public int network_order;
+            public int datasize;
+            public int data_in_len;
         };
         public struct DEVICE_DOCMD_PARAMS
         {
@@ -159,6 +336,19 @@ namespace Vxi11Net
             public int accept_stat;
             public int error;
             public int data_out_len;
+        };
+        public struct DESTROY_INTR_CHAN_CALL
+        {
+            public int xid;
+            public int msg_type;
+            public int rpcvers;
+            public int prog;
+            public int vers;
+            public int proc;
+            public int cred_flavor;
+            public int cred_len;
+            public int verf_flavor;
+            public int verf_len;
         };
     }
 }

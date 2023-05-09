@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,6 +7,12 @@
 
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ServerPortmap.cs" />
+    <Compile Remove="ServerRpc.cs" />
+    <Compile Remove="ServerVxi11.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
@@ -23,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\vxi11net\Ivi.Visa.csproj" />
-    <ProjectReference Include="..\vxi11net\server_console.csproj" />
+    <ProjectReference Include="..\vxi11net\ServerProgram.csproj" />
   </ItemGroup>
 
 </Project>

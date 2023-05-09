@@ -11,10 +11,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ClientPortmap.cs" />
     <Compile Include="ClientProgram.cs" />
+    <Compile Include="ClientRpc.cs" />
     <Compile Include="ClientVxi11.cs" />
     <Compile Include="Ivi.Visa.cs" />
+    <Compile Include="Pmap.cs" />
+    <Compile Include="Rpc.cs" />
     <Compile Include="TmctlAPINet.cs" />
+    <Compile Include="Vxi11.cs" />
   </ItemGroup>
 
 </Project>

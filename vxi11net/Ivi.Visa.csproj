@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -9,8 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ClientPortmap.cs" />
+    <Compile Include="ClientRpc.cs" />
     <Compile Include="ClientVxi11.cs" />
     <Compile Include="Ivi.Visa.cs" />
+    <Compile Include="Pmap.cs" />
+    <Compile Include="Rpc.cs" />
+    <Compile Include="Vxi11.cs" />
   </ItemGroup>
 
 </Project>

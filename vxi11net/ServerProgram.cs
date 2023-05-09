@@ -84,7 +84,7 @@ namespace Vxi11Net
                 if (a == "2")
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    RPC.RPC_MESSAGE_PARAMS msg = server.ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = server.ReceiveMsg();
                     Console.WriteLine("    received.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      prog    = {0}", msg.prog);
@@ -261,37 +261,37 @@ namespace Vxi11Net
                 }
                 if (a == "7")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_trigger ==");
                 }
                 if (a == "8")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_clear ==");
                 }
                 if (a == "9")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_remote ==");
                 }
                 if (a == "10")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_local ==");
                 }
                 if (a == "11")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_lock ==");
                 }
                 if (a == "12")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_unlock ==");
                 }
                 if (a == "13")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_enable_srq ==");
                 }
                 if (a == "14")
@@ -303,17 +303,17 @@ namespace Vxi11Net
                 }
                 if (a == "15")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== :reply to destroy_link ==");
                 }
                 if (a == "16")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to create_intr_chan ==");
                 }
                 if (a == "17")
                 {
-                    server.ReplyDeviceError(RPC.SUCCESS);
+                    server.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to destroy_intr_chan ==");
                 }
                 if (a == "18")
@@ -401,7 +401,7 @@ namespace Vxi11Net
                 if (a == "2")
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    RPC.RPC_MESSAGE_PARAMS msg = tcp_server.ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = tcp_server.ReceiveMsg();
                     Console.WriteLine("    received--.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      proc    = {0}", msg.proc);
