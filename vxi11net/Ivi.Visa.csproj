@@ -13,7 +13,7 @@
     <Compile Include="ClientRpc.cs" />
     <Compile Include="ClientVxi11.cs" />
     <Compile Include="Ivi.Visa.cs" />
-    <Compile Include="Pmap.cs" />
+    <Compile Include="Portmap.cs" />
     <Compile Include="Rpc.cs" />
     <Compile Include="Vxi11.cs" />
   </ItemGroup>
