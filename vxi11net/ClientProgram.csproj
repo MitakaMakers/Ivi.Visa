@@ -3,18 +3,18 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>VXI11Net</RootNamespace>
-    <StartupObject>VXI11Net.Clientconsole</StartupObject>
+    <RootNamespace>Vxi11Net</RootNamespace>
+    <StartupObject>Vxi11Net.ClientProgram</StartupObject>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="client.cs" />
+    <Compile Include="ClientProgram.cs" />
+    <Compile Include="ClientVxi11.cs" />
     <Compile Include="Ivi.Visa.cs" />
     <Compile Include="TmctlAPINet.cs" />
-    <Compile Include="client_console.cs" />
   </ItemGroup>
 
 </Project>

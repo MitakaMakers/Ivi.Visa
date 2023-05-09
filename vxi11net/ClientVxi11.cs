@@ -1,13 +1,10 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
-namespace VXI11Net
+namespace Vxi11Net
 {
-    public class Portmap
+    public class ClientPortmap
     {
         public const int CALL = 0;
         public const int RPC_VER = 2;
@@ -270,7 +267,7 @@ namespace VXI11Net
             throw new NotImplementedException();
         }
     }
-    public class Client
+    public class ClientVxi11
     {
         public const int CALL                 = 0;
         public const int RPC_PORT             = 111;

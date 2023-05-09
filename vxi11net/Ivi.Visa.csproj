@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="client.cs" />
+    <Compile Include="ClientVxi11.cs" />
     <Compile Include="Ivi.Visa.cs" />
   </ItemGroup>
 

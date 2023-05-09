@@ -1,9 +1,7 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Text;
-using VXI11Net;
+using Vxi11Net;
 
 namespace TmctlAPINet
 {
@@ -45,14 +43,14 @@ namespace TmctlAPINet
             int cliendId  = 0;
             int lockDevice = 0;
             string handle = "inst0";
-            VXI11Net.Client.create_link(this.socket, this.xid++, cliendId, lockDevice, this.lock_timeout, handle, out this.lid, out this.abortPort, out this.maxRecvSize);
+            Vxi11Net.ClientVxi11.create_link(this.socket, this.xid++, cliendId, lockDevice, this.lock_timeout, handle, out this.lid, out this.abortPort, out this.maxRecvSize);
             return 0;
         }
         public int Finish(int id)
         {
             if (this.socket != null)
             {
-                Client.destroy_link(this.socket, this.xid++, this.lid);
+                ClientVxi11.destroy_link(this.socket, this.xid++, this.lid);
                 this.socket.Close();
             }
             return 0;
@@ -72,26 +70,26 @@ namespace TmctlAPINet
         }
         public int Send(int id, string msg)
         {
-            Client.Flags flags = Client.Flags.none;
+            ClientVxi11.Flags flags = ClientVxi11.Flags.none;
             int data_len;
             if (this.socket != null)
             {
-                VXI11Net.Client.device_write(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout, msg, out data_len);
+                Vxi11Net.ClientVxi11.device_write(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout, msg, out data_len);
             }
             return 0;
         }
         public int Receive(int id, ref StringBuilder buff, int blen, ref int rlen)
         {
             int requestSize = blen;
-            Client.Flags flags = Client.Flags.none;
-            Client.TermChar termchar = Client.TermChar.LF;
+            ClientVxi11.Flags flags = ClientVxi11.Flags.none;
+            ClientVxi11.TermChar termchar = ClientVxi11.TermChar.LF;
             int reason;
             byte[] data ;
             if (this.socket == null)
             {
                 return 0;
             }
-            VXI11Net.Client.device_read(this.socket, this.xid++, this.lid,  requestSize, flags, this.lock_timeout, this.io_timeout, termchar, out reason, out data);
+            Vxi11Net.ClientVxi11.device_read(this.socket, this.xid++, this.lid,  requestSize, flags, this.lock_timeout, this.io_timeout, termchar, out reason, out data);
             string str = Encoding.GetEncoding("ASCII").GetString(data);
             buff = new StringBuilder(str);
             rlen = data.Length;
@@ -111,36 +109,36 @@ namespace TmctlAPINet
         }
         public int SetRen(int id, int flag)
         {
-            Client.Flags flags = Client.Flags.none;
+            ClientVxi11.Flags flags = ClientVxi11.Flags.none;
             if (this.socket == null)
             {
                 return 0;
             }
             if (flag == 0)
             {
-                VXI11Net.Client.device_local(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                Vxi11Net.ClientVxi11.device_local(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             else
             {
-                VXI11Net.Client.device_remote(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                Vxi11Net.ClientVxi11.device_remote(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             return 0;
         }
         public int DeviceClear(int id)
         {
-            Client.Flags flags = Client.Flags.none;
+            ClientVxi11.Flags flags = ClientVxi11.Flags.none;
             if (this.socket != null)
             {
-                VXI11Net.Client.device_clear(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                Vxi11Net.ClientVxi11.device_clear(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             return 0;
         }
         public int DeviceTrigger(int id)
         {
-            Client.Flags flags = Client.Flags.none;
+            ClientVxi11.Flags flags = ClientVxi11.Flags.none;
             if (this.socket != null)
             {
-                VXI11Net.Client.device_trigger(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                Vxi11Net.ClientVxi11.device_trigger(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             return 0;
         }

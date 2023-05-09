@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Vxi11Net</RootNamespace>
+    <StartupObject>Vxi11Net.ServerProgram</StartupObject>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="Pmap.cs" />
+    <Compile Include="Rpc.cs" />
+    <Compile Include="ServerPortmap.cs" />
+    <Compile Include="ServerProgram.cs" />
+    <Compile Include="ServerRpc.cs" />
+    <Compile Include="ServerVxi11.cs" />
+    <Compile Include="Vxi11.cs" />
+  </ItemGroup>
+</Project>

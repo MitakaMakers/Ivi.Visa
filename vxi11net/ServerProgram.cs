@@ -1,11 +1,8 @@
-﻿using System.Drawing;
-using System.Net;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
+﻿using System.Net.Sockets;
 
-namespace VXI11Net
+namespace Vxi11Net
 {
-    public class Serverconsole
+    public class ServerProgram
     {
         public static void Main(string[] args)
         {
@@ -37,6 +34,9 @@ namespace VXI11Net
         public static void ServerConsole()
         {
             bool isLoop = true;
+            ServerVxi11 core_server1 = new ServerVxi11();
+            ServerVxi11 abort_server2 = new ServerVxi11();
+
             Socket? abort_server = null;
             Socket? core_server = null;
             Socket? core_channel = null;
@@ -85,7 +85,7 @@ namespace VXI11Net
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("== create RPC server (abort channel) ==");
-                    abort_server = Vxi11ServerHandler.create_abort_channel("127.0.0.1", port);
+                    abort_server = abort_server2.Create("127.0.0.1", port);
                     Console.WriteLine(" Call : create_abort_channel : ret=0");
                 }
                 if (a == "2")
@@ -93,7 +93,7 @@ namespace VXI11Net
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("== create RPC server (core channel) ==");
-                    core_server = Vxi11ServerHandler.create_core_channel("127.0.0.1", port);
+                    core_server = core_server1.Create("127.0.0.1", port);
                     Console.WriteLine(" Call : create_core_channel : ret=0");
                 }
                 if (a == "3")
@@ -101,10 +101,10 @@ namespace VXI11Net
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("== register core channel with portmapper ==");
-                    TcpPortmapServer tcp_server = new TcpPortmapServer();
-                    UdpPortmapServer udp_server = new UdpPortmapServer();
-                    tcp_server.Run("127.0.0.1", port);
-                    udp_server.Run("127.0.0.1", port);
+                    ServerPortmap tcp_server = new ServerPortmap();
+                    ServerPortmap udp_server = new ServerPortmap();
+                    tcp_server.Run("127.0.0.1", port, Pmap.IPPROTO.TCP);
+                    udp_server.Run("127.0.0.1", port, Pmap.IPPROTO.UDP);
                     Thread.Sleep(100);
                     Console.WriteLine(" Call : run portmapper : ret=0");
                 }
@@ -113,7 +113,7 @@ namespace VXI11Net
                     if (core_server != null)
                     {
                         Console.WriteLine("== accept_connection_requests ==");
-                        core_channel = Vxi11ServerHandler.accept_connection_requests(core_server);
+                        core_channel = ServerVxi11.accept_connection_requests(core_server);
                         Console.WriteLine(" Call : accept_connection_requests : ret=0");
                     }
                 }
@@ -121,99 +121,99 @@ namespace VXI11Net
                 {
                     if (core_channel != null)
                     {
-                        int size;
+                        int size = 0;
                         Console.WriteLine("  == Wait RPC ==");
-                        RPC.RPC_MESSAGE_PARAMS msg = RPC.receive_message(core_channel, out size);
+                        RPC.RPC_MESSAGE_PARAMS msg = core_server1.ReceiveMsg();
                         Console.WriteLine("    received--.");
                         Console.WriteLine("      xid     = {0}", msg.xid);
                         Console.WriteLine("      proc    = {0}", msg.proc);
                         Console.WriteLine("      size    = {0}", size);
-                        if (msg.proc == Vxi11ServerHandler.CREATE_LINK)
+                        if (msg.proc == Vxi11.CREATE_LINK)
                         {
                             string handle;
-                            Vxi11ServerHandler.receive_create_link(core_channel, msg, size, out handle);
+                            ServerVxi11.receive_create_link(core_channel, msg, size, out handle);
                             Console.WriteLine("== CREATE_LINK ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_WRITE)
+                        else if (msg.proc == Vxi11.DEVICE_WRITE)
                         {
                             string data;
-                            Vxi11ServerHandler.DEVICE_WRITE_PARAMS wrt = Vxi11ServerHandler.receive_device_write(core_channel, msg, size, out data);
+                            Vxi11.DEVICE_WRITE_PARAMS wrt = ServerVxi11.receive_device_write(core_channel, msg, size, out data);
                             Console.WriteLine("== DEVICE_WRITE ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_READ)
+                        else if (msg.proc == Vxi11.DEVICE_READ)
                         {
-                            Vxi11ServerHandler.receive_device_read(core_channel, msg, size);
+                            ServerVxi11.receive_device_read(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_READ ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_READSTB)
+                        else if (msg.proc == Vxi11.DEVICE_READSTB)
                         {
-                            Vxi11ServerHandler.DEVICE_GENERIC_PARAMS gen = Vxi11ServerHandler.receive_generic_params(core_channel, msg, size);
+                            Vxi11.DEVICE_GENERIC_PARAMS gen = ServerVxi11.receive_generic_params(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_READSTB ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_TRIGGER)
+                        else if (msg.proc == Vxi11.DEVICE_TRIGGER)
                         {
-                            Vxi11ServerHandler.DEVICE_GENERIC_PARAMS gen = Vxi11ServerHandler.receive_generic_params(core_channel, msg, size);
+                            Vxi11.DEVICE_GENERIC_PARAMS gen = ServerVxi11.receive_generic_params(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_TRIGGER ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_CLEAR)
+                        else if (msg.proc == Vxi11.DEVICE_CLEAR)
                         {
-                            Vxi11ServerHandler.DEVICE_GENERIC_PARAMS gen = Vxi11ServerHandler.receive_generic_params(core_channel, msg, size);
+                            Vxi11.DEVICE_GENERIC_PARAMS gen = ServerVxi11.receive_generic_params(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_CLEAR ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_REMOTE)
+                        else if (msg.proc == Vxi11.DEVICE_REMOTE)
                         {
-                            Vxi11ServerHandler.DEVICE_GENERIC_PARAMS gen = Vxi11ServerHandler.receive_generic_params(core_channel, msg, size);
+                            Vxi11.DEVICE_GENERIC_PARAMS gen = ServerVxi11.receive_generic_params(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_REMOTE ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_LOCAL)
+                        else if (msg.proc == Vxi11.DEVICE_LOCAL)
                         {
-                            Vxi11ServerHandler.DEVICE_GENERIC_PARAMS gen = Vxi11ServerHandler.receive_generic_params(core_channel, msg, size);
+                            Vxi11.DEVICE_GENERIC_PARAMS gen = ServerVxi11.receive_generic_params(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_LOCAL ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_LOCK)
+                        else if (msg.proc == Vxi11.DEVICE_LOCK)
                         {
-                            Vxi11ServerHandler.receive_device_lock(core_channel, msg, size);
+                            ServerVxi11.receive_device_lock(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_LOCK ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_UNLOCK)
+                        else if (msg.proc == Vxi11.DEVICE_UNLOCK)
                         {
-                            int link = Vxi11ServerHandler.receive_device_link(core_channel, msg, size);
+                            int link = ServerVxi11.receive_device_link(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_UNLOCK ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_ENABLE_SRQ)
+                        else if (msg.proc == Vxi11.DEVICE_ENABLE_SRQ)
                         {
                             string handle;
-                            Vxi11ServerHandler.receive_device_enable_srq(core_channel, msg, size, out handle);
+                            ServerVxi11.receive_device_enable_srq(core_channel, msg, size, out handle);
                             Console.WriteLine("== DEVICE_ENABLE_SRQ ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_DOCMD)
+                        else if (msg.proc == Vxi11.DEVICE_DOCMD)
                         {
                             byte[] data_in; 
-                            Vxi11ServerHandler.DEVICE_DOCMD_PARAMS dcm = Vxi11ServerHandler.receive_device_docmd(core_channel, msg, size, out data_in);
+                            Vxi11.DEVICE_DOCMD_PARAMS dcm = ServerVxi11.receive_device_docmd(core_channel, msg, size, out data_in);
                             Console.WriteLine("== DEVICE_DOCMD ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DESTROY_LINK)
+                        else if (msg.proc == Vxi11.DESTROY_LINK)
                         {
-                            int link = Vxi11ServerHandler.receive_device_link(core_channel, msg, size);
+                            int link = ServerVxi11.receive_device_link(core_channel, msg, size);
                             Console.WriteLine("== DESTROY_LINK ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.CREATE_INTR_CHAN)
+                        else if (msg.proc == Vxi11.CREATE_INTR_CHAN)
                         {
-                            Vxi11ServerHandler.receive_create_intr_chan(core_channel, msg, size);
+                            ServerVxi11.receive_create_intr_chan(core_channel, msg, size);
                             Console.WriteLine("== CREATE_INTR_CHAN ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DESTROY_INTR_CHAN)
+                        else if (msg.proc == Vxi11.DESTROY_INTR_CHAN)
                         {
                             Console.WriteLine("== DESTROY_INTR_CHAN ==");
                         }
-                        else if (msg.proc == Vxi11ServerHandler.DEVICE_ABORT)
+                        else if (msg.proc == Vxi11.DEVICE_ABORT)
                         {
-                            int link = Vxi11ServerHandler.receive_device_link(core_channel, msg, size);
+                            int link = ServerVxi11.receive_device_link(core_channel, msg, size);
                             Console.WriteLine("== DEVICE_ABORT ==");
                         }
                         else
                         {
-                            RPC.clear_buffer(core_channel);
+                            ServerVxi11.Clear(core_channel);
                             Console.WriteLine("== clear_buffer ==");
                         }
                     }
@@ -223,7 +223,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_create_link(core_channel, xid, 123, 456, 789);
+                        ServerVxi11.reply_create_link(core_channel, xid, 123, 456, 789);
                         Console.WriteLine("== reply to create_link ==");
                     }
                 }
@@ -233,7 +233,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         int data_len = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_write(core_channel, xid, data_len);
+                        ServerVxi11.reply_device_write(core_channel, xid, data_len);
                         Console.WriteLine("== reply to device_write ==");
                     }
                 }
@@ -242,7 +242,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_read(core_channel, xid, 1, "XYZCO,246B,S000-0123-02,0");
+                        ServerVxi11.reply_device_read(core_channel, xid, 1, "XYZCO,246B,S000-0123-02,0");
                         Console.WriteLine("== reply to device_read ==");
                     }
                 }
@@ -251,7 +251,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_readstb(core_channel, xid, 8);
+                        ServerVxi11.reply_device_readstb(core_channel, xid, 8);
                         Console.WriteLine("== reply to device_readstb ==");
                     }
                 }
@@ -260,7 +260,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_trigger ==");
                     }
                 }
@@ -269,7 +269,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_clear ==");
                     }
                 }
@@ -278,7 +278,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_remote ==");
                     }
                 }
@@ -287,7 +287,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_local ==");
                     }
                 }
@@ -296,7 +296,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_lock ==");
                     }
                 }
@@ -305,7 +305,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_unlock ==");
                     }
                 }
@@ -314,7 +314,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to device_enable_srq ==");
                     }
                 }
@@ -324,7 +324,7 @@ namespace VXI11Net
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
                         int data_in_len = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_docmd(core_channel, xid, data_in_len);
+                        ServerVxi11.reply_device_docmd(core_channel, xid, data_in_len);
                         Console.WriteLine("== reply to device_docmd ==");
                     }
                 }
@@ -333,7 +333,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== :reply to destroy_link ==");
                     }
                 }
@@ -342,7 +342,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to create_intr_chan ==");
                     }
                 }
@@ -351,7 +351,7 @@ namespace VXI11Net
                     if (core_channel != null)
                     {
                         int xid = Convert.ToInt32(Console.ReadLine());
-                        Vxi11ServerHandler.reply_device_error(core_channel, xid, RPC.SUCCESS);
+                        ServerVxi11.reply_device_error(core_channel, xid, RPC.SUCCESS);
                         Console.WriteLine("== reply to destroy_intr_chan ==");
                     }
                 }
@@ -391,8 +391,8 @@ namespace VXI11Net
                 {
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    CoreServer server = new CoreServer();
-                    server.Run("127.0.0.1", port);
+                    ServerVxi11 server = new ServerVxi11();
+                    server.RunCoreChannel("127.0.0.1", port);
                 }
                 if ((a == "B") || (a == "b"))
                 {
@@ -408,30 +408,19 @@ namespace VXI11Net
         public static void PortmapConsole()
         {
             bool isLoop = true;
-            Socket? udp_server = null;
-            Socket? tcp_server = null;
-            Socket? tcp_channel = null;
+            ServerPortmap tcp_server = new ServerPortmap();
+            ServerPortmap udp_server = new ServerPortmap();
 
             while (isLoop)
             {
                 Console.WriteLine("Select Portmap Function");
-                Console.WriteLine("   1:create portmap server (TCP)");
-                Console.WriteLine("   2:create portmap server (UDP)");
-                Console.WriteLine("   3:be ready to accept connection requests");
-                Console.WriteLine("   4:receive tcp message");
-                Console.WriteLine("   5:reply to pmap_null");
-                Console.WriteLine("   6:reply to pmap_set");
-                Console.WriteLine("   7:reply to pmap_unset");
-                Console.WriteLine("   8:reply to pmap_getport");
-                Console.WriteLine("   9:reply to pmap_dump");
-                Console.WriteLine("  10:receive udp message");
-                Console.WriteLine("  11:reply to pmap_null");
-                Console.WriteLine("  12:reply to pmap_set");
-                Console.WriteLine("  13:reply to pmap_unset");
-                Console.WriteLine("  14:reply to pmap_getport");
-                Console.WriteLine("  15:reply to pmap_dump");
-                Console.WriteLine("  16:close portmap server (TCP)");
-                Console.WriteLine("  17:close portmap server (UDP)");
+                Console.WriteLine("   1:create portmap server");
+                Console.WriteLine("   2:receive message");
+                Console.WriteLine("   3:reply to pmap_set");
+                Console.WriteLine("   4:reply to pmap_unset");
+                Console.WriteLine("   5:reply to pmap_getport");
+                Console.WriteLine("   6:reply to pmap_dump");
+                Console.WriteLine("   7:close portmap server");
                 Console.WriteLine("   B:back to Main menu");
                 Console.WriteLine(" E/Q:Exit program");
                 Console.WriteLine("");
@@ -439,205 +428,81 @@ namespace VXI11Net
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
-
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("== create portmap server (TCP) ==");
-                    tcp_server = PortmapHandler.create_tcp_channel("127.0.0.1", port);
+                    Console.WriteLine("== create portmap server ==");
+                    tcp_server.Create("127.0.0.1", port, Pmap.IPPROTO.UDP);
                     Console.WriteLine(" Call : create_abort_channel : ret=0");
                 }
                 if (a == "2")
                 {
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("== create portmap server (UDP) ==");
-                    udp_server = PortmapHandler.create_udp_channel("127.0.0.1", port);
-                    Console.WriteLine(" Call : :create portmap server (UDP) : ret=0");
+                    int size = 0;
+                    Console.WriteLine("  == Wait RPC ==");
+                    RPC.RPC_MESSAGE_PARAMS msg = tcp_server.ReceiveMsg();
+                    Console.WriteLine("    received--.");
+                    Console.WriteLine("      xid     = {0}", msg.xid);
+                    Console.WriteLine("      proc    = {0}", msg.proc);
+                    Console.WriteLine("      size    = {0}", size);
+                    if (msg.proc == Pmap.PROC_NULL)
+                    {
+                        tcp_server.ReceiveNull();
+                        Console.WriteLine("== PMAPPROC_NULL ==");
+                    }
+                    else if (msg.proc == Pmap.PROC_SET)
+                    {
+                        Pmap.MAPPING map = tcp_server.ReceiveSet();
+                        Console.WriteLine("== PMAPPROC_SET ==");
+                    }
+                    else if (msg.proc == Pmap.PROC_UNSET)
+                    {
+                        Pmap.MAPPING map = tcp_server.ReceiveUnset();
+                        Console.WriteLine("== PMAPPROC_UNSET ==");
+                    }
+                    else if (msg.proc == Pmap.PROC_GETPORT)
+                    {
+                        Pmap.MAPPING map = tcp_server.ReceiveGetport();
+                        Console.WriteLine("== PMAPPROC_GETPORT ==");
+                    }
+                    else if (msg.proc == Pmap.PROC_DUMP)
+                    {
+                        tcp_server.ReceiveDump();
+                        Console.WriteLine("== PMAPPROC_DUMP ==");
+                    }
+                    else
+                    {
+                        tcp_server.ClearArgs();
+                        Console.WriteLine("== clear_buffer ==");
+                    }
                 }
                 if (a == "3")
                 {
-                    if (tcp_server != null)
-                    {
-                        Console.WriteLine("== accept_connection_requests ==");
-                        tcp_channel = PortmapHandler.accept_connection_requests(tcp_server);
-                        Console.WriteLine(" Call : accept_connection_requests : ret=0");
-                    }
+                    int xid = Convert.ToInt32(Console.ReadLine());
+                    tcp_server.ReplySet(true);
+                    Console.WriteLine("== reply to pmapproc_set ==");
                 }
                 if (a == "4")
                 {
-                    if (tcp_channel != null)
-                    {
-                        int size;
-                        Console.WriteLine("  == Wait RPC ==");
-                        RPC.RPC_MESSAGE_PARAMS msg = RPC.receive_message(tcp_channel, out size);
-                        Console.WriteLine("    received--.");
-                        Console.WriteLine("      xid     = {0}", msg.xid);
-                        Console.WriteLine("      proc    = {0}", msg.proc);
-                        Console.WriteLine("      size    = {0}", size);
-                        if (msg.proc == PortmapHandler.PMAPPROC_NULL)
-                        {
-                            PortmapHandler.receive_pmapproc_null(tcp_channel, msg, size);
-                            Console.WriteLine("== PMAPPROC_NULL ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_SET)
-                        {
-                            PortmapHandler.MAPPING map = PortmapHandler.receive_pmapproc_set(tcp_channel, msg, size);
-                            Console.WriteLine("== PMAPPROC_SET ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_UNSET)
-                        {
-                            PortmapHandler.MAPPING map = PortmapHandler.receive_pmapproc_unset(tcp_channel, msg, size);
-                            Console.WriteLine("== PMAPPROC_UNSET ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_GETPORT)
-                        {
-                            PortmapHandler.MAPPING map = PortmapHandler.receive_pmapproc_getport(tcp_channel, msg, size);
-                            Console.WriteLine("== PMAPPROC_GETPORT ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_DUMP)
-                        {
-                            PortmapHandler.receive_pmapproc_dump(tcp_channel, msg, size);
-                            Console.WriteLine("== PMAPPROC_DUMP ==");
-                        }
-                        else
-                        {
-                            RPC.clear_buffer(tcp_channel);
-                            Console.WriteLine("== clear_buffer ==");
-                        }
-                    }
+                    int xid = Convert.ToInt32(Console.ReadLine());
+                    tcp_server.ReplyUnset(true);
+                    Console.WriteLine("== reply to pmapproc_unset ==");
                 }
                 if (a == "5")
                 {
-                    if (tcp_channel != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_null(tcp_channel, xid, true);
-                        Console.WriteLine("== reply to pmapproc_null ==");
-                    }
+                    int xid = Convert.ToInt32(Console.ReadLine());
+                    tcp_server.ReplyGetport(1);
+                    Console.WriteLine("== reply to pmapproc_getport ==");
                 }
                 if (a == "6")
                 {
-                    if (tcp_channel != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_set(tcp_channel, xid, true);
-                        Console.WriteLine("== reply to pmapproc_set ==");
-                    }
+                    int xid = Convert.ToInt32(Console.ReadLine());
+                    tcp_server.ReplyDump(new List<Pmap.MAPPING>());
+                    Console.WriteLine("== reply to pmapproc_dump ==");
                 }
                 if (a == "7")
                 {
-                    if (tcp_channel != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_unset(tcp_channel, xid, true);
-                        Console.WriteLine("== reply to pmapproc_unset ==");
-                    }
-                }
-                if (a == "8")
-                {
-                    if (tcp_channel != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_getport(tcp_channel, xid, 1);
-                        Console.WriteLine("== reply to pmapproc_getport ==");
-                    }
-                }
-                if (a == "9")
-                {
-                    if (tcp_channel != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_dump(tcp_channel, xid, new List<PortmapHandler.MAPPING>());
-                        Console.WriteLine("== reply to pmapproc_dump ==");
-                    }
-                }
-                if (a == "10")
-                {
-                    if (udp_server != null)
-                    {
-                        int size;
-                        Console.WriteLine("  == Wait RPC ==");
-                        RPC.RPC_MESSAGE_PARAMS msg = RPC.receive_message(udp_server, out size);
-                        Console.WriteLine("    received--.");
-                        Console.WriteLine("      xid     = {0}", msg.xid);
-                        Console.WriteLine("      proc    = {0}", msg.proc);
-                        Console.WriteLine("      size    = {0}", size);
-                        if (msg.proc == PortmapHandler.PMAPPROC_NULL)
-                        {
-                            PortmapHandler.receive_pmapproc_null(udp_server, msg, size);
-                            Console.WriteLine("== PMAPPROC_NULL ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_SET)
-                        {
-                            PortmapHandler.MAPPING map = PortmapHandler.receive_pmapproc_set(udp_server, msg, size);
-                            Console.WriteLine("== PMAPPROC_SET ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_UNSET)
-                        {
-                            PortmapHandler.MAPPING map = PortmapHandler.receive_pmapproc_unset(udp_server, msg, size);
-                            Console.WriteLine("== PMAPPROC_UNSET ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_GETPORT)
-                        {
-                            PortmapHandler.MAPPING map = PortmapHandler.receive_pmapproc_getport(udp_server, msg, size);
-                            Console.WriteLine("== PMAPPROC_GETPORT ==");
-                        }
-                        else if (msg.proc == PortmapHandler.PMAPPROC_DUMP)
-                        {
-                            PortmapHandler.receive_pmapproc_dump(udp_server, msg, size);
-                            Console.WriteLine("== PMAPPROC_DUMP ==");
-                        }
-                        else
-                        {
-                            RPC.clear_buffer(udp_server);
-                            Console.WriteLine("== clear_buffer ==");
-                        }
-                    }
-                }
-                if (a == "11")
-                {
-                    if (udp_server != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_null(udp_server, xid, true);
-                        Console.WriteLine("== reply to pmapproc_null ==");
-                    }
-                }
-                if (a == "12")
-                {
-                    if (udp_server != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_set(udp_server, xid, true);
-                        Console.WriteLine("== reply to pmapproc_set ==");
-                    }
-                }
-                if (a == "13")
-                {
-                    if (udp_server != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_unset(udp_server, xid, true);
-                        Console.WriteLine("== reply to pmapproc_unset ==");
-                    }
-                }
-                if (a == "14")
-                {
-                    if (udp_server != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_getport(udp_server, xid, 1);
-                        Console.WriteLine("== reply to pmapproc_getport ==");
-                    }
-                }
-                if (a == "15")
-                {
-                    if (udp_server != null)
-                    {
-                        int xid = Convert.ToInt32(Console.ReadLine());
-                        PortmapHandler.reply_pmapproc_dump(udp_server, xid, new List<PortmapHandler.MAPPING>());
-                        Console.WriteLine("== reply to pmapproc_dump ==");
-                    }
+                    int xid = Convert.ToInt32(Console.ReadLine());
+                    tcp_server.Destroy();
+                    Console.WriteLine("== close portmap server ==");
                 }
                 if ((a == "B") || (a == "b"))
                 {

@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "server_console", "vxi11net\server_console.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "client_console", "vxi11net\client_console.csproj", "{3C56A198-977C-4D89-A843-25EA522FE258}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerProgram", "vxi11net\ServerProgram.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa", "vxi11net\Ivi.Visa.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
 EndProject
@@ -16,10 +14,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TmctlAPINet.Tests", "TmctlA
 		{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20} = {5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivi.Visa.Tests", "Ivi.Visa.Tests\Ivi.Visa.Tests.csproj", "{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa.Tests", "Ivi.Visa.Tests\Ivi.Visa.Tests.csproj", "{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}"
 	ProjectSection(ProjectDependencies) = postProject
 		{BC56A198-977C-4D89-A843-25EA522FE250} = {BC56A198-977C-4D89-A843-25EA522FE250}
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientProgram", "vxi11net\ClientProgram.csproj", "{7394ADDA-8923-4D65-AE1A-F0A682999EA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,6 @@ Global
 		{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C56A198-977C-4D89-A843-25EA522FE258}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C56A198-977C-4D89-A843-25EA522FE258}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C56A198-977C-4D89-A843-25EA522FE258}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C56A198-977C-4D89-A843-25EA522FE258}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC56A198-977C-4D89-A843-25EA522FE250}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BC56A198-977C-4D89-A843-25EA522FE250}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC56A198-977C-4D89-A843-25EA522FE250}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,6 +47,10 @@ Global
 		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C63BFBD-5377-46CD-9A81-C7DC64BDE230}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7394ADDA-8923-4D65-AE1A-F0A682999EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7394ADDA-8923-4D65-AE1A-F0A682999EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7394ADDA-8923-4D65-AE1A-F0A682999EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7394ADDA-8923-4D65-AE1A-F0A682999EA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
