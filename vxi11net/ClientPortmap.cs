@@ -6,7 +6,6 @@ namespace Vxi11Net
     public class ClientPortmap
     {
         private ClientRpc rpc = new ClientRpc();
-
         public void Create(string host, int port, Pmap.IPPROTO prot)
         {
             if (prot == Pmap.IPPROTO.TCP)

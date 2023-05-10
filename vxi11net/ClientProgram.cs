@@ -49,14 +49,13 @@ namespace Vxi11Net
         }
         public static void Vxi11Console()
         {
-            Socket? core = null;
-            Socket? abort = null;
-            Socket? interrupt = null;
             int xid = 0;
             int lid = 0;
             int abortPort = 0;
             int maxRecvSize = 0;
             int lock_timeout = 0;
+
+            ClientVxi11 client = new ClientVxi11();
 
             bool isLoop = true;
             while (isLoop)
@@ -96,7 +95,7 @@ namespace Vxi11Net
                     string address = new String(Console.ReadLine());
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    core = ClientVxi11.create_rpc_client_core_channel(address, port);
+                    client.Create(address, port);
                     Console.WriteLine("== create RPC client (core channel.) ==");
                     Console.WriteLine(" Call : create_rpc_client_core_channel : ret=0");
                 }
@@ -105,8 +104,8 @@ namespace Vxi11Net
                     Console.Write("  IP address? : ");
                     string address = new String(Console.ReadLine());
                     Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
-                    abort = ClientVxi11.create_rpc_client_abort_channel(address, port);
+                    int abortPort2 = Convert.ToInt32(Console.ReadLine());
+                    client.Create(address, abortPort2);
                     Console.WriteLine("== create RPC client (abort channel.) ==");
                     Console.WriteLine(" Call : create_rpc_client_abort_channel : ret=0");
                 }
@@ -116,267 +115,207 @@ namespace Vxi11Net
                     string address = new String(Console.ReadLine());
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    interrupt = ClientVxi11.create_rpc_server_interrupt_channel(address, port);
+                    client.CreateInterruptChannel(address, port);
                     Console.WriteLine("== create RPC server (interrupt channel.) ==");
                     Console.WriteLine(" Call : create_rpc_server_interrupt_channel : ret=0");
                 }
                 if (a == "4")
                 {
-                    if (core != null)
-                    {
-                        Console.Write("  xid? : ");
-                        xid = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lock_timeout? : ");
-                        lock_timeout = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  clientId? : ");
-                        int cliendId = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  lockDevice? : ");
-                        int lockDevice = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  handle? : ");
-                        String handle = new String(Console.ReadLine());
-                        ClientVxi11.CreateLink(core, xid++, cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
-                        Console.WriteLine("== create_link ==");
-                        Console.WriteLine(" Call : create_link : ret=0");
-                    }
+                    Console.Write("  xid? : ");
+                    xid = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  lock_timeout? : ");
+                    lock_timeout = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  clientId? : ");
+                    int cliendId = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  lockDevice? : ");
+                    int lockDevice = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  handle? : ");
+                    String handle = new String(Console.ReadLine());
+                    client.CreateLink(cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
+                    Console.WriteLine("== create_link ==");
+                    Console.WriteLine(" Call : create_link : ret=0");
                 }
                 if (a == "5")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  msg? : ");
-                        String msg = new String(Console.ReadLine());
-                        int data_len;
-                        ClientVxi11.DeviceWrite(core, xid++, lid, flags, lock_timeout, io_timeout, msg, out data_len);
-                        Console.WriteLine("== device_write ==");
-                        Console.WriteLine(" Call : device_write : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  msg? : ");
+                    String msg = new String(Console.ReadLine());
+                    int data_len;
+                    client.DeviceWrite(lid, flags, lock_timeout, io_timeout, msg, out data_len);
+                    Console.WriteLine("== device_write ==");
+                    Console.WriteLine(" Call : device_write : ret=0");
                 }
                 if (a == "6")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  requestSize? : ");
-                        int requestSize = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  terminate character? : ");
-                        int ch = Convert.ToInt32(Console.ReadLine());
-                        Vxi11.TermChar term = (Vxi11.TermChar)Enum.ToObject(typeof(Vxi11.TermChar), ch);
-                        int reason;
-                        string data;
-                        ClientVxi11.DeviceRead(core, xid++, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
-                        Console.WriteLine("== device_read ==");
-                        Console.WriteLine(" Call : device_read : ret={0}", data);
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  requestSize? : ");
+                    int requestSize = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  terminate character? : ");
+                    int ch = Convert.ToInt32(Console.ReadLine());
+                    Vxi11.TermChar term = (Vxi11.TermChar)Enum.ToObject(typeof(Vxi11.TermChar), ch);
+                    int reason;
+                    string data;
+                    client.DeviceRead(lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
+                    Console.WriteLine("== device_read ==");
+                    Console.WriteLine(" Call : device_read : ret={0}", data);
                 }
                 if (a == "7")
                 {
-                    if (core != null)
-                    {
-                        ClientVxi11.DestroyLink(core, xid++, lid);
-                        Console.WriteLine("== destroy_link ==");
-                        Console.WriteLine(" Call : destroy_link : ret=0");
-                    }
+                    client.DestroyLink(lid);
+                    Console.WriteLine("== destroy_link ==");
+                    Console.WriteLine(" Call : destroy_link : ret=0");
                 }
                 if (a == "8")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        char stb;
-                        ClientVxi11.DeviceReadstb(core, xid++, lid, flags, lock_timeout, io_timeout, out stb);
-                        Console.WriteLine("== device_readstb ==");
-                        Console.WriteLine(" Call : device_readstb : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    char stb;
+                    client.DeviceReadstb(lid, flags, lock_timeout, io_timeout, out stb);
+                    Console.WriteLine("== device_readstb ==");
+                    Console.WriteLine(" Call : device_readstb : ret=0");
                 }
                 if (a == "9")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceTrigger(core, xid++, lid, flags, lock_timeout, io_timeout);
-                        Console.WriteLine("== device_trigger ==");
-                        Console.WriteLine(" Call : device_trigger : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceTrigger(lid, flags, lock_timeout, io_timeout);
+                    Console.WriteLine("== device_trigger ==");
+                    Console.WriteLine(" Call : device_trigger : ret=0");
                 }
                 if (a == "10")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceClear(core, xid++, lid, flags, lock_timeout, io_timeout);
-                        Console.WriteLine("== device_clear ==");
-                        Console.WriteLine(" Call : device_clear : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceClear(lid, flags, lock_timeout, io_timeout);
+                    Console.WriteLine("== device_clear ==");
+                    Console.WriteLine(" Call : device_clear : ret=0");
                 }
                 if (a == "11")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceRemote(core, xid++, lid, flags, lock_timeout, io_timeout);
-                        Console.WriteLine("== device_remote ==");
-                        Console.WriteLine(" Call : device_remote : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceRemote(lid, flags, lock_timeout, io_timeout);
+                    Console.WriteLine("== device_remote ==");
+                    Console.WriteLine(" Call : device_remote : ret=0");
                 }
                 if (a == "12")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceLocal(core, xid++, lid, flags, lock_timeout, io_timeout);
-                        Console.WriteLine("== device_local ==");
-                        Console.WriteLine(" Call : device_local : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceLocal(lid, flags, lock_timeout, io_timeout);
+                    Console.WriteLine("== device_local ==");
+                    Console.WriteLine(" Call : device_local : ret=0");
                 }
                 if (a == "13")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  lid? : ");
-                        int lid2 = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceLock(core, xid++, lid2, flags, lock_timeout);
-                        Console.WriteLine("== device_lock ==");
-                        Console.WriteLine(" Call : device_lock : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  lid? : ");
+                    int lid2 = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceLock(lid2, flags, lock_timeout);
+                    Console.WriteLine("== device_lock ==");
+                    Console.WriteLine(" Call : device_lock : ret=0");
                 }
                 if (a == "14")
                 {
-                    if (core != null)
-                    {
-                        Console.Write("  lid? : ");
-                        int lid2 = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceUnlock(core, xid++, lid2);
-                        Console.WriteLine("== device_unlock ==");
-                        Console.WriteLine(" Call : device_unlock : ret=0");
-                    }
+                    Console.Write("  lid? : ");
+                    int lid2 = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceUnlock(lid2);
+                    Console.WriteLine("== device_unlock ==");
+                    Console.WriteLine(" Call : device_unlock : ret=0");
                 }
                 if (a == "15")
                 {
-                    if (core != null)
-                    {
-                        Console.Write("  enable? : ");
-                        int enable = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  handle? : ");
-                        string handle = new String(Console.ReadLine());
-                        ClientVxi11.DeviceEnableSrq(core, xid++, lid, enable, handle);
-                        Console.WriteLine("== device_enable_srq ==");
-                        Console.WriteLine(" Call : device_enable_srq : ret=0");
-                    }
+                    Console.Write("  enable? : ");
+                    int enable = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  handle? : ");
+                    string handle = new String(Console.ReadLine());
+                    client.DeviceEnableSrq(lid, enable, handle);
+                    Console.WriteLine("== device_enable_srq ==");
+                    Console.WriteLine(" Call : device_enable_srq : ret=0");
                 }
                 if (a == "16")
                 {
-                    if (core != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  cmd? : ");
-                        int cmd = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  network_order? : ");
-                        int network_order = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  datasize? : ");
-                        int datasize = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  data? : ");
-                        String str = new String(Console.ReadLine());
-                        byte[] data_in = System.Text.Encoding.ASCII.GetBytes(str);
-                        byte[] data_out;
-                        ClientVxi11.DeviceDocmd(core, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
-                        Console.WriteLine("== device_docmd ==");
-                        Console.WriteLine(" Call : device_docmd : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  cmd? : ");
+                    int cmd = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  network_order? : ");
+                    int network_order = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  datasize? : ");
+                    int datasize = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  data? : ");
+                    String str = new String(Console.ReadLine());
+                    byte[] data_in = System.Text.Encoding.ASCII.GetBytes(str);
+                    byte[] data_out;
+                    client.DeviceDocmd(lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
+                    Console.WriteLine("== device_docmd ==");
+                    Console.WriteLine(" Call : device_docmd : ret=0");
                 }
                 if (a == "17")
                 {
-                    if (core != null)
-                    {
-                        Console.Write("  host address? : ");
-                        int hostaddr = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  host port? : ");
-                        int hostport = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  program number? : ");
-                        int prognum = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  program version? : ");
-                        int progvers = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  program family? : ");
-                        int progfamily = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.CreateIntrChan(core, xid++, hostaddr, hostport, prognum, progvers, progfamily);
-                        Console.WriteLine("== create_intr_chan ==");
-                        Console.WriteLine(" Call : create_intr_chan : ret=0");
-                    }
+                    Console.Write("  host address? : ");
+                    int hostaddr = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  host port? : ");
+                    int hostport = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  program number? : ");
+                    int prognum = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  program version? : ");
+                    int progvers = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  program family? : ");
+                    int progfamily = Convert.ToInt32(Console.ReadLine());
+                    client.CreateIntrChan(hostaddr, hostport, prognum, progvers, progfamily);
+                    Console.WriteLine("== create_intr_chan ==");
+                    Console.WriteLine(" Call : create_intr_chan : ret=0");
                 }
                 if (a == "18")
                 {
-                    if (core != null)
-                    {
-                        ClientVxi11.DestroyIntrChan(core, xid);
-                        Console.WriteLine("== destroy_intr_chan ==");
-                        Console.WriteLine(" Call : destroy_intr_chan : ret=0");
-                    }
+                    client.DestroyIntrChan();
+                    Console.WriteLine("== destroy_intr_chan ==");
+                    Console.WriteLine(" Call : destroy_intr_chan : ret=0");
                 }
                 if (a == "19")
                 {
-                    if (abort != null)
-                    {
-                        Vxi11.Flags flags = Vxi11.Flags.none;
-                        Console.Write("  lid? : ");
-                        int lid2 = Convert.ToInt32(Console.ReadLine());
-                        Console.Write("  io_timeout? : ");
-                        int io_timeout = Convert.ToInt32(Console.ReadLine());
-                        ClientVxi11.DeviceAbort(abort, xid++, lid2, flags, lock_timeout, io_timeout);
-                        Console.WriteLine("== device_abort ==");
-                        Console.WriteLine(" Call : device_abort : ret=0");
-                    }
+                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Console.Write("  lid? : ");
+                    int lid2 = Convert.ToInt32(Console.ReadLine());
+                    Console.Write("  io_timeout? : ");
+                    int io_timeout = Convert.ToInt32(Console.ReadLine());
+                    client.DeviceAbort(lid2, flags, lock_timeout, io_timeout);
+                    Console.WriteLine("== device_abort ==");
+                    Console.WriteLine(" Call : device_abort : ret=0");
                 }
                 if (a == "20")
                 {
-                    if (interrupt != null)
-                    {
-                        Console.WriteLine("== device_intr_srq ==");
-                        Console.WriteLine(" Call : device_intr_srq : ret=0");
-                    }
+                    Console.WriteLine("== device_intr_srq ==");
+                    Console.WriteLine(" Call : device_intr_srq : ret=0");
                 }
                 if (a == "21")
                 {
-                    if (interrupt != null)
-                    {
-                        ClientVxi11.close_rpc_server_interrupt_channel(interrupt);
-                        Console.WriteLine("== close RPC server (interrupt channel) ==");
-                        Console.WriteLine(" Call : close RPC server (interrupt channel) : ret=0");
-                    }
+                    client.DestroyInterruptChannel();
+                    Console.WriteLine("== close RPC server (interrupt channel) ==");
+                    Console.WriteLine(" Call : close RPC server (interrupt channel) : ret=0");
                 }
                 if (a == "22")
                 {
-                    if (abort != null)
-                    {
-                        ClientVxi11.close_rpc_client_abort_channel(abort);
-                        Console.WriteLine("== close RPC client (abort channel) ==");
-                        Console.WriteLine(" Call : close RPC client (abort channel) : ret=0");
-                    }
+                    client.DestroyAbortChannel();
+                    Console.WriteLine("== close RPC client (abort channel) ==");
+                    Console.WriteLine(" Call : close RPC client (abort channel) : ret=0");
                 }
                 if (a == "23")
                 {
-                    if (core != null)
-                    {
-                        ClientVxi11.close_rpc_client_core_channel(core);
-                        Console.WriteLine("== close RPC client (core channel) ==");
-                        Console.WriteLine(" Call : close RPC client (core channel) : ret=0");
-                    }
+                    client.Destroy();
+                    Console.WriteLine("== close RPC client (core channel) ==");
+                    Console.WriteLine(" Call : close RPC client (core channel) : ret=0");
                 }
                 if ((a == "B") || (a == "b"))
                 {

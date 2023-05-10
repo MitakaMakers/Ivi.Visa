@@ -18,6 +18,7 @@
     <Compile Include="Ivi.Visa.cs" />
     <Compile Include="Portmap.cs" />
     <Compile Include="Rpc.cs" />
+    <Compile Include="ServerRpc.cs" />
     <Compile Include="TmctlAPINet.cs" />
     <Compile Include="Vxi11.cs" />
   </ItemGroup>

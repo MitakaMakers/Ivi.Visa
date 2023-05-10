@@ -3183,9 +3183,8 @@ namespace Ivi.Visa
         }
         public IMessageBasedFormattedIO FormattedIO { get; }
         public IMessageBasedRawIO RawIO { get; }
-        private Socket core;
-        private Socket? abort;
-        private int xid;
+        private ClientVxi11 client = new ClientVxi11();
+
         private int lock_timeout = default_timeout_value;
         private int io_timeout = default_timeout_value;
         private int lid;
@@ -3201,11 +3200,10 @@ namespace Ivi.Visa
             this.Address = "127.0.0.1";
             this.Port = 10240;
             string deviceName = "inst0";
-            this.core = ClientVxi11.create_rpc_client_core_channel(this.Address, this.Port);
-            this.abort = null;
+            client.Create(this.Address, this.Port);
             int clientId = 0;
             int lockDevice = 0;
-            Vxi11Net.ClientVxi11.CreateLink(this.core, this.xid++, clientId, lockDevice, this.lock_timeout, deviceName, out this.lid, out this.abortPort, out this.maxRecvSize);
+            client.CreateLink(clientId, lockDevice, this.lock_timeout, deviceName, out this.lid, out this.abortPort, out this.maxRecvSize);
 
             this.FormattedIO = new Vxi11FormattedIO488(this);
             this.RawIO = new Vxi11RawIO488(this);
@@ -3217,21 +3215,21 @@ namespace Ivi.Visa
             Vxi11.TermChar term = Vxi11.TermChar.None;
             int reason = 0;
             byte[] data = new byte[count];
-            Vxi11Net.ClientVxi11.DeviceRead(this.core, this.xid++, this.lid, count, flags, this.lock_timeout, this.io_timeout, term, out reason, out data);
+            client.DeviceRead(this.lid, count, flags, this.lock_timeout, this.io_timeout, term, out reason, out data);
             retCount = data.Length;
             return 0;
         }
         public int Write(string buf, int count, out int retCount)
         {
             Vxi11.Flags flags = Vxi11.Flags.end;
-            Vxi11Net.ClientVxi11.DeviceWrite(this.core, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout, buf, out retCount);
+            client.DeviceWrite(this.lid, flags, this.lock_timeout, this.io_timeout, buf, out retCount);
             return 0;
         }
         public int Terminate()
         {
-            this.abort = ClientVxi11.create_rpc_client_abort_channel(this.Address, this.abortPort);
+            client.Create(this.Address, this.abortPort);
             Vxi11.Flags flags = Vxi11.Flags.end;
-            Vxi11Net.ClientVxi11.DeviceAbort(this.abort, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+            client.DeviceAbort(this.lid, flags, this.lock_timeout, this.io_timeout);
             return 0;
         }
     }

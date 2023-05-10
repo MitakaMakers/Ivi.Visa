@@ -21,6 +21,7 @@ namespace TmctlAPINet
         public const int TM_CTL_HISLIP = 14;
 
         public Socket? socket;
+        public ClientVxi11 client = new ClientVxi11();
         public int lid;
         public int abortPort;
         public int maxRecvSize;
@@ -43,14 +44,14 @@ namespace TmctlAPINet
             int cliendId  = 0;
             int lockDevice = 0;
             string handle = "inst0";
-            Vxi11Net.ClientVxi11.CreateLink(this.socket, this.xid++, cliendId, lockDevice, this.lock_timeout, handle, out this.lid, out this.abortPort, out this.maxRecvSize);
+            client.CreateLink(cliendId, lockDevice, this.lock_timeout, handle, out this.lid, out this.abortPort, out this.maxRecvSize);
             return 0;
         }
         public int Finish(int id)
         {
             if (this.socket != null)
             {
-                ClientVxi11.DestroyLink(this.socket, this.xid++, this.lid);
+                client.DestroyLink(this.lid);
                 this.socket.Close();
             }
             return 0;
@@ -74,7 +75,7 @@ namespace TmctlAPINet
             int data_len;
             if (this.socket != null)
             {
-                Vxi11Net.ClientVxi11.DeviceWrite(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout, msg, out data_len);
+                client.DeviceWrite(this.lid, flags, this.lock_timeout, this.io_timeout, msg, out data_len);
             }
             return 0;
         }
@@ -89,7 +90,7 @@ namespace TmctlAPINet
             {
                 return 0;
             }
-            Vxi11Net.ClientVxi11.DeviceRead(this.socket, this.xid++, this.lid,  requestSize, flags, this.lock_timeout, this.io_timeout, termchar, out reason, out data);
+            client.DeviceRead(this.lid,  requestSize, flags, this.lock_timeout, this.io_timeout, termchar, out reason, out data);
             string str = Encoding.GetEncoding("ASCII").GetString(data);
             buff = new StringBuilder(str);
             rlen = data.Length;
@@ -116,11 +117,11 @@ namespace TmctlAPINet
             }
             if (flag == 0)
             {
-                Vxi11Net.ClientVxi11.DeviceLocal(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                client.DeviceLocal(this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             else
             {
-                Vxi11Net.ClientVxi11.DeviceRemote(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                client.DeviceRemote(this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             return 0;
         }
@@ -129,7 +130,7 @@ namespace TmctlAPINet
             Vxi11.Flags flags = Vxi11.Flags.none;
             if (this.socket != null)
             {
-                Vxi11Net.ClientVxi11.DeviceClear(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                client.DeviceClear(this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             return 0;
         }
@@ -138,7 +139,7 @@ namespace TmctlAPINet
             Vxi11.Flags flags = Vxi11.Flags.none;
             if (this.socket != null)
             {
-                Vxi11Net.ClientVxi11.DeviceTrigger(this.socket, this.xid++, this.lid, flags, this.lock_timeout, this.io_timeout);
+                client.DeviceTrigger(this.lid, flags, this.lock_timeout, this.io_timeout);
             }
             return 0;
         }

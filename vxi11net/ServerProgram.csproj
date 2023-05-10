@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ClientRpc.cs" />
     <Compile Include="Portmap.cs" />
     <Compile Include="Rpc.cs" />
     <Compile Include="ServerPortmap.cs" />
