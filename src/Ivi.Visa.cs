@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Sockets;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using System.Text;
 using Vxi11Net;
 

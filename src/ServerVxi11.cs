@@ -7,23 +7,22 @@ namespace Vxi11Net
 {
     public class ServerVxi11
     {
-        private ServerRpc rpc = new ServerRpc();
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private ServerRpc serverRpc = new ServerRpc();
 
         public void Create(string host, int port)
         {
-            rpc.CreateTcp(host, port);
+            serverRpc.CreateTcp(host, port);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
-            return rpc.ReceiveMsg();
+            return serverRpc.ReceiveMsg();
         }
 
         // reply create_link
         public Vxi11.CREATE_LINK_PARAMS ReceiveCreateLink(out string handle)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.CREATE_LINK_PARAMS args = new Vxi11.CREATE_LINK_PARAMS();
             args.clientId = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -32,10 +31,10 @@ namespace Vxi11Net
             args.handle_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
 
             buffer = new Byte[args.handle_len];
-            byteCount = rpc.GetArgs(buffer);
+            byteCount = serverRpc.GetArgs(buffer);
             handle = System.Text.Encoding.ASCII.GetString(buffer);
 
-            rpc.ClearArgs();
+            serverRpc.ClearArgs();
             return args;
         }
         public void ReplyCreateLink(int lid, int abortPort, int maxRecvSize)
@@ -56,13 +55,13 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Reply(packet, true, true);
+            serverRpc.Reply(packet, true, true);
         }
         // reply device_write
         public Vxi11.DEVICE_WRITE_PARAMS ReceiveDeviceWrite(out string data)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.DEVICE_WRITE_PARAMS args = new Vxi11.DEVICE_WRITE_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -72,10 +71,10 @@ namespace Vxi11Net
             args.data_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
 
             buffer = new Byte[args.data_len];
-            byteCount = rpc.GetArgs(buffer);
+            byteCount = serverRpc.GetArgs(buffer);
             data = System.Text.Encoding.ASCII.GetString(buffer);
 
-            rpc.ClearArgs();
+            serverRpc.ClearArgs();
             return args;
         }
         public void ReplyDeviceWrite(int data_len)
@@ -93,13 +92,13 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Reply(packet, true, true);
+            serverRpc.Reply(packet, true, true);
         }
         // reply device_read
         public Vxi11.DEVICE_READ_PARAMS ReceiveDeviceRead()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.DEVICE_READ_PARAMS args = new Vxi11.DEVICE_READ_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -131,7 +130,7 @@ namespace Vxi11Net
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(buf, 0, packet, Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)), buf.Length);
             gchw.Free();
-            rpc.Reply(packet, true, true);
+            serverRpc.Reply(packet, true, true);
         }
         // reply device_readstb
         // reply device_trigger
@@ -142,7 +141,7 @@ namespace Vxi11Net
         public Vxi11.DEVICE_GENERIC_PARAMS ReceiveGenericParams()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.DEVICE_GENERIC_PARAMS args = new Vxi11.DEVICE_GENERIC_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -166,13 +165,13 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Reply(packet, true, true);
+            serverRpc.Reply(packet, true, true);
         }
         // reply device_lock
         public Vxi11.DEVICE_LOCK_PARAMS ReceiveDeviceLock()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_LOCK_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.DEVICE_LOCK_PARAMS args = new Vxi11.DEVICE_LOCK_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -185,7 +184,7 @@ namespace Vxi11Net
         public Vxi11.CREATE_INTR_CHAN_PARAMS ReceiveCreateIntrchan()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_INTR_CHAN_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.CREATE_INTR_CHAN_PARAMS args = new Vxi11.CREATE_INTR_CHAN_PARAMS();
             args.hostaddr = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -199,24 +198,24 @@ namespace Vxi11Net
         public Vxi11.DEVICE_ENABLE_SRQ_PARAMS ReceiveDeviceEnableSrq(out string handle)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_ENABLE_SRQ_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
             Vxi11.DEVICE_ENABLE_SRQ_PARAMS args = new Vxi11.DEVICE_ENABLE_SRQ_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.enable = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             args.handle_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
 
             buffer = new Byte[args.handle_len];
-            byteCount = rpc.GetArgs(buffer);
+            byteCount = serverRpc.GetArgs(buffer);
             handle = System.Text.Encoding.ASCII.GetString(buffer);
 
-            rpc.ClearArgs();
+            serverRpc.ClearArgs();
             return args;
         }
         // reply device_docmd
         public Vxi11.DEVICE_DOCMD_PARAMS ReceiveDeviceDoCmd(out byte[] data_in)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_PARAMS))];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             Vxi11.DEVICE_DOCMD_PARAMS args = new Vxi11.DEVICE_DOCMD_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -228,9 +227,9 @@ namespace Vxi11Net
             args.datasize = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
             args.data_in_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             data_in = new Byte[args.data_in_len];
-            byteCount = rpc.GetArgs(data_in);
+            byteCount = serverRpc.GetArgs(data_in);
 
-            rpc.ClearArgs();
+            serverRpc.ClearArgs();
             return args;
         }
         public void ReplyDeviceDoCmd(int data_out_len)
@@ -247,14 +246,14 @@ namespace Vxi11Net
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-            rpc.Reply(packet, true, true);
+            serverRpc.Reply(packet, true, true);
             gchw.Free();
         }
         // reply destroy_link
         public long ReceiveDeviceLink()
         {
             byte[] buffer = new byte[4];
-            int byteCount = rpc.GetArgs(buffer);
+            int byteCount = serverRpc.GetArgs(buffer);
 
             long Device_Link = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             return Device_Link;
@@ -274,12 +273,14 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Reply(packet, true, true);
+            serverRpc.Reply(packet, true, true);
         }
         public void Flush()
         {
-            rpc.Flush();
+            serverRpc.Flush();
         }
+
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         public void RunCoreChannel(string host, int port)
         {
@@ -399,7 +400,7 @@ namespace Vxi11Net
                     else
                     {
                         Console.WriteLine("  == clear buffer ==");
-                        rpc.ClearArgs();
+                        serverRpc.ClearArgs();
                     }
                 }
             });
@@ -432,7 +433,7 @@ namespace Vxi11Net
                     else
                     {
                         Console.WriteLine("  == clear buffer ==");
-                        rpc.ClearArgs();
+                        serverRpc.ClearArgs();
                     }
                 }
             });
@@ -440,7 +441,7 @@ namespace Vxi11Net
         public void Shutdown()
         {
             tokenSource.Cancel();
-            rpc.Destroy();
+            serverRpc.Destroy();
         }
     }
 }

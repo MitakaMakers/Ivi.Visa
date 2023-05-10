@@ -5,21 +5,21 @@ namespace Vxi11Net
 {
     public class ClientPortmap
     {
-        private ClientRpc rpc = new ClientRpc();
+        private ClientRpc clientRpc = new ClientRpc();
         public void Create(string host, int port, Pmap.IPPROTO prot)
         {
             if (prot == Pmap.IPPROTO.TCP)
             {
-                rpc.CreateTcp(host, port);
+                clientRpc.CreateTcp(host, port);
             }
             else
             {
-                rpc.CreateUdp(host, port);
+                clientRpc.CreateUdp(host, port);
             }
         }
         public void Destroy()
         {
-            rpc.Destroy();
+            clientRpc.Destroy();
         }
 
         public int Set(int program, int version, int protocol, int port)
@@ -42,10 +42,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Call(packet, true, true);
+            clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_REPLY))];
-            rpc.GetReply(buffer);
+            clientRpc.GetReply(buffer);
             Pmap.PMAP_SET_REPLY reply = new Pmap.PMAP_SET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -77,10 +77,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Call(packet, true, true);
+            clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
-            rpc.GetReply(buffer);
+            clientRpc.GetReply(buffer);
             Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -113,10 +113,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Call(packet, true, true);
+            clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
-            rpc.GetReply(buffer);
+            clientRpc.GetReply(buffer);
             Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -144,10 +144,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            rpc.Call(packet, true, true);
+            clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_DUMP_REPLY))];
-            rpc.GetReply(buffer);
+            clientRpc.GetReply(buffer);
             Pmap.PMAP_DUMP_REPLY reply = new Pmap.PMAP_DUMP_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));

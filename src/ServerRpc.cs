@@ -22,7 +22,7 @@ namespace Vxi11Net
             return (recvsize - readsize);
         }
 
-        public Socket CreateTcp(string host, int port)
+        public void CreateTcp(string host, int port)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -30,16 +30,14 @@ namespace Vxi11Net
             server = new Socket(remoteEP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(remoteEP);
             server.Listen();
-            return server;
         }
-        public Socket CreateUdp(string host, int port)
+        public void CreateUdp(string host, int port)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
             remoteEP = (EndPoint)new IPEndPoint(ipAddress, port);
             socket = new Socket(remoteEP.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
             socket.Bind(remoteEP);
-            return socket;
         }
         public void Destroy()
         {
@@ -47,7 +45,6 @@ namespace Vxi11Net
             socket.Close();
         }
         // call message を受信する
-        
         // TCP: frag_header が1になるまで受信する
         private int ReceiveTcp(byte[] buffer, int offset, int buffsize, System.Net.Sockets.SocketFlags socketFlags, bool IsFirst)
         {

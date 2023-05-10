@@ -1,8 +1,5 @@
-﻿using System;
-using System.Drawing;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
@@ -12,35 +9,29 @@ namespace Vxi11Net
         private int xid = 1;
 
         private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        private EndPoint remoteEP = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
+        private EndPoint endPoint = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
 
         private byte[] raw_buf = new byte[UDPMSGSIZE];
         private bool last_fragment = true;
         private int recvsize = 0;
         private int readsize = 0;
-        public int remain_count()
-        {
-            return (recvsize - readsize);
-        }
 
-        public Socket CreateTcp(string host, int port)
+        public void CreateTcp(string host, int port)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            remoteEP = (EndPoint)new IPEndPoint(ipAddress, port);
-            socket = new Socket(remoteEP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(remoteEP);
-            return socket;
+            endPoint = (EndPoint)new IPEndPoint(ipAddress, port);
+            socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(endPoint);
 
         }
-        public Socket CreateUdp(string host, int port)
+        public void CreateUdp(string host, int port)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            remoteEP = (EndPoint)new IPEndPoint(ipAddress, port);
-            socket = new Socket(remoteEP.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            socket.Connect(remoteEP);
-            return socket;
+            endPoint = (EndPoint)new IPEndPoint(ipAddress, port);
+            socket = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            socket.Connect(endPoint);
         }
         public void Destroy()
         {
@@ -90,7 +81,7 @@ namespace Vxi11Net
             if (IsFirst)
             {
                 readsize = 0;
-                recvsize = socket.ReceiveFrom(raw_buf, ref remoteEP);
+                recvsize = socket.ReceiveFrom(raw_buf, ref endPoint);
             }
 
             int length = 0;
@@ -184,7 +175,7 @@ namespace Vxi11Net
         // UDP 1回分受信する
         private int SendUdp(byte[] buffer, int size, SocketFlags socketFlags)
         { 
-            return socket.SendTo(buffer, size, socketFlags, remoteEP);
+            return socket.SendTo(buffer, size, socketFlags, endPoint);
         }
 
         public void Call(byte[] msg, bool IsFirst, bool IsLast)
