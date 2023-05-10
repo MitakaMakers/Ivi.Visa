@@ -35,7 +35,7 @@ VXI-11.Net is a VXI-11 communication software for classroom training.
 - [TMCTL](https://tmi.yokogawa.com/library/documents-downloads/software/tmctl/)
 
 # Author
-Twitter:@mitakalab
+Twitter:[@mitakalab](https://twitter.com/mitakalab)
 
 # License
 GPL-2
