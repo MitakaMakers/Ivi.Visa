@@ -36,7 +36,7 @@ namespace Vxi11Net
         public static void Vxi11Console()
         {
             bool isLoop = true;
-            ServerVxi11 server = new ServerVxi11();
+            ServerVxi11 serverVxi11 = new ServerVxi11();
 
             while (isLoop)
             {
@@ -78,13 +78,13 @@ namespace Vxi11Net
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("== create RPC server (core channel) ==");
-                    server.Create("127.0.0.1", port);
+                    serverVxi11.Create("127.0.0.1", port);
                     Console.WriteLine(" Call : create_core_channel : ret=0");
                 }
                 if (a == "2")
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = server.ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = serverVxi11.ReceiveMsg();
                     Console.WriteLine("    received.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      prog    = {0}", msg.prog);
@@ -93,7 +93,7 @@ namespace Vxi11Net
                     if (msg.proc == Vxi11.CREATE_LINK)
                     {
                         string handle;
-                        Vxi11.CREATE_LINK_PARAMS cre = server.ReceiveCreateLink(out handle);
+                        Vxi11.CREATE_LINK_PARAMS cre = serverVxi11.ReceiveCreateLink(out handle);
                         Console.WriteLine("== CREATE_LINK ==");
                         Console.WriteLine("      lock_timeout = {0}", cre.lock_timeout);
                         Console.WriteLine("      clientId     = {0}", cre.clientId);
@@ -103,7 +103,7 @@ namespace Vxi11Net
                     else if (msg.proc == Vxi11.DEVICE_WRITE)
                     {
                         string data;
-                        Vxi11.DEVICE_WRITE_PARAMS wrt = server.ReceiveDeviceWrite(out data);
+                        Vxi11.DEVICE_WRITE_PARAMS wrt = serverVxi11.ReceiveDeviceWrite(out data);
                         Console.WriteLine("== DEVICE_WRITE ==");
                         Console.WriteLine("      lid          = {0}", wrt.lid);
                         Console.WriteLine("      flags        = {0}", wrt.flags);
@@ -113,7 +113,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_READ)
                     {
-                        Vxi11.DEVICE_READ_PARAMS red = server.ReceiveDeviceRead();
+                        Vxi11.DEVICE_READ_PARAMS red = serverVxi11.ReceiveDeviceRead();
                         Console.WriteLine("== DEVICE_READ ==");
                         Console.WriteLine("      lid          = {0}", red.lid);
                         Console.WriteLine("      requestSize  = {0}", red.requestSize);
@@ -124,7 +124,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_READSTB)
                     {
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = server.ReceiveGenericParams();
+                        Vxi11.DEVICE_GENERIC_PARAMS gen = serverVxi11.ReceiveGenericParams();
                         Console.WriteLine("== DEVICE_READSTB ==");
                         Console.WriteLine("      lid          = {0}", gen.lid);
                         Console.WriteLine("      flags        = {0}", gen.flags);
@@ -133,7 +133,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_TRIGGER)
                     {
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = server.ReceiveGenericParams();
+                        Vxi11.DEVICE_GENERIC_PARAMS gen = serverVxi11.ReceiveGenericParams();
                         Console.WriteLine("== DEVICE_TRIGGER ==");
                         Console.WriteLine("      lid          = {0}", gen.lid);
                         Console.WriteLine("      flags        = {0}", gen.flags);
@@ -142,7 +142,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_CLEAR)
                     {
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = server.ReceiveGenericParams();
+                        Vxi11.DEVICE_GENERIC_PARAMS gen = serverVxi11.ReceiveGenericParams();
                         Console.WriteLine("== DEVICE_CLEAR ==");
                         Console.WriteLine("      lid          = {0}", gen.lid);
                         Console.WriteLine("      flags        = {0}", gen.flags);
@@ -151,7 +151,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_REMOTE)
                     {
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = server.ReceiveGenericParams();
+                        Vxi11.DEVICE_GENERIC_PARAMS gen = serverVxi11.ReceiveGenericParams();
                         Console.WriteLine("== DEVICE_REMOTE ==");
                         Console.WriteLine("      lid          = {0}", gen.lid);
                         Console.WriteLine("      flags        = {0}", gen.flags);
@@ -160,7 +160,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_LOCAL)
                     {
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = server.ReceiveGenericParams();
+                        Vxi11.DEVICE_GENERIC_PARAMS gen = serverVxi11.ReceiveGenericParams();
                         Console.WriteLine("== DEVICE_LOCAL ==");
                         Console.WriteLine("      lid          = {0}", gen.lid);
                         Console.WriteLine("      flags        = {0}", gen.flags);
@@ -169,7 +169,7 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_LOCK)
                     {
-                        Vxi11.DEVICE_LOCK_PARAMS lck = server.ReceiveDeviceLock();
+                        Vxi11.DEVICE_LOCK_PARAMS lck = serverVxi11.ReceiveDeviceLock();
                         Console.WriteLine("== DEVICE_LOCK ==");
                         Console.WriteLine("      lid          = {0}", lck.lid);
                         Console.WriteLine("      flags        = {0}", lck.flags);
@@ -177,14 +177,14 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_UNLOCK)
                     {
-                        long lnk = server.ReceiveDeviceLink();
+                        long lnk = serverVxi11.ReceiveDeviceLink();
                         Console.WriteLine("== DEVICE_UNLOCK ==");
                         Console.WriteLine("      device_link  = {0}", lnk);
                     }
                     else if (msg.proc == Vxi11.DEVICE_ENABLE_SRQ)
                     {
                         string handle;
-                        Vxi11.DEVICE_ENABLE_SRQ_PARAMS ena = server.ReceiveDeviceEnableSrq(out handle);
+                        Vxi11.DEVICE_ENABLE_SRQ_PARAMS ena = serverVxi11.ReceiveDeviceEnableSrq(out handle);
                         Console.WriteLine("== DEVICE_ENABLE_SRQ ==");
                         Console.WriteLine("      lid          = {0}", ena.lid);
                         Console.WriteLine("      enable       = {0}", ena.enable);
@@ -193,7 +193,7 @@ namespace Vxi11Net
                     else if (msg.proc == Vxi11.DEVICE_DOCMD)
                     {
                         byte[] data_in;
-                        Vxi11.DEVICE_DOCMD_PARAMS dcm = server.ReceiveDeviceDoCmd(out data_in);
+                        Vxi11.DEVICE_DOCMD_PARAMS dcm = serverVxi11.ReceiveDeviceDoCmd(out data_in);
                         Console.WriteLine("== DEVICE_DOCMD ==");
                         Console.WriteLine("      lid           = {0}", dcm.lid);
                         Console.WriteLine("      flags         = {0}", dcm.flags);
@@ -205,13 +205,13 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DESTROY_LINK)
                     {
-                        long lnk = server.ReceiveDeviceLink();
+                        long lnk = serverVxi11.ReceiveDeviceLink();
                         Console.WriteLine("== DESTROY_LINK ==");
                         Console.WriteLine("      device_link  = {0}", lnk);
                     }
                     else if (msg.proc == Vxi11.CREATE_INTR_CHAN)
                     {
-                        Vxi11.CREATE_INTR_CHAN_PARAMS cic = server.ReceiveCreateIntrchan();
+                        Vxi11.CREATE_INTR_CHAN_PARAMS cic = serverVxi11.ReceiveCreateIntrchan();
                         Console.WriteLine("== CREATE_INTR_CHAN ==");
                         Console.WriteLine("      hostaddr   = {0}", cic.hostaddr);
                         Console.WriteLine("      hostport   = {0}", cic.hostport);
@@ -225,95 +225,95 @@ namespace Vxi11Net
                     }
                     else if (msg.proc == Vxi11.DEVICE_ABORT)
                     {
-                        long lnk = server.ReceiveDeviceLink();
+                        long lnk = serverVxi11.ReceiveDeviceLink();
                         Console.WriteLine("== DEVICE_ABORT ==");
                         Console.WriteLine("      device_link  = {0}", lnk);
                     }
                     else
                     {
-                        server.Flush();
+                        serverVxi11.Flush();
                         Console.WriteLine("== clear_buffer ==");
                     }
                 }
                 if (a == "3")
                 {
-                    server.ReplyCreateLink(123, 456, 789);
+                    serverVxi11.ReplyCreateLink(123, 456, 789);
                     Console.WriteLine("== reply to create_link ==");
                 }
                 if (a == "4")
                 {
                     Console.Write("  data_len? : ");
                     int data_len = Convert.ToInt32(Console.ReadLine());
-                    server.ReplyDeviceWrite(data_len);
+                    serverVxi11.ReplyDeviceWrite(data_len);
                     Console.WriteLine("== reply to device_write ==");
                 }
                 if (a == "5")
                 {
-                    server.ReplyDeviceRead(1, "XYZCO,246B,S000-0123-02,0");
+                    serverVxi11.ReplyDeviceRead(1, "XYZCO,246B,S000-0123-02,0");
                     Console.WriteLine("== reply to device_read ==");
                 }
                 if (a == "6")
                 {
                     Console.Write("  stb? : ");
                     byte stb = Convert.ToByte(Console.ReadLine());
-                    server.ReplyDeviceReadStb(stb);
+                    serverVxi11.ReplyDeviceReadStb(stb);
                     Console.WriteLine("== reply to device_readstb ==");
                 }
                 if (a == "7")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_trigger ==");
                 }
                 if (a == "8")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_clear ==");
                 }
                 if (a == "9")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_remote ==");
                 }
                 if (a == "10")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_local ==");
                 }
                 if (a == "11")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_lock ==");
                 }
                 if (a == "12")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_unlock ==");
                 }
                 if (a == "13")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_enable_srq ==");
                 }
                 if (a == "14")
                 {
                     Console.Write("  data_in_len? : ");
                     int data_in_len = Convert.ToInt32(Console.ReadLine());
-                    server.ReplyDeviceDoCmd(data_in_len);
+                    serverVxi11.ReplyDeviceDoCmd(data_in_len);
                     Console.WriteLine("== reply to device_docmd ==");
                 }
                 if (a == "15")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== :reply to destroy_link ==");
                 }
                 if (a == "16")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to create_intr_chan ==");
                 }
                 if (a == "17")
                 {
-                    server.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
                     Console.WriteLine("== reply to destroy_intr_chan ==");
                 }
                 if (a == "18")
@@ -352,11 +352,11 @@ namespace Vxi11Net
                 {
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    server.RunCoreChannel("127.0.0.1", port);
+                    serverVxi11.RunCoreChannel("127.0.0.1", port);
                 }
                 if (a == "27")
                 {
-                    server.Shutdown();
+                    serverVxi11.Shutdown();
                 }
                 if ((a == "B") || (a == "b"))
                 {
@@ -372,8 +372,7 @@ namespace Vxi11Net
         public static void PortmapConsole()
         {
             bool isLoop = true;
-            ServerPortmap tcp_server = new ServerPortmap();
-            ServerPortmap udp_server = new ServerPortmap();
+            ServerPortmap serverPortmap = new ServerPortmap();
 
             while (isLoop)
             {
@@ -392,78 +391,89 @@ namespace Vxi11Net
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
+                    Console.Write("  protocol?(6:TCP, 17:UDP) : ");
+                    int prot = Convert.ToInt32(Console.ReadLine());
+                    Pmap.IPPROTO ipprot;
+                    if (prot == 6)
+                    {
+                        ipprot = Pmap.IPPROTO.TCP;
+                    }
+                    else
+                    {
+                        ipprot = Pmap.IPPROTO.UDP;
+                    }
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("== create portmap server ==");
-                    tcp_server.Create("127.0.0.1", port, Pmap.IPPROTO.UDP);
+                    serverPortmap.Create("127.0.0.1", port, ipprot);
                     Console.WriteLine(" Call : create_abort_channel : ret=0");
                 }
                 if (a == "2")
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = tcp_server.ReceiveMsg();
+                    Rpc.RPC_MESSAGE_PARAMS msg = serverPortmap.ReceiveMsg();
                     Console.WriteLine("    received--.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      proc    = {0}", msg.proc);
                     if (msg.proc == Pmap.PROC_NULL)
                     {
-                        tcp_server.ReceiveNull();
+                        serverPortmap.ReceiveNull();
                         Console.WriteLine("== PMAPPROC_NULL ==");
                     }
                     else if (msg.proc == Pmap.PROC_SET)
                     {
-                        Pmap.MAPPING map = tcp_server.ReceiveSet();
+                        Pmap.MAPPING map = serverPortmap.ReceiveSet();
                         Console.WriteLine("== PMAPPROC_SET ==");
                     }
                     else if (msg.proc == Pmap.PROC_UNSET)
                     {
-                        Pmap.MAPPING map = tcp_server.ReceiveUnset();
+                        Pmap.MAPPING map = serverPortmap.ReceiveUnset();
                         Console.WriteLine("== PMAPPROC_UNSET ==");
                     }
                     else if (msg.proc == Pmap.PROC_GETPORT)
                     {
-                        Pmap.MAPPING map = tcp_server.ReceiveGetport();
+                        Pmap.MAPPING map = serverPortmap.ReceiveGetport();
                         Console.WriteLine("== PMAPPROC_GETPORT ==");
                     }
                     else if (msg.proc == Pmap.PROC_DUMP)
                     {
-                        tcp_server.ReceiveDump();
+                        serverPortmap.ReceiveDump();
                         Console.WriteLine("== PMAPPROC_DUMP ==");
                     }
                     else
                     {
-                        tcp_server.ClearArgs();
+                        serverPortmap.ClearArgs();
                         Console.WriteLine("== clear_buffer ==");
                     }
                 }
                 if (a == "3")
                 {
                     int xid = Convert.ToInt32(Console.ReadLine());
-                    tcp_server.ReplySet(true);
+                    serverPortmap.ReplySet(true);
                     Console.WriteLine("== reply to pmapproc_set ==");
                 }
                 if (a == "4")
                 {
                     int xid = Convert.ToInt32(Console.ReadLine());
-                    tcp_server.ReplyUnset(true);
+                    serverPortmap.ReplyUnset(true);
                     Console.WriteLine("== reply to pmapproc_unset ==");
                 }
                 if (a == "5")
                 {
                     int xid = Convert.ToInt32(Console.ReadLine());
-                    tcp_server.ReplyGetport(1);
+                    serverPortmap.ReplyGetport(1);
                     Console.WriteLine("== reply to pmapproc_getport ==");
                 }
                 if (a == "6")
                 {
                     int xid = Convert.ToInt32(Console.ReadLine());
-                    tcp_server.ReplyDump(new List<Pmap.MAPPING>());
+                    serverPortmap.ReplyDump(new List<Pmap.MAPPING>());
                     Console.WriteLine("== reply to pmapproc_dump ==");
                 }
                 if (a == "7")
                 {
                     int xid = Convert.ToInt32(Console.ReadLine());
-                    tcp_server.Destroy();
+                    serverPortmap.Destroy();
                     Console.WriteLine("== close portmap server ==");
                 }
                 if ((a == "B") || (a == "b"))

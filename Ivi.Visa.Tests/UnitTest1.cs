@@ -16,8 +16,8 @@ namespace Ivi.Visa
             ServerPortmap udp_server = new ServerPortmap();
             ServerVxi11 coreServer = new ServerVxi11();
             ServerVxi11 abortServer = new ServerVxi11();
-            //tcp_server.Run("127.0.0.1", port, Pmap.IPPROTO.TCP);
-            //udp_server.Run("127.0.0.1", port, Pmap.IPPROTO.UDP);
+            tcp_server.Run("127.0.0.1", port, Pmap.IPPROTO.TCP);
+            udp_server.Run("127.0.0.1", port, Pmap.IPPROTO.UDP);
             coreServer.RunCoreChannel("127.0.0.1", port);
             abortServer.RunAbortChannel("127.0.0.1", port + 1);
 

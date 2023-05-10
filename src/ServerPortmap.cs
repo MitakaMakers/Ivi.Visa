@@ -176,7 +176,7 @@ namespace Vxi11Net
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
-            reply.port = port;
+            reply.port = IPAddress.HostToNetworkOrder(port);
 
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);

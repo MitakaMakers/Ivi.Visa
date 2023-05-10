@@ -1,16 +1,15 @@
-﻿using System;
-using System.Drawing;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
-    public class ClientRpc
+    public class ServerRpc
     {
         private const int UDPMSGSIZE = 2000;
-        private int xid = 1;
+        private int xid = 0;
 
+        private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private EndPoint remoteEP = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
 
@@ -27,29 +26,30 @@ namespace Vxi11Net
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint ipEndPoint = new(ipAddress, port);
-            socket = new Socket(ipEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(ipEndPoint);
-            return socket;
-
+            remoteEP = (EndPoint)new IPEndPoint(ipAddress, port);
+            server = new Socket(remoteEP.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            server.Bind(remoteEP);
+            server.Listen();
+            return server;
         }
         public Socket CreateUdp(string host, int port)
         {
             IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint ipEndPoint = new(ipAddress, port);
-            socket = new Socket(ipEndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            socket.Connect(ipEndPoint);
+            remoteEP = (EndPoint)new IPEndPoint(ipAddress, port);
+            socket = new Socket(remoteEP.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            socket.Bind(remoteEP);
             return socket;
         }
         public void Destroy()
         {
+            server.Close();
             socket.Close();
         }
         // call message を受信する
         
         // TCP: frag_header が1になるまで受信する
-        private int ReceiveTcp(byte[] buffer, int offset, int buffsize, SocketFlags socketFlags, bool IsFirst)
+        private int ReceiveTcp(byte[] buffer, int offset, int buffsize, System.Net.Sockets.SocketFlags socketFlags, bool IsFirst)
         {
             if ((IsFirst) || ((last_fragment == false) && (recvsize <= readsize)))
             {
@@ -108,7 +108,40 @@ namespace Vxi11Net
             readsize += length;
             return length;
         }
-        public int GetReply(byte[] buffer)
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
+        {
+            int size = Marshal.SizeOf(typeof(Rpc.RPC_MESSAGE_PARAMS));
+            if (socket.SocketType == SocketType.Stream)
+            {
+                if (socket.Connected == false)
+                {
+                    socket = server.Accept();
+                }
+                ReceiveTcp(raw_buf, 0, size, SocketFlags.None, true);
+            }
+            else
+            {
+                IPEndPoint sender = new IPEndPoint(IPAddress.IPv6Any, 0);
+                EndPoint senderRemote = (EndPoint)sender;
+                ReceiveUdp(raw_buf, 0, size, true);
+            }
+
+            Rpc.RPC_MESSAGE_PARAMS msg = new Rpc.RPC_MESSAGE_PARAMS();
+            msg.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 0));
+            msg.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 4));
+            msg.rpcvers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 8));
+            msg.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 12));
+            msg.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 16));
+            msg.proc = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 20));
+            msg.cred_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 24));
+            msg.cred_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 28));
+            msg.verf_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 32));
+            msg.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 36));
+
+            xid = msg.xid;
+            return msg;
+        }
+        public int GetArgs(byte[] buffer)
         {
             int rlen = 0;
             if (socket.SocketType == SocketType.Stream)
@@ -138,7 +171,7 @@ namespace Vxi11Net
             }
             return rlen;
         }
-        public void ClearReply()
+        public void ClearArgs()
         {
             if (socket.SocketType == SocketType.Stream)
             {
@@ -157,8 +190,26 @@ namespace Vxi11Net
             }
         }
 
+        public void Reply(byte[] reply, bool IsFirst, bool IsLast)
+        {
+            byte[] xid_array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(xid));
+            Array.Copy(xid_array, reply, 4); ;
+            if (socket.SocketType == SocketType.Stream)
+            {
+                SendTcp(reply, 0, reply.Length, SocketFlags.None, IsFirst, IsLast);
+            }
+            else
+            {
+                SendUdp(reply, reply.Length, SocketFlags.None);
+            }
+            last_fragment = true;
+            recvsize = 0;
+            readsize = 0;
+            return;
+        }
         private int SendTcp(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
         {
+            int length = 0;
             if (IsFirst)
             {
                 int frag_header = size;
@@ -167,11 +218,15 @@ namespace Vxi11Net
                     frag_header = frag_header + int.MinValue;
                 }
                 byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
-                socket.Send(array);
+                byte[] tmp = new byte[array.Length + buffer.Length];
+                Buffer.BlockCopy(array, 0, tmp, 0, array.Length);
+                Buffer.BlockCopy(buffer, 0, tmp, array.Length, buffer.Length);
+                length = socket.Send(tmp);
             }
-
-            int length = 0;
-            length += socket.Send(buffer, offset, size, socketFlags);
+            else
+            {
+                length = socket.Send(buffer, offset, size, socketFlags);
+            }
             return length;
         }
 
@@ -181,25 +236,6 @@ namespace Vxi11Net
             return socket.SendTo(buffer, size, socketFlags, remoteEP);
         }
 
-        public void Call(byte[] msg, bool IsFirst, bool IsLast)
-        {
-            byte[] xid_array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(xid));
-            Array.Copy(xid_array, msg, 4); ;
-            xid = xid + 1;
-
-            if (socket.SocketType == SocketType.Stream)
-            {
-                SendTcp(msg, 0, msg.Length, SocketFlags.None, IsFirst, IsLast);
-            }
-            else
-            {
-                SendUdp(msg, msg.Length, SocketFlags.None);
-            }
-            last_fragment = true;
-            recvsize = 0;
-            readsize = 0;
-            return;
-        }
         public void Flush()
         {
             byte[] buffer = new byte[UDPMSGSIZE];

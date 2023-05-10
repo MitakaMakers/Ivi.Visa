@@ -49,11 +49,10 @@ namespace Vxi11Net
         }
         public static void Vxi11Console()
         {
-            int xid = 0;
             int lid = 0;
+            int lock_timeout = 0;
             int abortPort = 0;
             int maxRecvSize = 0;
-            int lock_timeout = 0;
 
             ClientVxi11 client = new ClientVxi11();
 
@@ -121,8 +120,6 @@ namespace Vxi11Net
                 }
                 if (a == "4")
                 {
-                    Console.Write("  xid? : ");
-                    xid = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  lock_timeout? : ");
                     lock_timeout = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  clientId? : ");
@@ -369,20 +366,11 @@ namespace Vxi11Net
                 }
                 if (a == "2")
                 {
-                    Console.Write("  port number? : ");
-                    int port = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  protocol?(6:TCP, 17:UDP) : ");
                     int prot = Convert.ToInt32(Console.ReadLine());
-                    Pmap.IPPROTO ipprot;
-                    if (prot == 6)
-                    {
-                        ipprot = Pmap.IPPROTO.TCP;
-                    }
-                    else
-                    {
-                        ipprot = Pmap.IPPROTO.UDP;
-                    }
-                    int err = client.Set(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, ipprot, port);
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+                    int err = client.Set(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot, port);
                     Console.WriteLine("== pmap_set ==");
                     Console.WriteLine(" Call : pmap_set : ret=0");
                 }
@@ -390,16 +378,7 @@ namespace Vxi11Net
                 {
                     Console.Write("  protocol?(6:TCP, 17:UDP) : ");
                     int prot = Convert.ToInt32(Console.ReadLine());
-                    Pmap.IPPROTO ipprot;
-                    if (prot == 6)
-                    {
-                        ipprot = Pmap.IPPROTO.TCP;
-                    }
-                    else
-                    {
-                        ipprot = Pmap.IPPROTO.UDP;
-                    }
-                    int err = client.Unset(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, ipprot);
+                    int err = client.Unset(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot);
                     Console.WriteLine("== pmap_unset ==");
                     Console.WriteLine(" Call : pmap_set : ret=0");
                 }
@@ -407,16 +386,7 @@ namespace Vxi11Net
                 {
                     Console.Write("  protocol?(6:TCP, 17:UDP) : ");
                     int prot = Convert.ToInt32(Console.ReadLine());
-                    Pmap.IPPROTO ipprot;
-                    if (prot == 6)
-                    {
-                        ipprot = Pmap.IPPROTO.TCP;
-                    }
-                    else
-                    {
-                        ipprot = Pmap.IPPROTO.UDP;
-                    }
-                    int err = client.Getport(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, ipprot);
+                    int err = client.Getport(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot);
                     Console.WriteLine("== pmap_getport ==");
                     Console.WriteLine(" Call : pmap_getport : ret=0");
                 }

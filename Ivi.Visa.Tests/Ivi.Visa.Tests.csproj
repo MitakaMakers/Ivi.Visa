@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="ServerPortmap.cs" />
-    <Compile Remove="ServerRpc.cs" />
-    <Compile Remove="ServerVxi11.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
@@ -28,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\vxi11net\Ivi.Visa.csproj" />
-    <ProjectReference Include="..\vxi11net\ServerProgram.csproj" />
+    <ProjectReference Include="..\src\Ivi.Visa.csproj" />
   </ItemGroup>
 
 </Project>
