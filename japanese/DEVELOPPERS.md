@@ -24,15 +24,17 @@
 - テストカバレッジは正常動作パスのカバレッジ 100%、異常動作パスのカバレッジ0%をリリース指標とします。
   - https://zenn.dev/shimat/articles/03ad92427cbed6
 
-## Source code Quality
+## Source code Quality 目標
 - ソースコードの記法について C# コーディングガイドを尊重します。
   - [Documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/)
   - [C# Language Specification annex on documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments)
 - 1関数あたりのサイクロマティック複雑度30未満を目指します。
   - https://devblogs.microsoft.com/dotnet/automate-code-metrics-and-class-diagrams-with-github-actions/
-- 非同期処理は極力使いません。
-- 新しい文法ルールや珍しい表記法（３項演算子など）は使いません（.NetFramework 2.0/C99 程度を想定）
-- 呼び出し階層はできるだけ浅くします。
+- 他言語習得者でも理解しやすくするため、C#固有や珍しい表記法は使いません
+　（C99 / Java 2 程度を想定）
+- ソースコードの処理を読みやすくするため抽象クラスやインタフェースクラス、メソッドのオーバーライド、オーバーロードは使いません
+- コールバック処理・非同期処理は使いません。
+- 関数の呼び出し回数はできるだけ少なくします。
 
 ## Domument Quality
 説明は簡潔で1ページを2000文字以内にします。
