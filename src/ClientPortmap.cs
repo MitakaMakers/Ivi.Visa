@@ -38,6 +38,7 @@ namespace Vxi11Net
             arg.progvers = IPAddress.HostToNetworkOrder(version);
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(port);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -46,6 +47,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_REPLY))];
             clientRpc.GetReply(buffer);
+
             Pmap.PMAP_SET_REPLY reply = new Pmap.PMAP_SET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -73,6 +75,7 @@ namespace Vxi11Net
             arg.progvers = IPAddress.HostToNetworkOrder(version);
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(0);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -81,6 +84,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
             clientRpc.GetReply(buffer);
+
             Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -89,7 +93,6 @@ namespace Vxi11Net
             reply.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             reply.boolean = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
-
             return reply.boolean;
         }
 
@@ -109,6 +112,7 @@ namespace Vxi11Net
             arg.progvers = IPAddress.HostToNetworkOrder(version);
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(0);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -117,6 +121,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
             clientRpc.GetReply(buffer);
+
             Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -140,6 +145,7 @@ namespace Vxi11Net
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
             arg.verf_len = IPAddress.HostToNetworkOrder(0);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_DUMP_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -148,6 +154,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_DUMP_REPLY))];
             clientRpc.GetReply(buffer);
+
             Pmap.PMAP_DUMP_REPLY reply = new Pmap.PMAP_DUMP_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -155,7 +162,6 @@ namespace Vxi11Net
             reply.verf_flavor = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             reply.verf_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
             reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
-
             return new List<Pmap.MAPPING>();
         }
     }

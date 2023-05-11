@@ -1,5 +1,5 @@
-﻿using Ivi.Visa;
-using System.Text;
+﻿using System.Text;
+using Ivi.Visa;
 using TmctlAPINet;
 
 namespace Vxi11Net

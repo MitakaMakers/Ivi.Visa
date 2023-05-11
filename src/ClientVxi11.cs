@@ -153,8 +153,6 @@ namespace Vxi11Net
         public int CreateLink(int cliendId, int lockDevice, int lock_timeout, string handle, out int lid, out int abortPort, out int maxRecvSize)
         {
             byte[] str = System.Text.Encoding.ASCII.GetBytes(handle);
-            int size = Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_CALL)) + str.Length;
-            size = ((size / 4) + 1) * 4;
             Vxi11.CREATE_LINK_CALL arg = new Vxi11.CREATE_LINK_CALL();
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
@@ -169,6 +167,9 @@ namespace Vxi11Net
             arg.lockDevice = IPAddress.HostToNetworkOrder(lockDevice);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.handle_len = IPAddress.HostToNetworkOrder(str.Length);
+
+            int size = Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_CALL)) + str.Length;
+            size = ((size / 4) + 1) * 4;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -178,6 +179,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.CREATE_LINK_REPLY reply = new Vxi11.CREATE_LINK_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -198,8 +200,6 @@ namespace Vxi11Net
         // call device_write
         public int DeviceWrite(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, byte[] data, out int data_len)
         {
-            int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_CALL)) + data.Length;
-            size = ((size / 4) + 1) * 4;
             Vxi11.DEVICE_WRITE_CALL arg = new Vxi11.DEVICE_WRITE_CALL();
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
@@ -215,6 +215,9 @@ namespace Vxi11Net
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
             arg.data_len = IPAddress.HostToNetworkOrder(data.Length);
+
+            int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_CALL)) + data.Length;
+            size = ((size / 4) + 1) * 4;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -224,6 +227,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_WRITE_REPLY reply = new Vxi11.DEVICE_WRITE_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -264,6 +268,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_READ_REPLY reply = new Vxi11.DEVICE_READ_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -274,6 +279,7 @@ namespace Vxi11Net
             reply.error = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             reply.reason = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 32));
             reply.data_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 36));
+
             reason = reply.reason;
             data = new Byte[reply.data_len];
             clientRpc.GetReply(data);
@@ -298,6 +304,7 @@ namespace Vxi11Net
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -306,6 +313,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READSTB_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_READSTB_REPLY reply = new Vxi11.DEVICE_READSTB_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -336,6 +344,7 @@ namespace Vxi11Net
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -344,6 +353,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -372,6 +382,7 @@ namespace Vxi11Net
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -380,6 +391,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -408,6 +420,7 @@ namespace Vxi11Net
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -416,6 +429,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -444,6 +458,7 @@ namespace Vxi11Net
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -452,6 +467,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -479,6 +495,7 @@ namespace Vxi11Net
             arg.lid = IPAddress.HostToNetworkOrder(lid);
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_LOCK_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -487,6 +504,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -512,6 +530,7 @@ namespace Vxi11Net
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
             arg.verf_len = IPAddress.HostToNetworkOrder(0);
             arg.lid = IPAddress.HostToNetworkOrder(lid);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_UNLOCK_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -520,6 +539,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -549,6 +569,7 @@ namespace Vxi11Net
             arg.prognum = IPAddress.HostToNetworkOrder(prognum);
             arg.progvers = IPAddress.HostToNetworkOrder(progvers);
             arg.progfamily = IPAddress.HostToNetworkOrder(progfamily);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_INTR_CHAN_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -557,6 +578,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -581,6 +603,7 @@ namespace Vxi11Net
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
             arg.verf_len = IPAddress.HostToNetworkOrder(0);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DESTROY_INTR_CHAN_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -589,6 +612,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -604,8 +628,6 @@ namespace Vxi11Net
         public int DeviceEnableSrq(int lid, int enable, string handle)
         {
             byte[] str = System.Text.Encoding.ASCII.GetBytes(handle);
-            int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_ENABLE_SRQ_CALL)) + str.Length;
-            size = ((size / 4) + 1) * 4;
             Vxi11.DEVICE_ENABLE_SRQ_CALL arg = new Vxi11.DEVICE_ENABLE_SRQ_CALL();
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
@@ -619,6 +641,9 @@ namespace Vxi11Net
             arg.lid = IPAddress.HostToNetworkOrder(lid);
             arg.enable = IPAddress.HostToNetworkOrder(enable);
             arg.handle_len = IPAddress.HostToNetworkOrder(handle.Length);
+
+            int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_ENABLE_SRQ_CALL)) + str.Length;
+            size = ((size / 4) + 1) * 4;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -628,6 +653,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -660,6 +686,7 @@ namespace Vxi11Net
             arg.network_order = IPAddress.HostToNetworkOrder(network_order);
             arg.datasize = IPAddress.HostToNetworkOrder(datasize);
             arg.data_in_len = IPAddress.HostToNetworkOrder(data_in.Length);
+
             int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_CALL)) + data_in.Length;
             size = ((size / 4) + 1) * 4;
             byte[] packet = new byte[size];
@@ -671,6 +698,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_DOCMD_REPLY reply = new Vxi11.DEVICE_DOCMD_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -698,6 +726,7 @@ namespace Vxi11Net
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
             arg.verf_len = IPAddress.HostToNetworkOrder(0);
             arg.lid = IPAddress.HostToNetworkOrder(lid);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -706,6 +735,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -745,6 +775,7 @@ namespace Vxi11Net
             arg.flags = IPAddress.HostToNetworkOrder((int)flags);
             arg.lock_timeout = IPAddress.HostToNetworkOrder(lock_timeout);
             arg.io_timeout = IPAddress.HostToNetworkOrder(io_timeout);
+
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
@@ -753,6 +784,7 @@ namespace Vxi11Net
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
             clientRpc.GetReply(buffer);
+
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
