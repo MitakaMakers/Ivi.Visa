@@ -138,15 +138,22 @@ namespace Vxi11Net
     }
     public class CoreChannel
     {
-        private ClientRpc clientRpc = new ClientRpc();
+        private ClientRpcTcp clientRpc = new ClientRpcTcp();
+        private int xid = 1000;
         
         public void Create(string host, int port)
         {
-            clientRpc.CreateTcp(host, port);
+            clientRpc.Create(host, port);
         }
         public void Destroy()
         {
             clientRpc.Destroy();
+        }
+        private int GetXid()
+        {
+            int _xid = xid;
+            xid = xid + 1;
+            return _xid;
         }
 
         // call create_link
@@ -154,6 +161,7 @@ namespace Vxi11Net
         {
             byte[] str = System.Text.Encoding.ASCII.GetBytes(handle);
             Vxi11.CREATE_LINK_CALL arg = new Vxi11.CREATE_LINK_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -178,7 +186,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.CREATE_LINK_REPLY reply = new Vxi11.CREATE_LINK_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -201,6 +209,7 @@ namespace Vxi11Net
         public int DeviceWrite(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, byte[] data, out int data_len)
         {
             Vxi11.DEVICE_WRITE_CALL arg = new Vxi11.DEVICE_WRITE_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -226,7 +235,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_WRITE_REPLY reply = new Vxi11.DEVICE_WRITE_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -245,6 +254,7 @@ namespace Vxi11Net
         public int DeviceRead(int lid, int requestSize, Vxi11.Flags flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out byte[] data)
         {
             Vxi11.DEVICE_READ_CALL arg = new Vxi11.DEVICE_READ_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -267,7 +277,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_READ_REPLY reply = new Vxi11.DEVICE_READ_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -282,7 +292,7 @@ namespace Vxi11Net
 
             reason = reply.reason;
             data = new Byte[reply.data_len];
-            clientRpc.GetReply(data);
+            clientRpc.GetReply(data, true);
             clientRpc.ClearReply();
 
             return reply.error;
@@ -291,6 +301,7 @@ namespace Vxi11Net
         public int DeviceReadstb(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, out char stb)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -312,7 +323,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READSTB_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_READSTB_REPLY reply = new Vxi11.DEVICE_READSTB_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -331,6 +342,7 @@ namespace Vxi11Net
         public int DeviceTrigger(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -352,7 +364,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -369,6 +381,7 @@ namespace Vxi11Net
         public int DeviceClear(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -390,7 +403,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -407,6 +420,7 @@ namespace Vxi11Net
         public int DeviceRemote(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -428,7 +442,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -445,6 +459,7 @@ namespace Vxi11Net
         public int DeviceLocal(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -466,7 +481,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -483,6 +498,7 @@ namespace Vxi11Net
         public int DeviceLock(int lid, Vxi11.Flags flags, int lock_timeout)
         {
             Vxi11.DEVICE_LOCK_CALL arg = new Vxi11.DEVICE_LOCK_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -503,7 +519,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -520,6 +536,7 @@ namespace Vxi11Net
         public int DeviceUnlock(int lid)
         {
             Vxi11.DEVICE_UNLOCK_CALL arg = new Vxi11.DEVICE_UNLOCK_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -538,7 +555,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -555,6 +572,7 @@ namespace Vxi11Net
         public int CreateIntrChan(int hostaddr, int hostport, int prognum, int progvers, int progfamily)
         {
             Vxi11.CREATE_INTR_CHAN_CALL arg = new Vxi11.CREATE_INTR_CHAN_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -577,7 +595,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -594,6 +612,7 @@ namespace Vxi11Net
         public int DestroyIntrChan()
         {
             Vxi11.DESTROY_INTR_CHAN_CALL arg = new Vxi11.DESTROY_INTR_CHAN_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -611,7 +630,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -629,6 +648,7 @@ namespace Vxi11Net
         {
             byte[] str = System.Text.Encoding.ASCII.GetBytes(handle);
             Vxi11.DEVICE_ENABLE_SRQ_CALL arg = new Vxi11.DEVICE_ENABLE_SRQ_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -652,7 +672,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -669,6 +689,7 @@ namespace Vxi11Net
         public void DeviceDocmd(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
         {
             Vxi11.DEVICE_DOCMD_CALL arg = new Vxi11.DEVICE_DOCMD_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -697,7 +718,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_DOCMD_REPLY reply = new Vxi11.DEVICE_DOCMD_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -709,13 +730,14 @@ namespace Vxi11Net
             reply.error = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             reply.data_out_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 32));
             data_out = new Byte[reply.data_out_len];
-            clientRpc.GetReply(data_out);
+            clientRpc.GetReply(data_out, false);
             clientRpc.ClearReply();
         }
         // call destroy_link
         public int DestroyLink(int lid)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_CORE);
@@ -734,7 +756,7 @@ namespace Vxi11Net
             clientRpc.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpc.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -750,18 +772,26 @@ namespace Vxi11Net
     }
     public class AbortChannel
     {
-        private ClientRpc clientRpc = new ClientRpc();
+        private ClientRpcTcp clientRpcTcp = new ClientRpcTcp();
+        private int xid = 2000;
         public void Create(string host, int port)
         {
-            clientRpc.CreateTcp(host, port);
+            clientRpcTcp.Create(host, port);
         }
         public void Destroy()
         {
-            clientRpc.Destroy();
+            clientRpcTcp.Destroy();
+        }
+        private int GetXid()
+        {
+            int _xid = xid;
+            xid = xid + 1;
+            return _xid;
         }
         public int DeviceAbort(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
+            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Vxi11.DEVICE_ABORT_PROG);
@@ -780,10 +810,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            clientRpc.Call(packet, true, true);
+            clientRpcTcp.Call(packet, true, true);
 
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_REPLY))];
-            clientRpc.GetReply(buffer);
+            clientRpcTcp.GetReply(buffer, true);
 
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -799,10 +829,10 @@ namespace Vxi11Net
     }
     public class InterruptChannel
     {
-        private ServerRpc serverRpc = new ServerRpc();
+        private ServerRpcTcp serverRpc = new ServerRpcTcp();
         public void Create(string host, int port)
         {
-            serverRpc.CreateTcp(host, port);
+            serverRpc.Create(host, port);
         }
         public void Destroy()
         {

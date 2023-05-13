@@ -16,6 +16,17 @@
     <Compile Include="ClientRpc.cs" />
     <Compile Include="ClientVxi11.cs" />
     <Compile Include="Ivi.Visa.cs" />
+    <Compile Include="Ivi.Visa.IGpibSession.cs" />
+    <Compile Include="Ivi.Visa.IMessageBasedSession.cs" />
+    <Compile Include="Ivi.Visa.IPxiSession.cs" />
+    <Compile Include="Ivi.Visa.IRegisterBasedSession.cs" />
+    <Compile Include="Ivi.Visa.IReouceManager.cs" />
+    <Compile Include="Ivi.Visa.ISerialSession.cs" />
+    <Compile Include="Ivi.Visa.ITcpipSession.cs" />
+    <Compile Include="Ivi.Visa.ITcpipSocketSession.cs" />
+    <Compile Include="Ivi.Visa.IUsbSesssion.cs" />
+    <Compile Include="Ivi.Visa.IVxiSession.cs" />
+    <Compile Include="Ivi.Visa.Vxi11Session.cs" />
     <Compile Include="Portmap.cs" />
     <Compile Include="Rpc.cs" />
     <Compile Include="ServerRpc.cs" />

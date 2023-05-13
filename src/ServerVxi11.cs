@@ -1,23 +1,20 @@
-﻿using System.Drawing;
-using System.Net;
-using System.Net.Sockets;
+﻿using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
     public class ServerVxi11
     {
-        private ServerRpc serverRpc = new ServerRpc();
+        private ServerRpcTcp serverRpc = new ServerRpcTcp();
 
         public void Create(string host, int port)
         {
-            serverRpc.CreateTcp(host, port);
+            serverRpc.Create(host, port);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
             return serverRpc.ReceiveMsg();
         }
-
         // reply create_link
         public Vxi11.CREATE_LINK_PARAMS ReceiveCreateLink(out string handle)
         {
@@ -37,10 +34,10 @@ namespace Vxi11Net
             serverRpc.ClearArgs();
             return args;
         }
-        public void ReplyCreateLink(int lid, int abortPort, int maxRecvSize)
+        public void ReplyCreateLink(int xid, int lid, int abortPort, int maxRecvSize)
         {
             Vxi11.CREATE_LINK_REPLY reply = new Vxi11.CREATE_LINK_REPLY();
-            int size = Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_REPLY));
+            reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -77,9 +74,10 @@ namespace Vxi11Net
             serverRpc.ClearArgs();
             return args;
         }
-        public void ReplyDeviceWrite(int data_len)
+        public void ReplyDeviceWrite(int xid, int data_len)
         {
             Vxi11.DEVICE_WRITE_REPLY reply = new Vxi11.DEVICE_WRITE_REPLY();
+            reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -109,11 +107,12 @@ namespace Vxi11Net
             args.termChar = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             return args;
         }
-        public void ReplyDeviceRead(int reason, string data)
+        public void ReplyDeviceRead(int xid, int reason, string data)
         {
             byte[] buf = System.Text.Encoding.ASCII.GetBytes(data);
 
             Vxi11.DEVICE_READ_REPLY reply = new Vxi11.DEVICE_READ_REPLY();
+            reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -150,9 +149,10 @@ namespace Vxi11Net
             args.io_timeout = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return args;
         }
-        public void ReplyDeviceReadStb(byte stb)
+        public void ReplyDeviceReadStb(int xid, byte stb)
         {
             Vxi11.DEVICE_READSTB_REPLY reply = new Vxi11.DEVICE_READSTB_REPLY();
+            reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -199,6 +199,7 @@ namespace Vxi11Net
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_ENABLE_SRQ_PARAMS))];
             int byteCount = serverRpc.GetArgs(buffer);
+
             Vxi11.DEVICE_ENABLE_SRQ_PARAMS args = new Vxi11.DEVICE_ENABLE_SRQ_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             args.enable = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
@@ -232,9 +233,10 @@ namespace Vxi11Net
             serverRpc.ClearArgs();
             return args;
         }
-        public void ReplyDeviceDoCmd(int data_out_len)
+        public void ReplyDeviceDoCmd(int xid, int data_out_len)
         {
             Vxi11.DEVICE_DOCMD_REPLY reply = new Vxi11.DEVICE_DOCMD_REPLY();
+            reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -258,10 +260,10 @@ namespace Vxi11Net
             long Device_Link = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             return Device_Link;
         }
-
-        public void ReplyDeviceError(int error)
+        public void ReplyDeviceError(int xid, int error)
         {
             Vxi11.DEVICE_GENERIC_REPLY reply = new Vxi11.DEVICE_GENERIC_REPLY();
+            reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
             reply.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -288,7 +290,7 @@ namespace Vxi11Net
 
             Console.WriteLine("== Run demo server ==");
             Create(host, port);
-            ServerPortmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
+            Portmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Pmap.IPPROTO.TCP, port);
 
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
@@ -308,94 +310,94 @@ namespace Vxi11Net
                         Console.WriteLine("  == CREATE_LINK ==");
                         string handle;
                         Vxi11.CREATE_LINK_PARAMS crt = ReceiveCreateLink(out handle);
-                        ReplyCreateLink(123, 456, 789);
+                        ReplyCreateLink(msg.xid, 123, 456, 789);
                     }
                     else if (msg.proc == Vxi11.DEVICE_WRITE)
                     {
                         Console.WriteLine("  == DEVICE_WRITE ==");
                         string data;
                         Vxi11.DEVICE_WRITE_PARAMS wrt = ReceiveDeviceWrite(out data);
-                        ReplyDeviceWrite(wrt.data_len);
+                        ReplyDeviceWrite(msg.xid, wrt.data_len);
                     }
                     else if (msg.proc == Vxi11.DEVICE_READ)
                     {
                         Console.WriteLine("  == DEVICE_READ ==");
                         Vxi11.DEVICE_READ_PARAMS drd = ReceiveDeviceRead();
                         string data = "XYZCO,246B,S000-0123-02,0";
-                        ReplyDeviceRead(1, data);
+                        ReplyDeviceRead(msg.xid, 1, data);
                     }
                     else if (msg.proc == Vxi11.DEVICE_READSTB)
                     {
                         Console.WriteLine("  == DEVICE_READSTB ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceReadStb(8);
+                        ReplyDeviceReadStb(msg.xid, 8);
                     }
                     else if (msg.proc == Vxi11.DEVICE_TRIGGER)
                     {
                         Console.WriteLine("  == DEVICE_TRIGGER ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_CLEAR)
                     {
                         Console.WriteLine("  == DEVICE_CLEAR ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_REMOTE)
                     {
                         Console.WriteLine("  == DEVICE_REMOTE ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_LOCAL)
                     {
                         Console.WriteLine("  == DEVICE_LOCAL ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_LOCK)
                     {
                         Console.WriteLine("  == DEVICE_LOCK ==");
                         Vxi11.DEVICE_LOCK_PARAMS loc = ReceiveDeviceLock();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_UNLOCK)
                     {
                         Console.WriteLine("  == DEVICE_UNLOCK ==");
                         long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_ENABLE_SRQ)
                     {
                         Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
                         string handle;
                         ReceiveDeviceEnableSrq(out handle);
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DEVICE_DOCMD)
                     {
                         Console.WriteLine("  == DEVICE_DOCMD ==");
                         byte[] data_in;
                         Vxi11.DEVICE_DOCMD_PARAMS dcm = ReceiveDeviceDoCmd(out data_in);
-                        ReplyDeviceDoCmd(dcm.data_in_len);
+                        ReplyDeviceDoCmd(msg.xid, dcm.data_in_len);
                     }
                     else if (msg.proc == Vxi11.DESTROY_LINK)
                     {
                         Console.WriteLine("  == DESTROY_LINK ==");
                         long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.CREATE_INTR_CHAN)
                     {
                         Console.WriteLine("  == CREATE_INTR_CHAN ==");
                         ReceiveCreateIntrchan();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else if (msg.proc == Vxi11.DESTROY_INTR_CHAN)
                     {
                         Console.WriteLine("  == DESTROY_INTR_CHAN ==");
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else
                     {
@@ -411,7 +413,7 @@ namespace Vxi11Net
 
             Console.WriteLine("== Run demo server ==");
             Create(host, port);
-            ServerPortmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
+            Portmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
 
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
@@ -428,7 +430,7 @@ namespace Vxi11Net
                     {
                         Console.WriteLine("  == DEVICE_ABORT ==");
                         long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(Rpc.SUCCESS);
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     }
                     else
                     {

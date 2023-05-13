@@ -1,8 +1,4 @@
-﻿using System.Net.Sockets;
-using System.Reflection.Metadata;
-using System.Runtime.ConstrainedExecution;
-
-namespace Vxi11Net
+﻿namespace Vxi11Net
 {
     public class ServerProgram
     {
@@ -37,6 +33,7 @@ namespace Vxi11Net
         {
             bool isLoop = true;
             ServerVxi11 serverVxi11 = new ServerVxi11();
+            Rpc.RPC_MESSAGE_PARAMS msg = new Rpc.RPC_MESSAGE_PARAMS();
 
             while (isLoop)
             {
@@ -72,8 +69,8 @@ namespace Vxi11Net
                 Console.WriteLine(" E/Q:Exit program");
                 Console.WriteLine("");
                 Console.Write("Input fuction number? : ");
-                string a = new String(Console.ReadLine());
-                if (a == "1")
+                string code = new String(Console.ReadLine());
+                if (code == "1")
                 {
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
@@ -81,10 +78,10 @@ namespace Vxi11Net
                     serverVxi11.Create("127.0.0.1", port);
                     Console.WriteLine(" Call : create_core_channel : ret=0");
                 }
-                if (a == "2")
+                else if (code == "2")
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = serverVxi11.ReceiveMsg();
+                    msg = serverVxi11.ReceiveMsg();
                     Console.WriteLine("    received.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      prog    = {0}", msg.prog);
@@ -235,134 +232,134 @@ namespace Vxi11Net
                         Console.WriteLine("== clear_buffer ==");
                     }
                 }
-                if (a == "3")
+                else if (code == "3")
                 {
-                    serverVxi11.ReplyCreateLink(123, 456, 789);
+                    serverVxi11.ReplyCreateLink(msg.xid, 123, 456, 789);
                     Console.WriteLine("== reply to create_link ==");
                 }
-                if (a == "4")
+                else if (code == "4")
                 {
                     Console.Write("  data_len? : ");
                     int data_len = Convert.ToInt32(Console.ReadLine());
-                    serverVxi11.ReplyDeviceWrite(data_len);
+                    serverVxi11.ReplyDeviceWrite(msg.xid, data_len);
                     Console.WriteLine("== reply to device_write ==");
                 }
-                if (a == "5")
+                else if (code == "5")
                 {
-                    serverVxi11.ReplyDeviceRead(1, "XYZCO,246B,S000-0123-02,0");
+                    serverVxi11.ReplyDeviceRead(msg.xid, 1, "XYZCO,246B,S000-0123-02,0");
                     Console.WriteLine("== reply to device_read ==");
                 }
-                if (a == "6")
+                else if (code == "6")
                 {
                     Console.Write("  stb? : ");
                     byte stb = Convert.ToByte(Console.ReadLine());
-                    serverVxi11.ReplyDeviceReadStb(stb);
+                    serverVxi11.ReplyDeviceReadStb(msg.xid, stb);
                     Console.WriteLine("== reply to device_readstb ==");
                 }
-                if (a == "7")
+                else if (code == "7")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_trigger ==");
                 }
-                if (a == "8")
+                else if (code == "8")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_clear ==");
                 }
-                if (a == "9")
+                else if (code == "9")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_remote ==");
                 }
-                if (a == "10")
+                else if (code == "10")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_local ==");
                 }
-                if (a == "11")
+                else if (code == "11")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_lock ==");
                 }
-                if (a == "12")
+                else if (code == "12")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_unlock ==");
                 }
-                if (a == "13")
+                else if (code == "13")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to device_enable_srq ==");
                 }
-                if (a == "14")
+                else if (code == "14")
                 {
                     Console.Write("  data_in_len? : ");
                     int data_in_len = Convert.ToInt32(Console.ReadLine());
-                    serverVxi11.ReplyDeviceDoCmd(data_in_len);
+                    serverVxi11.ReplyDeviceDoCmd(msg.xid, data_in_len);
                     Console.WriteLine("== reply to device_docmd ==");
                 }
-                if (a == "15")
+                else if (code == "15")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== :reply to destroy_link ==");
                 }
-                if (a == "16")
+                else if (code == "16")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to create_intr_chan ==");
                 }
-                if (a == "17")
+                else if (code == "17")
                 {
-                    serverVxi11.ReplyDeviceError(Rpc.SUCCESS);
+                    serverVxi11.ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                     Console.WriteLine("== reply to destroy_intr_chan ==");
                 }
-                if (a == "18")
+                else if (code == "18")
                 {
                     Console.WriteLine("  21:reply to device_abort");
                 }
-                if (a == "19")
+                else if (code == "19")
                 {
                     Console.WriteLine("  22:send device_intr_srq");
                 }
-                if (a == "20")
+                else if (code == "20")
                 {
                     Console.WriteLine("  23:receive abort message");
                 }
-                if (a == "21")
+                else if (code == "21")
                 {
                     Console.WriteLine("== create_interrupt_channel ==");
                 }
-                if (a == "22")
+                else if (code == "22")
                 {
                     Console.WriteLine("== close_interrupt_channel ==");
                 }
-                if (a == "23")
+                else if (code == "23")
                 {
                     Console.WriteLine("  26:unregister core channel with portmapper");
                 }
-                if (a == "24")
+                else if (code == "24")
                 {
                     Console.WriteLine("== close_coret_channel ==");
                 }
-                if (a == "25")
+                else if (code == "25")
                 {
                     Console.WriteLine("== close_abort_channel ==");
                 }
-                if (a == "26")
+                else if (code == "26")
                 {
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     serverVxi11.RunCoreChannel("127.0.0.1", port);
                 }
-                if (a == "27")
+                else if (code == "27")
                 {
                     serverVxi11.Shutdown();
                 }
-                if ((a == "B") || (a == "b"))
+                else if ((code == "B") || (code == "b"))
                 {
                     isLoop = false;
                 }
-                if ((a == "Q") || (a == "q") || (a == "E") || (a == "e"))
+                else if ((code == "Q") || (code == "q") || (code == "E") || (code == "e"))
                 {
                     Console.WriteLine("== Exit program ==");
                     Environment.Exit(0);
@@ -372,115 +369,147 @@ namespace Vxi11Net
         public static void PortmapConsole()
         {
             bool isLoop = true;
-            ServerPortmap serverPortmap = new ServerPortmap();
+            ServerPortmapTcp serverPortmapTcp = new ServerPortmapTcp();
+            ServerPortmapUdp serverPortmapUdp = new ServerPortmapUdp();
+            Rpc.RPC_MESSAGE_PARAMS msg = new Rpc.RPC_MESSAGE_PARAMS();
 
             while (isLoop)
             {
                 Console.WriteLine("Select Portmap Function");
-                Console.WriteLine("   1:create portmap server");
+                Console.WriteLine("   1:create portmap server(TCP)");
                 Console.WriteLine("   2:receive message");
                 Console.WriteLine("   3:reply to pmap_set");
                 Console.WriteLine("   4:reply to pmap_unset");
                 Console.WriteLine("   5:reply to pmap_getport");
-                Console.WriteLine("   6:reply to pmap_dump");
-                Console.WriteLine("   7:close portmap server");
+                Console.WriteLine("   6:close portmap server");
+                Console.WriteLine("   7:create portmap server(UDP)");
+                Console.WriteLine("   8:receive message");
+                Console.WriteLine("   9:reply to pmap_set");
+                Console.WriteLine("  10:reply to pmap_unset");
+                Console.WriteLine("  11:reply to pmap_getport");
+                Console.WriteLine("  12:close portmap server");
                 Console.WriteLine("   B:back to Main menu");
                 Console.WriteLine(" E/Q:Exit program");
                 Console.WriteLine("");
                 Console.Write("Input fuction number? : ");
-                string a = new String(Console.ReadLine());
-                if (a == "1")
+                string code = new String(Console.ReadLine());
+                if (code == "1")
                 {
-                    Console.Write("  protocol?(6:TCP, 17:UDP) : ");
-                    int prot = Convert.ToInt32(Console.ReadLine());
-                    Pmap.IPPROTO ipprot;
-                    if (prot == 6)
-                    {
-                        ipprot = Pmap.IPPROTO.TCP;
-                    }
-                    else
-                    {
-                        ipprot = Pmap.IPPROTO.UDP;
-                    }
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
                     Console.WriteLine("== create portmap server ==");
-                    serverPortmap.Create("127.0.0.1", port, ipprot);
+                    serverPortmapTcp.Create("127.0.0.1", port);
                     Console.WriteLine(" Call : create_abort_channel : ret=0");
                 }
-                if (a == "2")
+                else if (code == "2")
                 {
                     Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = serverPortmap.ReceiveMsg();
-                    Console.WriteLine("    received--.");
+                    msg = serverPortmapTcp.ReceiveMsg();
+                    Console.WriteLine("    received.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      proc    = {0}", msg.proc);
-                    if (msg.proc == Pmap.PROC_NULL)
+                    if (msg.proc == Pmap.PROC_SET)
                     {
-                        serverPortmap.ReceiveNull();
-                        Console.WriteLine("== PMAPPROC_NULL ==");
-                    }
-                    else if (msg.proc == Pmap.PROC_SET)
-                    {
-                        Pmap.MAPPING map = serverPortmap.ReceiveSet();
+                        Pmap.MAPPING map = serverPortmapTcp.ReceiveSet();
                         Console.WriteLine("== PMAPPROC_SET ==");
                     }
                     else if (msg.proc == Pmap.PROC_UNSET)
                     {
-                        Pmap.MAPPING map = serverPortmap.ReceiveUnset();
+                        Pmap.MAPPING map = serverPortmapTcp.ReceiveUnset();
                         Console.WriteLine("== PMAPPROC_UNSET ==");
                     }
                     else if (msg.proc == Pmap.PROC_GETPORT)
                     {
-                        Pmap.MAPPING map = serverPortmap.ReceiveGetport();
+                        Pmap.MAPPING map = serverPortmapTcp.ReceiveGetPort();
                         Console.WriteLine("== PMAPPROC_GETPORT ==");
-                    }
-                    else if (msg.proc == Pmap.PROC_DUMP)
-                    {
-                        serverPortmap.ReceiveDump();
-                        Console.WriteLine("== PMAPPROC_DUMP ==");
                     }
                     else
                     {
-                        serverPortmap.ClearArgs();
+                        serverPortmapTcp.ClearArgs();
                         Console.WriteLine("== clear_buffer ==");
                     }
                 }
-                if (a == "3")
+                else if (code == "3")
                 {
-                    int xid = Convert.ToInt32(Console.ReadLine());
-                    serverPortmap.ReplySet(true);
+                    serverPortmapTcp.ReplySet(msg.xid, true);
                     Console.WriteLine("== reply to pmapproc_set ==");
                 }
-                if (a == "4")
+                else if (code == "4")
                 {
-                    int xid = Convert.ToInt32(Console.ReadLine());
-                    serverPortmap.ReplyUnset(true);
+                    serverPortmapTcp.ReplyUnset(msg.xid, true);
                     Console.WriteLine("== reply to pmapproc_unset ==");
                 }
-                if (a == "5")
+                else if (code == "5")
                 {
-                    int xid = Convert.ToInt32(Console.ReadLine());
-                    serverPortmap.ReplyGetport(1);
+                    serverPortmapTcp.ReplyGetPort(msg.xid, 1);
                     Console.WriteLine("== reply to pmapproc_getport ==");
                 }
-                if (a == "6")
+                else if (code == "6")
                 {
-                    int xid = Convert.ToInt32(Console.ReadLine());
-                    serverPortmap.ReplyDump(new List<Pmap.MAPPING>());
-                    Console.WriteLine("== reply to pmapproc_dump ==");
-                }
-                if (a == "7")
-                {
-                    int xid = Convert.ToInt32(Console.ReadLine());
-                    serverPortmap.Destroy();
+                    serverPortmapTcp.Destroy();
                     Console.WriteLine("== close portmap server ==");
                 }
-                if ((a == "B") || (a == "b"))
+                else if (code == "7")
+                {
+                    Console.Write("  port number? : ");
+                    int port = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("== create portmap server ==");
+                    serverPortmapUdp.Create("127.0.0.1", port);
+                    Console.WriteLine(" Call : create_abort_channel : ret=0");
+                }
+                else if (code == "8")
+                {
+                    Console.WriteLine("  == Wait RPC ==");
+                    msg = serverPortmapUdp.ReceiveMsg();
+                    Console.WriteLine("    received.");
+                    Console.WriteLine("      xid     = {0}", msg.xid);
+                    Console.WriteLine("      proc    = {0}", msg.proc);
+                    if (msg.proc == Pmap.PROC_SET)
+                    {
+                        Pmap.MAPPING map = serverPortmapUdp.ReceiveSet();
+                        Console.WriteLine("== PMAPPROC_SET ==");
+                    }
+                    else if (msg.proc == Pmap.PROC_UNSET)
+                    {
+                        Pmap.MAPPING map = serverPortmapUdp.ReceiveUnset();
+                        Console.WriteLine("== PMAPPROC_UNSET ==");
+                    }
+                    else if (msg.proc == Pmap.PROC_GETPORT)
+                    {
+                        Pmap.MAPPING map = serverPortmapUdp.ReceiveGetPort();
+                        Console.WriteLine("== PMAPPROC_GETPORT ==");
+                    }
+                    else
+                    {
+                        serverPortmapUdp.ClearArgs();
+                        Console.WriteLine("== clear_buffer ==");
+                    }
+                }
+                else if (code == "9")
+                {
+                    serverPortmapUdp.ReplySet(msg.xid, true);
+                    Console.WriteLine("== reply to pmapproc_set ==");
+                }
+                else if (code == "10")
+                {
+                    serverPortmapUdp.ReplyUnset(msg.xid, true);
+                    Console.WriteLine("== reply to pmapproc_unset ==");
+                }
+                else if (code == "11")
+                {
+                    serverPortmapUdp.ReplyGetPort(msg.xid, 1);
+                    Console.WriteLine("== reply to pmapproc_getport ==");
+                }
+                else if (code == "12")
+                {
+                    serverPortmapUdp.Destroy();
+                    Console.WriteLine("== close portmap server ==");
+                }
+                else if ((code == "B") || (code == "b"))
                 {
                     isLoop = false;
                 }
-                if ((a == "Q") || (a == "q") || (a == "E") || (a == "e"))
+                else if ((code == "Q") || (code == "q") || (code == "E") || (code == "e"))
                 {
                     Console.WriteLine("== Exit program ==");
                     Environment.Exit(0);
