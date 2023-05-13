@@ -31,7 +31,6 @@ namespace Vxi11Net
             }
             return ret;
         }
-
         public static bool RemovePort(int prog, int vers, Pmap.IPPROTO prot)
         {
             bool ret = false;
@@ -65,27 +64,27 @@ namespace Vxi11Net
     }
     public class ServerPortmapTcp
     {
-        private ServerRpcTcp serverRpc = new ServerRpcTcp();
+        private ServerRpcTcp serverRpcTcp = new ServerRpcTcp();
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         public void Create(string host, int port)
         {
-            serverRpc.Create(host, port);
+            serverRpcTcp.Create(host, port);
             Portmap.AddPort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.TCP, port);
         }
         public void Destroy()
         {
             tokenSource.Cancel();
-            serverRpc.Destroy();
+            serverRpcTcp.Destroy();
             Portmap.RemovePort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.TCP);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
-            return serverRpc.ReceiveMsg();
+            return serverRpcTcp.ReceiveMsg();
         }
         public Pmap.MAPPING ReceiveSet()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
-            serverRpc.GetArgs(buffer);
+            serverRpcTcp.GetArgs(buffer);
 
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -110,12 +109,12 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverRpcTcp.Reply(packet, true, true);
         }
         public Pmap.MAPPING ReceiveUnset()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
-            serverRpc.GetArgs(buffer);
+            serverRpcTcp.GetArgs(buffer);
 
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -139,12 +138,12 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverRpcTcp.Reply(packet, true, true);
         }
         public Pmap.MAPPING ReceiveGetPort()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
-            serverRpc.GetArgs(buffer);
+            serverRpcTcp.GetArgs(buffer);
 
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -168,56 +167,83 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverRpcTcp.Reply(packet, true, true);
         }
         public void ClearArgs()
         {
-            serverRpc.ClearArgs();
+            serverRpcTcp.ClearArgs();
+        }
+        public void TcpThread()
+        {
+            Rpc.RPC_MESSAGE_PARAMS msg;
+            while (!tokenSource.Token.IsCancellationRequested)
+            {
+                try { 
+                Console.WriteLine("  == Wait RPC ==");
+                msg = serverRpcTcp.ReceiveMsg();
+                Console.WriteLine("    received Portmap(TCP).");
+                Console.WriteLine("      xid     = {0}", msg.xid);
+                Console.WriteLine("      type    = {0}", msg.msg_type);
+                Console.WriteLine("      prog    = {0}", msg.prog);
+                Console.WriteLine("      proc    = {0}", msg.proc);
+                Console.WriteLine("      vers    = {0}", msg.vers);
+                if (msg.proc == Pmap.PROC_SET)
+                {
+                    Console.WriteLine("    == PMAPPROC_SET ==");
+                    Pmap.MAPPING map = ReceiveSet();
+                    Console.WriteLine("      prog    = {0}", map.prog);
+                    Console.WriteLine("      vers    = {0}", map.vers);
+                    Console.WriteLine("      prot    = {0}", map.prot);
+                    Console.WriteLine("      port    = {0}", map.port);
+                    Console.WriteLine("");
+                    bool status = Portmap.AddPort(map.prog, map.vers, map.prot, map.port);
+                    ReplySet(msg.xid, status);
+                }
+                else if (msg.proc == Pmap.PROC_UNSET)
+                {
+                    Console.WriteLine("    == PMAPPROC_UNSET ==");
+                    Pmap.MAPPING map = ReceiveUnset();
+                    Console.WriteLine("      prog    = {0}", map.prog);
+                    Console.WriteLine("      vers    = {0}", map.vers);
+                    Console.WriteLine("      prot    = {0}", map.prot);
+                    Console.WriteLine("");
+                    bool status = Portmap.RemovePort(map.prog, map.vers, map.prot);
+                    ReplyUnset(msg.xid, status);
+                }
+                else if (msg.proc == Pmap.PROC_GETPORT)
+                {
+                    Console.WriteLine("    == PMAPPROC_GETPORT ==");
+                    Pmap.MAPPING map = ReceiveGetPort();
+                    Console.WriteLine("      prog    = {0}", map.prog);
+                    Console.WriteLine("      vers    = {0}", map.vers);
+                    Console.WriteLine("      prot    = {0}", map.prot);
+                    Console.WriteLine("");
+                    int prog_port = Portmap.FindPort(map.prog, map.vers, map.prot);
+                    ReplyGetPort(msg.xid, prog_port);
+                }
+                else
+                {
+                    Console.WriteLine("    == clear buffer ==");
+                    ClearArgs();
+                }
+                } catch (Exception e)
+                {
+                    serverRpcTcp.Close();
+                }
+            }
         }
         public void Run(string host, int port)
         {
             tokenSource.TryReset();
 
-            Console.WriteLine("== Run PortmapServer ==");
+            Console.WriteLine("== Run PortmapServer(TCP, {0}, {1}) ==", host, port);
             Create(host, port);
 
             Task.Run(() =>
             {
-                while (!tokenSource.Token.IsCancellationRequested)
-                {
-                    Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = serverRpc.ReceiveMsg();
-                    Console.WriteLine("    received--.");
-                    Console.WriteLine("      xid     = {0}", msg.xid);
-                    Console.WriteLine("      proc    = {0}", msg.proc);
-                    if (msg.proc == Pmap.PROC_SET)
-                    {
-                        Console.WriteLine("  == PMAPPROC_SET ==");
-                        Pmap.MAPPING map = ReceiveSet();
-                        bool status = Portmap.AddPort(map.prog, map.vers, map.prot, map.port);
-                        ReplySet(msg.xid, status);
-                    }
-                    else if (msg.proc == Pmap.PROC_UNSET)
-                    {
-                        Console.WriteLine("  == PMAPPROC_UNSET ==");
-                        Pmap.MAPPING map = ReceiveUnset();
-                        bool status = Portmap.RemovePort(map.prog, map.vers, map.prot);
-                        ReplyUnset(msg.xid, status);
-                    }
-                    else if (msg.proc == Pmap.PROC_GETPORT)
-                    {
-                        Console.WriteLine("  == PMAPPROC_GETPORT ==");
-                        Pmap.MAPPING map = ReceiveGetPort();
-                        int prog_port = Portmap.FindPort(map.prog, map.vers, map.prot);
-                        ReplyGetPort(msg.xid, prog_port);
-                    }
-                    else
-                    {
-                        Console.WriteLine("  == clear buffer ==");
-                        serverRpc.ClearArgs();
-                    }
-                }
+                TcpThread();
             });
+            Thread.Sleep(10);
         }
         public void Shutdown()
         {
@@ -226,29 +252,29 @@ namespace Vxi11Net
     }
     public class ServerPortmapUdp
     {
-        private ServerRpcUdp serverRpc = new ServerRpcUdp();
+        private ServerRpcUdp serverRpcUdp = new ServerRpcUdp();
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         public void Create(string host, int port)
         {
-            serverRpc.Create(host, port);
+            serverRpcUdp.Create(host, port);
             Portmap.AddPort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.UDP, port);
         }
         public void Destroy()
         {
             tokenSource.Cancel();
-            serverRpc.Destroy();
+            serverRpcUdp.Destroy();
             Portmap.RemovePort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.UDP);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
-            return serverRpc.ReceiveMsg();
+            return serverRpcUdp.ReceiveMsg();
         }
 
         public Pmap.MAPPING ReceiveSet()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
-            serverRpc.GetArgs(buffer);
+            serverRpcUdp.GetArgs(buffer);
 
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -273,12 +299,12 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet);
+            serverRpcUdp.Reply(packet);
         }
         public Pmap.MAPPING ReceiveUnset()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
-            serverRpc.GetArgs(buffer);
+            serverRpcUdp.GetArgs(buffer);
 
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -302,12 +328,12 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet);
+            serverRpcUdp.Reply(packet);
         }
         public Pmap.MAPPING ReceiveGetPort()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
-            serverRpc.GetArgs(buffer);
+            serverRpcUdp.GetArgs(buffer);
 
             Pmap.MAPPING map = new Pmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -331,56 +357,78 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet);
+            serverRpcUdp.Reply(packet);
         }
         public void ClearArgs()
         {
-            serverRpc.ClearArgs();
+            serverRpcUdp.ClearArgs();
+        }
+        public void UdpThread()
+        {
+            Rpc.RPC_MESSAGE_PARAMS msg;
+            while (!tokenSource.Token.IsCancellationRequested)
+            {
+                Console.WriteLine("  == Wait RPC ==");
+                msg = serverRpcUdp.ReceiveMsg();
+                Console.WriteLine("    received Portmap(UDP).");
+                Console.WriteLine("      xid     = {0}", msg.xid);
+                Console.WriteLine("      type    = {0}", msg.msg_type);
+                Console.WriteLine("      prog    = {0}", msg.prog);
+                Console.WriteLine("      proc    = {0}", msg.proc);
+                Console.WriteLine("      vers    = {0}", msg.vers);
+                if (msg.proc == Pmap.PROC_SET)
+                {
+                    Console.WriteLine("    == PMAPPROC_SET ==");
+                    Pmap.MAPPING map = ReceiveSet();
+                    Console.WriteLine("      prog    = {0}", map.prog);
+                    Console.WriteLine("      vers    = {0}", map.vers);
+                    Console.WriteLine("      prot    = {0}", map.prot);
+                    Console.WriteLine("      port    = {0}", map.port);
+                    Console.WriteLine("");
+                    bool status = Portmap.AddPort(map.prog, map.vers, map.prot, map.port);
+                    ReplySet(msg.xid, status);
+                }
+                else if (msg.proc == Pmap.PROC_UNSET)
+                {
+                    Console.WriteLine("    == PMAPPROC_UNSET ==");
+                    Pmap.MAPPING map = ReceiveUnset();
+                    Console.WriteLine("      prog    = {0}", map.prog);
+                    Console.WriteLine("      vers    = {0}", map.vers);
+                    Console.WriteLine("      prot    = {0}", map.prot);
+                    Console.WriteLine("");
+                    bool status = Portmap.RemovePort(map.prog, map.vers, map.prot);
+                    ReplyUnset(msg.xid, status);
+                }
+                else if (msg.proc == Pmap.PROC_GETPORT)
+                {
+                    Console.WriteLine("    == PMAPPROC_GETPORT ==");
+                    Pmap.MAPPING map = ReceiveGetPort();
+                    Console.WriteLine("      prog    = {0}", map.prog);
+                    Console.WriteLine("      vers    = {0}", map.vers);
+                    Console.WriteLine("      prot    = {0}", map.prot);
+                    Console.WriteLine("");
+                    int prog_port = Portmap.FindPort(map.prog, map.vers, map.prot);
+                    ReplyGetPort(msg.xid, prog_port);
+                }
+                else
+                {
+                    Console.WriteLine("    == clear buffer ==");
+                    ClearArgs();
+                }
+            }
         }
         public void Run(string host, int port)
         {
             tokenSource.TryReset();
 
-            Console.WriteLine("== Run PortmapServer ==");
+            Console.WriteLine("== Run PortmapServer(UDP, {0}, {1}) ==", host, port);
             Create(host, port);
 
             Task.Run(() =>
             {
-                while (!tokenSource.Token.IsCancellationRequested)
-                {
-                    Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = serverRpc.ReceiveMsg();
-                    Console.WriteLine("    received--.");
-                    Console.WriteLine("      xid     = {0}", msg.xid);
-                    Console.WriteLine("      proc    = {0}", msg.proc);
-                    if (msg.proc == Pmap.PROC_SET)
-                    {
-                        Console.WriteLine("  == PMAPPROC_SET ==");
-                        Pmap.MAPPING map = ReceiveSet();
-                        bool status = Portmap.AddPort(map.prog, map.vers, map.prot, map.port);
-                        ReplySet(msg.xid, status);
-                    }
-                    else if (msg.proc == Pmap.PROC_UNSET)
-                    {
-                        Console.WriteLine("  == PMAPPROC_UNSET ==");
-                        Pmap.MAPPING map = ReceiveUnset();
-                        bool status = Portmap.RemovePort(map.prog, map.vers, map.prot);
-                        ReplyUnset(msg.xid, status);
-                    }
-                    else if (msg.proc == Pmap.PROC_GETPORT)
-                    {
-                        Console.WriteLine("  == PMAPPROC_GETPORT ==");
-                        Pmap.MAPPING map = ReceiveGetPort();
-                        int prog_port = Portmap.FindPort(map.prog, map.vers, map.prot);
-                        ReplyGetPort(msg.xid, prog_port);
-                    }
-                    else
-                    {
-                        Console.WriteLine("  == clear buffer ==");
-                        serverRpc.ClearArgs();
-                    }
-                }
+                UdpThread();
             });
+            Thread.Sleep(10);
         }
         public void Shutdown()
         {

@@ -325,8 +325,7 @@ namespace Vxi11Net
         public static void PortmapConsole()
         {
             ClientPortmapTcp clientPortmapTcp = new ClientPortmapTcp();
-            ClientPortmapTcp clientPortmapUdp = new ClientPortmapTcp();
-
+            ClientPortmapUdp clientPortmapUdp = new ClientPortmapUdp();
             bool isLoop = true;
             while (isLoop)
             {

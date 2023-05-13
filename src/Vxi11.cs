@@ -30,12 +30,13 @@ namespace Vxi11Net
         public const int DEVICE_INTR_SRQ = 30;
         public const int DEVICE_CORE = 395183;
 
+        [Flags]
         public enum Flags
         {
-            termchrset = 0x0080,
-            end = 0x0008,
-            waitlock = 0x0001,
-            none = 0x0000
+            termchrset = 0x80,
+            end = 0x08,
+            waitlock = 0x01,
+            none = 0x00
         }
         public enum TermChar
         {
@@ -43,7 +44,8 @@ namespace Vxi11Net
             LF = 0x0D,
             None = 0x00
         }
-        public enum reason
+        [Flags]
+        public enum Reason
         {
             END = 0x04,
             CHR = 0x02,

@@ -17,6 +17,7 @@
     <Compile Include="ServerPortmap.cs" />
     <Compile Include="ServerProgram.cs" />
     <Compile Include="ServerRpc.cs" />
+    <Compile Include="ServerScpi.cs" />
     <Compile Include="ServerVxi11.cs" />
     <Compile Include="Vxi11.cs" />
   </ItemGroup>

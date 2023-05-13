@@ -8,18 +8,15 @@ namespace Ivi.Visa
         [Fact]
         public void Test1()
         {
-            //Vxi11Net.Server.run_demo_server("127.0.0.1", 5024);
-
-            int port = 5024;
+            int port = 1111;
             Console.WriteLine("== Run demo server ==");
-            ServerPortmap tcp_server = new ServerPortmap();
-            ServerPortmap udp_server = new ServerPortmap();
-            ServerVxi11 coreServer = new ServerVxi11();
-            ServerVxi11 abortServer = new ServerVxi11();
-            tcp_server.Run("127.0.0.1", port, Pmap.IPPROTO.TCP);
-            udp_server.Run("127.0.0.1", port, Pmap.IPPROTO.UDP);
-            coreServer.RunCoreChannel("127.0.0.1", port);
-            abortServer.RunAbortChannel("127.0.0.1", port + 1);
+            ServerPortmapTcp serverPortmapTcp = new ServerPortmapTcp();
+            ServerPortmapUdp serverPortmapUdp = new ServerPortmapUdp();
+            ServerVxi11 serverVxi11 = new ServerVxi11();
+            serverPortmapTcp.Run("127.0.0.1", port);
+            serverPortmapUdp.Run("127.0.0.1", port);
+            serverVxi11.RunCoreChannel("127.0.0.1", port);
+            serverVxi11.RunAbortChannel("127.0.0.1", port + 1);
 
             string rsrc = new String(Console.ReadLine());
             // IMessageBasedSession session1 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP0::1.2.3.4::5025::SOCKET");
@@ -31,10 +28,9 @@ namespace Ivi.Visa
             //session.FormattedIO.WriteLine("IDN?");
             //string msg = session.FormattedIO.ReadLine();
 
-            tcp_server.Shutdown();
-            udp_server.Shutdown();
-            abortServer.Shutdown();
-            coreServer.Shutdown();
+            serverPortmapUdp.Shutdown();
+            serverPortmapTcp.Shutdown();
+            serverVxi11.Shutdown();
         }
     }
 }

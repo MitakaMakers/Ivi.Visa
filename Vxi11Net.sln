@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerProgram", "src\ServerProgram.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server", "src\Server.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa", "src\Ivi.Visa.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
 EndProject
@@ -19,7 +19,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa.Tests", "Ivi.Visa.
 		{BC56A198-977C-4D89-A843-25EA522FE250} = {BC56A198-977C-4D89-A843-25EA522FE250}
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientProgram", "src\ClientProgram.csproj", "{7394ADDA-8923-4D65-AE1A-F0A682999EA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client", "src\Client.csproj", "{7394ADDA-8923-4D65-AE1A-F0A682999EA6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

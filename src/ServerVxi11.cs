@@ -1,25 +1,39 @@
 ﻿using System.Net;
 using System.Runtime.InteropServices;
+using static Vxi11Net.Vxi11;
 
 namespace Vxi11Net
 {
     public class ServerVxi11
     {
-        private ServerRpcTcp serverRpc = new ServerRpcTcp();
+        private int lid = 123;
+        private int abortPort = 456;
+        private ServerRpcTcp serverCore = new ServerRpcTcp();
+        private ServerRpcTcp serverAbort = new ServerRpcTcp();
+        private ClientRpcTcp serverInterrupt = new ClientRpcTcp();
+        private ServerScpi serverScpi = new ServerScpi();
 
         public void Create(string host, int port)
         {
-            serverRpc.Create(host, port);
+            serverCore.Create(host, port);
+        }
+        public void CreateAbort(string host, int port)
+        {
+            serverAbort.Create(host, port);
+        }
+        public void CreateInterrupt(string host, int port)
+        {
+            serverInterrupt.Create(host, port);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
-            return serverRpc.ReceiveMsg();
+            return serverCore.ReceiveMsg();
         }
         // reply create_link
         public Vxi11.CREATE_LINK_PARAMS ReceiveCreateLink(out string handle)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_LINK_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.CREATE_LINK_PARAMS args = new Vxi11.CREATE_LINK_PARAMS();
             args.clientId = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -28,10 +42,10 @@ namespace Vxi11Net
             args.handle_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
 
             buffer = new Byte[args.handle_len];
-            byteCount = serverRpc.GetArgs(buffer);
+            byteCount = serverCore.GetArgs(buffer);
             handle = System.Text.Encoding.ASCII.GetString(buffer);
 
-            serverRpc.ClearArgs();
+            serverCore.ClearArgs();
             return args;
         }
         public void ReplyCreateLink(int xid, int lid, int abortPort, int maxRecvSize)
@@ -52,13 +66,13 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverCore.Reply(packet, true, true);
         }
         // reply device_write
         public Vxi11.DEVICE_WRITE_PARAMS ReceiveDeviceWrite(out string data)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.DEVICE_WRITE_PARAMS args = new Vxi11.DEVICE_WRITE_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -68,10 +82,10 @@ namespace Vxi11Net
             args.data_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
 
             buffer = new Byte[args.data_len];
-            byteCount = serverRpc.GetArgs(buffer);
+            byteCount = serverCore.GetArgs(buffer);
             data = System.Text.Encoding.ASCII.GetString(buffer);
 
-            serverRpc.ClearArgs();
+            serverCore.ClearArgs();
             return args;
         }
         public void ReplyDeviceWrite(int xid, int data_len)
@@ -90,13 +104,13 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverCore.Reply(packet, true, true);
         }
         // reply device_read
         public Vxi11.DEVICE_READ_PARAMS ReceiveDeviceRead()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.DEVICE_READ_PARAMS args = new Vxi11.DEVICE_READ_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -107,7 +121,7 @@ namespace Vxi11Net
             args.termChar = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             return args;
         }
-        public void ReplyDeviceRead(int xid, int reason, string data)
+        public void ReplyDeviceRead(int xid, Reason reason, string data)
         {
             byte[] buf = System.Text.Encoding.ASCII.GetBytes(data);
 
@@ -119,7 +133,7 @@ namespace Vxi11Net
             reply.verf_len = IPAddress.HostToNetworkOrder(0);
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
-            reply.reason = IPAddress.HostToNetworkOrder(reason);
+            reply.reason = IPAddress.HostToNetworkOrder((int)reason);
             reply.data_len = IPAddress.HostToNetworkOrder(buf.Length);
 
             int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)) + buf.Length;
@@ -129,7 +143,7 @@ namespace Vxi11Net
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(buf, 0, packet, Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)), buf.Length);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverCore.Reply(packet, true, true);
         }
         // reply device_readstb
         // reply device_trigger
@@ -140,7 +154,7 @@ namespace Vxi11Net
         public Vxi11.DEVICE_GENERIC_PARAMS ReceiveGenericParams()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_GENERIC_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.DEVICE_GENERIC_PARAMS args = new Vxi11.DEVICE_GENERIC_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -165,13 +179,13 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverCore.Reply(packet, true, true);
         }
         // reply device_lock
         public Vxi11.DEVICE_LOCK_PARAMS ReceiveDeviceLock()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_LOCK_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.DEVICE_LOCK_PARAMS args = new Vxi11.DEVICE_LOCK_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -184,7 +198,7 @@ namespace Vxi11Net
         public Vxi11.CREATE_INTR_CHAN_PARAMS ReceiveCreateIntrchan()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.CREATE_INTR_CHAN_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.CREATE_INTR_CHAN_PARAMS args = new Vxi11.CREATE_INTR_CHAN_PARAMS();
             args.hostaddr = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -198,7 +212,7 @@ namespace Vxi11Net
         public Vxi11.DEVICE_ENABLE_SRQ_PARAMS ReceiveDeviceEnableSrq(out string handle)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_ENABLE_SRQ_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.DEVICE_ENABLE_SRQ_PARAMS args = new Vxi11.DEVICE_ENABLE_SRQ_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -206,17 +220,17 @@ namespace Vxi11Net
             args.handle_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
 
             buffer = new Byte[args.handle_len];
-            byteCount = serverRpc.GetArgs(buffer);
+            byteCount = serverCore.GetArgs(buffer);
             handle = System.Text.Encoding.ASCII.GetString(buffer);
 
-            serverRpc.ClearArgs();
+            serverCore.ClearArgs();
             return args;
         }
         // reply device_docmd
         public Vxi11.DEVICE_DOCMD_PARAMS ReceiveDeviceDoCmd(out byte[] data_in)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_PARAMS))];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             Vxi11.DEVICE_DOCMD_PARAMS args = new Vxi11.DEVICE_DOCMD_PARAMS();
             args.lid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
@@ -228,9 +242,9 @@ namespace Vxi11Net
             args.datasize = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
             args.data_in_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
             data_in = new Byte[args.data_in_len];
-            byteCount = serverRpc.GetArgs(data_in);
+            byteCount = serverCore.GetArgs(data_in);
 
-            serverRpc.ClearArgs();
+            serverCore.ClearArgs();
             return args;
         }
         public void ReplyDeviceDoCmd(int xid, int data_out_len)
@@ -248,14 +262,14 @@ namespace Vxi11Net
             byte[] packet = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_DOCMD_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-            serverRpc.Reply(packet, true, true);
+            serverCore.Reply(packet, true, true);
             gchw.Free();
         }
         // reply destroy_link
         public long ReceiveDeviceLink()
         {
             byte[] buffer = new byte[4];
-            int byteCount = serverRpc.GetArgs(buffer);
+            int byteCount = serverCore.GetArgs(buffer);
 
             long Device_Link = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             return Device_Link;
@@ -275,33 +289,25 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            serverRpc.Reply(packet, true, true);
+            serverCore.Reply(packet, true, true);
         }
         public void Flush()
         {
-            serverRpc.Flush();
+            serverCore.Flush();
         }
 
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-        public void RunCoreChannel(string host, int port)
+        public void CoreThread()
         {
-            tokenSource.TryReset();
-
-            Console.WriteLine("== Run demo server ==");
-            Create(host, port);
-            Portmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Pmap.IPPROTO.TCP, port);
-
-            Console.WriteLine("  listen({0}:{1})...", host, port);
-
-            Task.Run(() =>
+            while (!tokenSource.Token.IsCancellationRequested)
             {
-                while (!tokenSource.Token.IsCancellationRequested)
+                try
                 {
                     Console.WriteLine("  == Wait RPC ==");
                     Rpc.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
-                    Console.WriteLine("    received--.");
+                    Console.WriteLine("    received VXI-11 core channel.");
                     Console.WriteLine("      xid     = {0}", msg.xid);
+                    Console.WriteLine("      type    = {0}", msg.msg_type);
                     Console.WriteLine("      prog    = {0}", msg.prog);
                     Console.WriteLine("      proc    = {0}", msg.proc);
                     Console.WriteLine("      vers    = {0}", msg.vers);
@@ -310,27 +316,30 @@ namespace Vxi11Net
                         Console.WriteLine("  == CREATE_LINK ==");
                         string handle;
                         Vxi11.CREATE_LINK_PARAMS crt = ReceiveCreateLink(out handle);
-                        ReplyCreateLink(msg.xid, 123, 456, 789);
+                        int maxRecvSize = serverScpi.GetMaxRecvSize();
+                        ReplyCreateLink(msg.xid, lid, abortPort, maxRecvSize);
                     }
                     else if (msg.proc == Vxi11.DEVICE_WRITE)
                     {
                         Console.WriteLine("  == DEVICE_WRITE ==");
                         string data;
                         Vxi11.DEVICE_WRITE_PARAMS wrt = ReceiveDeviceWrite(out data);
+                        serverScpi.Parse(data);
                         ReplyDeviceWrite(msg.xid, wrt.data_len);
                     }
                     else if (msg.proc == Vxi11.DEVICE_READ)
                     {
                         Console.WriteLine("  == DEVICE_READ ==");
                         Vxi11.DEVICE_READ_PARAMS drd = ReceiveDeviceRead();
-                        string data = "XYZCO,246B,S000-0123-02,0";
-                        ReplyDeviceRead(msg.xid, 1, data);
+                        string data = serverScpi.GetResponse();
+                        ReplyDeviceRead(msg.xid, Reason.END|Reason.CHR, data);
                     }
                     else if (msg.proc == Vxi11.DEVICE_READSTB)
                     {
                         Console.WriteLine("  == DEVICE_READSTB ==");
                         Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceReadStb(msg.xid, 8);
+                        byte stb = serverScpi.stb();
+                        ReplyDeviceReadStb(msg.xid, stb);
                     }
                     else if (msg.proc == Vxi11.DEVICE_TRIGGER)
                     {
@@ -402,48 +411,82 @@ namespace Vxi11Net
                     else
                     {
                         Console.WriteLine("  == clear buffer ==");
-                        serverRpc.ClearArgs();
+                        serverCore.ClearArgs();
                     }
+                } catch (Exception e)
+                {
+                    serverCore.Close();
                 }
+            }
+        }
+        public void RunCoreChannel(string host, int port)
+        {
+            tokenSource.TryReset();
+
+            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
+            Create(host, port);
+            Portmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Pmap.IPPROTO.TCP, port);
+
+            Console.WriteLine("  listen({0}:{1})...", host, port);
+
+            Task.Run(() =>
+            {
+                CoreThread();
             });
+            Thread.Sleep(10);
+        }
+        public void AbortThread()
+        {
+            while (!tokenSource.Token.IsCancellationRequested)
+            {
+                try
+                {
+                    Console.WriteLine("  == Wait RPC ==");
+                    Rpc.RPC_MESSAGE_PARAMS msg = serverAbort.ReceiveMsg();
+                    Console.WriteLine("    received VXI-11 abort channel.");
+                    Console.WriteLine("      xid     = {0}", msg.xid);
+                    Console.WriteLine("      type    = {0}", msg.msg_type);
+                    Console.WriteLine("      prog    = {0}", msg.prog);
+                    Console.WriteLine("      proc    = {0}", msg.proc);
+                    Console.WriteLine("      vers    = {0}", msg.vers);
+                    if (msg.proc == Vxi11.DEVICE_ABORT)
+                    {
+                        Console.WriteLine("  == DEVICE_ABORT ==");
+                        long dlink = ReceiveDeviceLink();
+                        serverScpi.Abort();
+                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                    }
+                    else
+                    {
+                        Console.WriteLine("  == clear buffer ==");
+                        serverAbort.ClearArgs();
+                    }
+                } catch (Exception e)
+                {
+                    serverAbort.Close();
+                }
+            }
         }
         public void RunAbortChannel(string host, int port)
         {
             tokenSource.TryReset();
 
-            Console.WriteLine("== Run demo server ==");
-            Create(host, port);
+            Console.WriteLine("== Run VXI-11 Abort channel(TCP, {0}, {1}) ==", host, port);
+            CreateAbort(host, port);
             Portmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
 
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
             Task.Run(() =>
             {
-                while (!tokenSource.Token.IsCancellationRequested)
-                {
-                    Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
-                    Console.WriteLine("    received--.");
-                    Console.WriteLine("      xid     = {0}", msg.xid);
-                    Console.WriteLine("      proc    = {0}", msg.proc);
-                    if (msg.proc == Vxi11.DEVICE_ABORT)
-                    {
-                        Console.WriteLine("  == DEVICE_ABORT ==");
-                        long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else
-                    {
-                        Console.WriteLine("  == clear buffer ==");
-                        serverRpc.ClearArgs();
-                    }
-                }
+                AbortThread();
             });
+            Thread.Sleep(10);
         }
         public void Shutdown()
         {
             tokenSource.Cancel();
-            serverRpc.Destroy();
+            serverCore.Destroy();
         }
     }
 }

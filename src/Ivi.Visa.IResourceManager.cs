@@ -1,5 +1,9 @@
 ﻿namespace Ivi.Visa
 {
+    public class IMessage
+    {
+        public int Timeout { get; set; }
+    }
     public sealed class HardwareInterface : IEquatable<HardwareInterface>
     {
         public Int16 Number { get; private set; }
