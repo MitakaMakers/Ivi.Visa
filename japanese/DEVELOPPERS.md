@@ -25,18 +25,17 @@
   - https://zenn.dev/shimat/articles/03ad92427cbed6
 
 ## Source code Quality
-- クラスや関数、変数の命名について 各種規格の用語を使います。
-- そのの他のソースコードの記法について C# コーディングガイドを尊重します。
+- クラスと関数と変数の命名について 各種規格が定義している用語を尊重します。
+- その他のソースコードの記法について C# コーディングガイドを尊重します。
   - [Documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/)
   - [C# Language Specification annex on documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments)
 - １関数あたりのサイクロマティック複雑度10未満を目指します。
   - https://devblogs.microsoft.com/dotnet/automate-code-metrics-and-class-diagrams-with-github-actions/
-- １ファイルの行数は2000行未満を目指します。逆に100行未満のファイルは統合します。
+- １ファイルの行数は2000行未満を目指します。逆に50行未満の短すぎるファイルは統合します。
 - 初学者がソースコードを理解しやすいよう、オブジェクト指向ではなく手続き指向で表記します。
-- C#固有のや珍しい表記法は使いません
-　（C99 / Java 2 程度を想定）
+- C# 固有のや珍しい表記法は使いません（C99 / Java 2 程度を想定）
 - コールバック処理・非同期処理は使いません。
-- コードの行数を短くして簡潔に記述するより、冗長でもいいので関数の呼び出し回数が少なくなる記法を優先します。
+- コードの行数を短くして簡潔に記述するより、多少冗長でも関数の呼び出し回数が少なくなる記法を優先します。
 
 ## Domument Quality
 説明は簡潔で1ページを2000文字以内にします。
@@ -45,7 +44,8 @@
 - Support HISLIP
 - Support RawSokcet
 - Support RS232
-  - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/) 
+  - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/)
+  - [Null-modem emulator](https://sourceforge.net/projects/com0com/)
 - Support USBTMC and USB raw
   - [Usb.Net](https://www.nuget.org/packages/Usb.Net/)
   - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
