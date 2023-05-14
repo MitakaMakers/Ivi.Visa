@@ -1,4 +1,6 @@
-﻿namespace Ivi.Visa
+﻿using System.Text.RegularExpressions;
+
+namespace Ivi.Visa
 {
     public class IMessage
     {
@@ -159,9 +161,52 @@
         }
         public static IVisaSession Open(String resourceName, AccessMode accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)
         {
-            IVisaSession sesn = new Vxi11Session(resourceName);
-            // TODO Implement
-            openStatus = ResourceOpenStatus.Success;
+            IVisaSession sesn = new VisaNullSession();
+            openStatus = ResourceOpenStatus.ConfigurationNotLoaded;
+
+            string[] token = Regex.Split(resourceName, "::");
+            if (Regex.IsMatch(token[0], "^[Tt][Cc][Pp][Ii][Pp]"))
+            {
+                if (2 == token.Length)
+                {
+                    sesn = new Vxi11Session(token[1], "inst0");
+                    openStatus = ResourceOpenStatus.Success;
+                }
+                else if (3 == token.Length)
+                {
+                    if (Regex.IsMatch(token[2], "[Hh][Ii][Ss][Ll][Ii][Pp]"))
+                    {
+                    }
+                    else
+                    {
+                        sesn = new Vxi11Session(token[1], token[2]);
+                        openStatus = ResourceOpenStatus.Success;
+                    }
+                }
+                else if (4 == token.Length)
+                {
+                    if (Regex.IsMatch(token[3], "[Ii][Nn][Ss][Tt][Rr]"))
+                    {
+                        if (Regex.IsMatch(token[2], "[Hh][Ii][Ss][Ll][Ii][Pp]"))
+                        {
+                        }
+                        else
+                        {
+                            sesn = new Vxi11Session(token[1], token[2]);
+                            openStatus = ResourceOpenStatus.Success;
+                        }
+                    }
+                    else if (Regex.IsMatch(token[3], "[Ss][Oo][Cc][Kk][Ee][Tt]"))
+                    {
+                        sesn = new TcpipSocketSession(token[1], token[2]);
+                        openStatus = ResourceOpenStatus.Success;
+                    }
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
             return sesn;
         }
         public static String ManufacturerName { get; } = String.Empty;
@@ -204,8 +249,7 @@
 
         public IVisaSession Open(string resourceName, AccessMode accessModes, int timeoutMilliseconds, out ResourceOpenStatus openStatus)
         {
-            IVisaSession sesn = new Vxi11Session(resourceName);
-            openStatus = ResourceOpenStatus.Success;
+            IVisaSession sesn = GlobalResourceManager.Open(resourceName, accessModes, timeoutMilliseconds, out openStatus);
             return sesn;
         }
 

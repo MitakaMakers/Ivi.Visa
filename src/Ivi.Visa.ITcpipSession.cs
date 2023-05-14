@@ -30,7 +30,7 @@ namespace Ivi.Visa
         String TlsCipherSuite { get; }
     }
 
-    public class Vxi11Session : ITcpipSocketSession
+    public class Vxi11Session : ITcpipSession
     {
         public const int default_timeout_value = 2000;
         public Int32 TimeoutMilliseconds { get; set; }
@@ -85,7 +85,10 @@ namespace Ivi.Visa
             status = EventQueueStatus.Empty;
             return new VisaEventArgs(EventType.Custom);
         }
-        public void Dispose() { }
+        public void Dispose()
+        {
+            client.Destroy();
+        }
 
         public String Address { get; } = string.Empty;
         public String HostName { get; } = string.Empty;
@@ -106,6 +109,17 @@ namespace Ivi.Visa
         }
         public IMessageBasedFormattedIO FormattedIO { get; }
         public IMessageBasedRawIO RawIO { get; }
+
+        string ITcpipSession.DeviceName => throw new NotImplementedException();
+
+        bool ITcpipSession.IsHiSLIP => throw new NotImplementedException();
+
+        bool ITcpipSession.HiSLIPOverlapEnabled { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        Version ITcpipSession.HiSLIPProtocolVersion => throw new NotImplementedException();
+
+        int ITcpipSession.HiSLIPMaximumMessageKBytes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
         private ClientVxi11 client = new ClientVxi11();
 
         private int lock_timeout = default_timeout_value;
@@ -117,19 +131,21 @@ namespace Ivi.Visa
         {
             return;
         }
-        public Vxi11Session(string resourceName)
+        public Vxi11Session(string address, string deviceName)
         {
-            // TCPIP[board]::host address[::LAN device name][::INSTR]
-            this.Address = "127.0.0.1";
-            this.Port = 10240;
-            string deviceName = "inst0";
-            client.Create(this.Address, this.Port);
+            ClientPortmapTcp clientPmap = new ClientPortmapTcp();
+            clientPmap.Create(address, 111);
+            int port = clientPmap.GetPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP);
+            this.Port = (short)port;
+            this.Address = address;
+            client.Create(address, port);
+
             int clientId = 0;
             int lockDevice = 0;
             client.CreateLink(clientId, lockDevice, this.lock_timeout, deviceName, out this.lid, out this.abortPort, out this.maxRecvSize);
 
-            this.FormattedIO = new Vxi11FormattedIO488(this);
-            this.RawIO = new Vxi11RawIO488(this);
+            this.FormattedIO = new FormattedIO488(this);
+            this.RawIO = new RawIO488(this);
             this.ServiceRequest = ServiceRequestHandler;
         }
         public int Read(string buf, int count, out int retCount)
@@ -154,6 +170,11 @@ namespace Ivi.Visa
             Vxi11.Flags flags = Vxi11.Flags.end;
             client.DeviceAbort(this.lid, flags, this.lock_timeout, this.io_timeout);
             return 0;
+        }
+
+        void ITcpipSession.SendRemoteLocalCommand(RemoteLocalMode mode)
+        {
+            throw new NotImplementedException();
         }
     }
 }

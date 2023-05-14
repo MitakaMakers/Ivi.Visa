@@ -6,31 +6,48 @@ namespace Ivi.Visa
     public class UnitTest1
     {
         [Fact]
-        public void Test1()
+        public void TestVxi11()
         {
-            int port = 1111;
-            Console.WriteLine("== Run demo server ==");
             ServerPortmapTcp serverPortmapTcp = new ServerPortmapTcp();
-            ServerPortmapUdp serverPortmapUdp = new ServerPortmapUdp();
             ServerVxi11 serverVxi11 = new ServerVxi11();
-            serverPortmapTcp.Run("127.0.0.1", port);
-            serverPortmapUdp.Run("127.0.0.1", port);
-            serverVxi11.RunCoreThread("127.0.0.1", port);
-            serverVxi11.RunAbortThread("127.0.0.1", port + 1);
+            serverPortmapTcp.OneShot("127.0.0.1", 111, 1);
+            serverVxi11.OneShot("127.0.0.1", 50250, 4);
+            IMessageBasedSession session1 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::127.0.0.1::inst0::INSTR");
+            session1.Dispose();
+            serverVxi11.Destroy();
+            serverPortmapTcp.Destroy();
 
-            string rsrc = new String(Console.ReadLine());
-            // IMessageBasedSession session1 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP0::1.2.3.4::5025::SOCKET");
-            // IMessageBasedSession session2 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::1.2.3.4::inst0::INSTR");
-            // IMessageBasedSession session3 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::[fe80::1]::hislip0::INSTR");
-            // IMessageBasedSession session4 = (IMessageBasedSession)GlobalResourceManager.Open("USB::0x1234::0x5678::A22 - 5::INSTR");
+            serverPortmapTcp.OneShot("127.0.0.1", 111, 1);
+            serverVxi11.OneShot("127.0.0.1", 50250, 4);
+            IMessageBasedSession session2 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::127.0.0.1::INSTR");
+            session2.Dispose();
+            serverVxi11.Destroy();
+            serverPortmapTcp.Destroy();
 
-            //IMessageBasedSession session = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP:127.0.0.1");
-            //session.FormattedIO.WriteLine("IDN?");
-            //string msg = session.FormattedIO.ReadLine();
+            serverPortmapTcp.OneShot("127.0.0.1", 111, 1);
+            serverVxi11.OneShot("127.0.0.1", 50250, 4);
+            IMessageBasedSession session3 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::127.0.0.1::inst0");
+            session3.Dispose();
+            serverVxi11.Destroy();
+            serverPortmapTcp.Destroy();
 
-            serverPortmapUdp.Shutdown();
-            serverPortmapTcp.Shutdown();
-            serverVxi11.Shutdown();
+            serverPortmapTcp.OneShot("127.0.0.1", 111, 1);
+            serverVxi11.OneShot("127.0.0.1", 50250, 4);
+            IMessageBasedSession session4 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::127.0.0.1");
+            session4.Dispose();
+            serverVxi11.Destroy();
+            serverPortmapTcp.Destroy();
+        }
+        [Fact]
+        public void TestSocket()
+        {
+            //IMessageBasedSession session1 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP0::127.0.0.1::5025::SOCKET");
+        }
+        [Fact]
+        public void TestHislip()
+        {
+            //IMessageBasedSession session1 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::127.0.0.1::hislip0::INSTR");
+            //IMessageBasedSession session3 = (IMessageBasedSession)GlobalResourceManager.Open("TCPIP::127.0.0.1::hislip0");
         }
     }
 }

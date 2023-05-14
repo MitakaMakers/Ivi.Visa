@@ -9,15 +9,10 @@ namespace TmctlAPINet.Tests
         [Fact]
         public void Test1()
         {
-            int port = 1111;
-            Console.WriteLine("== Run demo server ==");
             ServerPortmapTcp serverPortmapTcp = new ServerPortmapTcp();
-            ServerPortmapUdp serverPortmapUdp = new ServerPortmapUdp();
             ServerVxi11 serverVxi11 = new ServerVxi11();
-            serverPortmapTcp.Run("127.0.0.1", port);
-            serverPortmapUdp.Run("127.0.0.1", port);
-            serverVxi11.RunCoreThread("127.0.0.1", port);
-            serverVxi11.RunAbortThread("127.0.0.1", port + 1);
+            serverPortmapTcp.OneShot("127.0.0.1", 111, 1);
+            serverVxi11.OneShot("127.0.0.1", 50250, 4);
 
             int id, ret;
             System.Text.StringBuilder buff = new System.Text.StringBuilder();

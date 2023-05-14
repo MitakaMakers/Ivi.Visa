@@ -106,15 +106,11 @@ namespace TmctlAPINet
             int cliendId = 0;
             int lockDevice = 0;
             string handle = "inst0";
-            ClientPortmapTcp pmap = new ClientPortmapTcp();
-
-            string ipStr = address;
-
-            pmap.Create(ipStr, 111);
-            corePort = pmap.GetPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP);
-            client.Create(ipStr, corePort);
+            ClientPortmapTcp clientPmap = new ClientPortmapTcp();
+            clientPmap.Create(address, 111);
+            corePort = clientPmap.GetPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP);
+            client.Create(address, corePort);
             client.CreateLink(cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
-            client.CreateAbortChannel(ipStr, abortPort);
         }
         internal void Finish()
         {

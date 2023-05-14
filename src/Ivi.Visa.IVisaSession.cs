@@ -86,4 +86,137 @@ namespace Ivi.Visa
         void SetAttributeString(NativeVisaAttribute attribute, String value);
         void SetAttributeString(Int32 attribute, String value);
     }
+    public class VisaNullSession : IVisaSession
+    {
+        private bool disposedValue;
+
+        public int TimeoutMilliseconds { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public string ResourceName => throw new NotImplementedException();
+
+        public string HardwareInterfaceName => throw new NotImplementedException();
+
+        public HardwareInterfaceType HardwareInterfaceType => throw new NotImplementedException();
+
+        public short HardwareInterfaceNumber => throw new NotImplementedException();
+
+        public string ResourceClass => throw new NotImplementedException();
+
+        public string ResourceManufacturerName => throw new NotImplementedException();
+
+        public short ResourceManufacturerId => throw new NotImplementedException();
+
+        public Version ResourceImplementationVersion => throw new NotImplementedException();
+
+        public Version ResourceSpecificationVersion => throw new NotImplementedException();
+
+        public ResourceLockState ResourceLockState => throw new NotImplementedException();
+
+        public int EventQueueCapacity { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool SynchronizeCallbacks { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public void DisableEvent(EventType eventType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DiscardEvent(EventType eventType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EnableEvent(EventType eventType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LockResource()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LockResource(TimeSpan timeout)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LockResource(int timeoutMilliseconds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string LockResource(TimeSpan timeout, string sharedKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string LockResource(int timeoutMilliseconds, string sharedKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnlockResource()
+        {
+            throw new NotImplementedException();
+        }
+
+        public VisaEventArgs WaitOnEvent(EventType eventType)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VisaEventArgs WaitOnEvent(EventType eventType, out EventQueueStatus status)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VisaEventArgs WaitOnEvent(EventType eventType, int timeoutMilliseconds)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VisaEventArgs WaitOnEvent(EventType eventType, TimeSpan timeout)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VisaEventArgs WaitOnEvent(EventType eventType, int timeoutMilliseconds, out EventQueueStatus status)
+        {
+            throw new NotImplementedException();
+        }
+
+        public VisaEventArgs WaitOnEvent(EventType eventType, TimeSpan timeout, out EventQueueStatus status)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)
+                }
+
+                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、ファイナライザーをオーバーライドします
+                // TODO: 大きなフィールドを null に設定します
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: 'Dispose(bool disposing)' にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします
+        // ~VisaNullSession()
+        // {
+        //     // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }

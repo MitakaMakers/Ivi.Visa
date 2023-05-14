@@ -3,84 +3,8 @@ using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
-    public class ServerPortmap
-    {
-        private static List<Portmap.MAPPING> pmaplist = new List<Portmap.MAPPING>();
-        public static bool AddPort(int prog, int vers, Portmap.IPPROTO prot, int port)
-        {
-            bool ret = false;
-            Portmap.MAPPING? find = null;
-            for (int i = 0; i < pmaplist.Count; i++)
-            {
-                Portmap.MAPPING map = pmaplist[i];
-                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
-                {
-                    find = map;
-                    break;
-                }
-            }
-            if (find == null)
-            {
-                Portmap.MAPPING map = new Portmap.MAPPING();
-                map.vers = vers;
-                map.prog = prog;
-                map.prot = prot;
-                map.port = port;
-                pmaplist.Add(map);
-                ret = true;
-            }
-            return ret;
-        }
-        public static bool RemovePort(int prog, int vers, Portmap.IPPROTO prot)
-        {
-            bool ret = false;
-            for (int i = 0; i < pmaplist.Count; i++)
-            {
-                Portmap.MAPPING map = pmaplist[i];
-                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
-                {
-                    pmaplist.Remove(map);
-                    ret = true;
-                    break;
-                }
-            }
-            return ret;
-        }
-
-        public static int FindPort(int prog, int vers, Portmap.IPPROTO prot)
-        {
-            int port = 0; ;
-            for (int i = 0; i < pmaplist.Count; i++)
-            {
-                Portmap.MAPPING map = pmaplist[i];
-                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
-                {
-                    port = map.port;
-                    break;
-                }
-            }
-            return port;
-        }
-    }
     public class ServerPortmapTcp
     {
-        private ServerRpcTcp serverRpcTcp = new ServerRpcTcp();
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        public void Create(string host, int port)
-        {
-            serverRpcTcp.Create(host, port);
-            ServerPortmap.AddPort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.TCP, port);
-        }
-        public void Destroy()
-        {
-            tokenSource.Cancel();
-            serverRpcTcp.Destroy();
-            ServerPortmap.RemovePort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.TCP);
-        }
-        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
-        {
-            return serverRpcTcp.ReceiveMsg();
-        }
         public Portmap.MAPPING ReceiveSet()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
@@ -173,14 +97,16 @@ namespace Vxi11Net
         {
             serverRpcTcp.ClearArgs();
         }
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
+        {
+            return serverRpcTcp.ReceiveMsg();
+        }
         public void TcpThread()
         {
-            Rpc.RPC_MESSAGE_PARAMS msg;
-            while (!tokenSource.Token.IsCancellationRequested)
+            try
             {
-                try { 
                 Console.WriteLine("  == Wait RPC ==");
-                msg = serverRpcTcp.ReceiveMsg();
+                Rpc.RPC_MESSAGE_PARAMS msg = serverRpcTcp.ReceiveMsg();
                 Console.WriteLine("    received Portmap(TCP).");
                 Console.WriteLine("      xid     = {0}", msg.xid);
                 Console.WriteLine("      type    = {0}", msg.msg_type);
@@ -226,11 +152,24 @@ namespace Vxi11Net
                     Console.WriteLine("    == clear buffer ==");
                     ClearArgs();
                 }
-                } catch (Exception)
-                {
-                    serverRpcTcp.Close();
-                }
             }
+            catch (Exception)
+            {
+                serverRpcTcp.Close();
+            }
+        }
+        private ServerRpcTcp serverRpcTcp = new ServerRpcTcp();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        public void Create(string host, int port)
+        {
+            serverRpcTcp.Create(host, port);
+            ServerPortmap.AddPort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.TCP, port);
+        }
+        public void Destroy()
+        {
+            tokenSource.Cancel();
+            serverRpcTcp.Destroy();
+            ServerPortmap.RemovePort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.TCP);
         }
         public void Run(string host, int port)
         {
@@ -241,7 +180,27 @@ namespace Vxi11Net
 
             Task.Run(() =>
             {
-                TcpThread();
+                while (!tokenSource.Token.IsCancellationRequested)
+                {
+                    TcpThread();
+                }
+            });
+            Thread.Sleep(10);
+        }
+        public void OneShot(string host, int port, int count)
+        {
+            tokenSource.TryReset();
+
+            Console.WriteLine("== Run PortmapServer(TCP, {0}, {1}) ==", host, port);
+            Create(host, port);
+
+            Task.Run(() =>
+            {
+                while (0 < count)
+                {
+                    TcpThread();
+                    count--;
+                }
             });
             Thread.Sleep(10);
         }
@@ -252,25 +211,6 @@ namespace Vxi11Net
     }
     public class ServerPortmapUdp
     {
-        private ServerRpcUdp serverRpcUdp = new ServerRpcUdp();
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-        public void Create(string host, int port)
-        {
-            serverRpcUdp.Create(host, port);
-            ServerPortmap.AddPort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.UDP, port);
-        }
-        public void Destroy()
-        {
-            tokenSource.Cancel();
-            serverRpcUdp.Destroy();
-            ServerPortmap.RemovePort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.UDP);
-        }
-        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
-        {
-            return serverRpcUdp.ReceiveMsg();
-        }
-
         public Portmap.MAPPING ReceiveSet()
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
@@ -363,13 +303,16 @@ namespace Vxi11Net
         {
             serverRpcUdp.ClearArgs();
         }
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
+        {
+            return serverRpcUdp.ReceiveMsg();
+        }
         public void UdpThread()
         {
-            Rpc.RPC_MESSAGE_PARAMS msg;
-            while (!tokenSource.Token.IsCancellationRequested)
+            try
             {
                 Console.WriteLine("  == Wait RPC ==");
-                msg = serverRpcUdp.ReceiveMsg();
+                Rpc.RPC_MESSAGE_PARAMS msg = serverRpcUdp.ReceiveMsg();
                 Console.WriteLine("    received Portmap(UDP).");
                 Console.WriteLine("      xid     = {0}", msg.xid);
                 Console.WriteLine("      type    = {0}", msg.msg_type);
@@ -416,6 +359,10 @@ namespace Vxi11Net
                     ClearArgs();
                 }
             }
+            catch (Exception)
+            {
+                serverRpcUdp.Destroy();
+            }
         }
         public void Run(string host, int port)
         {
@@ -426,13 +373,90 @@ namespace Vxi11Net
 
             Task.Run(() =>
             {
-                UdpThread();
+                while (!tokenSource.Token.IsCancellationRequested)
+                {
+                    UdpThread();
+                }
             });
             Thread.Sleep(10);
         }
         public void Shutdown()
         {
             tokenSource.Cancel();
+        }
+        private ServerRpcUdp serverRpcUdp = new ServerRpcUdp();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+        public void Create(string host, int port)
+        {
+            serverRpcUdp.Create(host, port);
+            ServerPortmap.AddPort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.UDP, port);
+        }
+        public void Destroy()
+        {
+            tokenSource.Cancel();
+            serverRpcUdp.Destroy();
+            ServerPortmap.RemovePort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.UDP);
+        }
+
+    }
+    public class ServerPortmap
+    {
+        private static List<Portmap.MAPPING> pmaplist = new List<Portmap.MAPPING>();
+        public static bool AddPort(int prog, int vers, Portmap.IPPROTO prot, int port)
+        {
+            bool ret = false;
+            Portmap.MAPPING? find = null;
+            for (int i = 0; i < pmaplist.Count; i++)
+            {
+                Portmap.MAPPING map = pmaplist[i];
+                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
+                {
+                    find = map;
+                    break;
+                }
+            }
+            if (find == null)
+            {
+                Portmap.MAPPING map = new Portmap.MAPPING();
+                map.vers = vers;
+                map.prog = prog;
+                map.prot = prot;
+                map.port = port;
+                pmaplist.Add(map);
+                ret = true;
+            }
+            return ret;
+        }
+        public static bool RemovePort(int prog, int vers, Portmap.IPPROTO prot)
+        {
+            bool ret = false;
+            for (int i = 0; i < pmaplist.Count; i++)
+            {
+                Portmap.MAPPING map = pmaplist[i];
+                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
+                {
+                    pmaplist.Remove(map);
+                    ret = true;
+                    break;
+                }
+            }
+            return ret;
+        }
+
+        public static int FindPort(int prog, int vers, Portmap.IPPROTO prot)
+        {
+            int port = 0; ;
+            for (int i = 0; i < pmaplist.Count; i++)
+            {
+                Portmap.MAPPING map = pmaplist[i];
+                if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
+                {
+                    port = map.port;
+                    break;
+                }
+            }
+            return port;
         }
     }
 }

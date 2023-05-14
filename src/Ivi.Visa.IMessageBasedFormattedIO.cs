@@ -308,9 +308,9 @@ namespace Ivi.Visa
         public void SkipString(String data);
         public void SkipUntilEnd();
     }
-    public class Vxi11FormattedIO488 : IMessageBasedFormattedIO
+    public class FormattedIO488 : IMessageBasedFormattedIO
     {
-        private Vxi11Session sesn;
+        private IMessageBasedSession sesn;
         public IMessage IO = new IMessage();
 
         public BinaryEncoding BinaryEncoding_ { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -318,7 +318,7 @@ namespace Ivi.Visa
         public int WriteBufferSize { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public ITypeFormatter TypeFormatter { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        public Vxi11FormattedIO488(Vxi11Session sesn)
+        public FormattedIO488(IMessageBasedSession sesn)
         {
             this.sesn = sesn;
         }

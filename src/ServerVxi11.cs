@@ -275,156 +275,152 @@ namespace Vxi11Net
         }
         private void CoreThread()
         {
-            while (!tokenSource.Token.IsCancellationRequested)
+            try
             {
-                try
+                Console.WriteLine("  == Wait RPC ==");
+                Rpc.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
+                Console.WriteLine("    received VXI-11 core channel.");
+                Console.WriteLine("      xid     = {0}", msg.xid);
+                Console.WriteLine("      type    = {0}", msg.msg_type);
+                Console.WriteLine("      prog    = {0}", msg.prog);
+                Console.WriteLine("      proc    = {0}", msg.proc);
+                Console.WriteLine("      vers    = {0}", msg.vers);
+                if (msg.proc == Vxi11.CREATE_LINK)
                 {
-                    Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = ReceiveMsg();
-                    Console.WriteLine("    received VXI-11 core channel.");
-                    Console.WriteLine("      xid     = {0}", msg.xid);
-                    Console.WriteLine("      type    = {0}", msg.msg_type);
-                    Console.WriteLine("      prog    = {0}", msg.prog);
-                    Console.WriteLine("      proc    = {0}", msg.proc);
-                    Console.WriteLine("      vers    = {0}", msg.vers);
-                    if (msg.proc == Vxi11.CREATE_LINK)
-                    {
-                        Console.WriteLine("  == CREATE_LINK ==");
-                        string handle;
-                        Vxi11.CREATE_LINK_PARAMS crt = ReceiveCreateLink(out handle);
-                        int maxRecvSize = serverScpi.GetMaxRecvSize();
-                        ReplyCreateLink(msg.xid, lid, abortPort, maxRecvSize);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_WRITE)
-                    {
-                        Console.WriteLine("  == DEVICE_WRITE ==");
-                        string data;
-                        Vxi11.DEVICE_WRITE_PARAMS wrt = ReceiveDeviceWrite(out data);
-                        serverScpi.Parse(data);
-                        ReplyDeviceWrite(msg.xid, wrt.data_len);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_READ)
-                    {
-                        Console.WriteLine("  == DEVICE_READ ==");
-                        Vxi11.DEVICE_READ_PARAMS drd = ReceiveDeviceRead();
-                        string data = serverScpi.GetResponse();
-                        ReplyDeviceRead(msg.xid, Reason.END|Reason.CHR, data);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_READSTB)
-                    {
-                        Console.WriteLine("  == DEVICE_READSTB ==");
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        byte stb = serverScpi.stb();
-                        ReplyDeviceReadStb(msg.xid, stb);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_TRIGGER)
-                    {
-                        Console.WriteLine("  == DEVICE_TRIGGER ==");
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_CLEAR)
-                    {
-                        Console.WriteLine("  == DEVICE_CLEAR ==");
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_REMOTE)
-                    {
-                        Console.WriteLine("  == DEVICE_REMOTE ==");
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_LOCAL)
-                    {
-                        Console.WriteLine("  == DEVICE_LOCAL ==");
-                        Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_LOCK)
-                    {
-                        Console.WriteLine("  == DEVICE_LOCK ==");
-                        Vxi11.DEVICE_LOCK_PARAMS loc = ReceiveDeviceLock();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_UNLOCK)
-                    {
-                        Console.WriteLine("  == DEVICE_UNLOCK ==");
-                        long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_ENABLE_SRQ)
-                    {
-                        Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
-                        string handle;
-                        ReceiveDeviceEnableSrq(out handle);
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DEVICE_DOCMD)
-                    {
-                        Console.WriteLine("  == DEVICE_DOCMD ==");
-                        byte[] data_in;
-                        Vxi11.DEVICE_DOCMD_PARAMS dcm = ReceiveDeviceDoCmd(out data_in);
-                        ReplyDeviceDoCmd(msg.xid, dcm.data_in_len);
-                    }
-                    else if (msg.proc == Vxi11.DESTROY_LINK)
-                    {
-                        Console.WriteLine("  == DESTROY_LINK ==");
-                        long dlink = ReceiveDeviceLink();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.CREATE_INTR_CHAN)
-                    {
-                        Console.WriteLine("  == CREATE_INTR_CHAN ==");
-                        ReceiveCreateIntrchan();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else if (msg.proc == Vxi11.DESTROY_INTR_CHAN)
-                    {
-                        Console.WriteLine("  == DESTROY_INTR_CHAN ==");
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else
-                    {
-                        Console.WriteLine("  == clear buffer ==");
-                        serverCore.ClearArgs();
-                    }
-                } catch (Exception)
-                {
-                    serverCore.Close();
+                    Console.WriteLine("  == CREATE_LINK ==");
+                    string handle;
+                    Vxi11.CREATE_LINK_PARAMS crt = ReceiveCreateLink(out handle);
+                    int maxRecvSize = serverScpi.GetMaxRecvSize();
+                    ReplyCreateLink(msg.xid, lid, abortPort, maxRecvSize);
                 }
+                else if (msg.proc == Vxi11.DEVICE_WRITE)
+                {
+                    Console.WriteLine("  == DEVICE_WRITE ==");
+                    string data;
+                    Vxi11.DEVICE_WRITE_PARAMS wrt = ReceiveDeviceWrite(out data);
+                    serverScpi.Parse(data);
+                    ReplyDeviceWrite(msg.xid, wrt.data_len);
+                }
+                else if (msg.proc == Vxi11.DEVICE_READ)
+                {
+                    Console.WriteLine("  == DEVICE_READ ==");
+                    Vxi11.DEVICE_READ_PARAMS drd = ReceiveDeviceRead();
+                    string data = serverScpi.GetResponse();
+                    ReplyDeviceRead(msg.xid, Reason.END | Reason.CHR, data);
+                }
+                else if (msg.proc == Vxi11.DEVICE_READSTB)
+                {
+                    Console.WriteLine("  == DEVICE_READSTB ==");
+                    Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
+                    byte stb = serverScpi.stb();
+                    ReplyDeviceReadStb(msg.xid, stb);
+                }
+                else if (msg.proc == Vxi11.DEVICE_TRIGGER)
+                {
+                    Console.WriteLine("  == DEVICE_TRIGGER ==");
+                    Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_CLEAR)
+                {
+                    Console.WriteLine("  == DEVICE_CLEAR ==");
+                    Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_REMOTE)
+                {
+                    Console.WriteLine("  == DEVICE_REMOTE ==");
+                    Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_LOCAL)
+                {
+                    Console.WriteLine("  == DEVICE_LOCAL ==");
+                    Vxi11.DEVICE_GENERIC_PARAMS gen = ReceiveGenericParams();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_LOCK)
+                {
+                    Console.WriteLine("  == DEVICE_LOCK ==");
+                    Vxi11.DEVICE_LOCK_PARAMS loc = ReceiveDeviceLock();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_UNLOCK)
+                {
+                    Console.WriteLine("  == DEVICE_UNLOCK ==");
+                    long dlink = ReceiveDeviceLink();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_ENABLE_SRQ)
+                {
+                    Console.WriteLine("  == DEVICE_ENABLE_SRQ ==");
+                    string handle;
+                    ReceiveDeviceEnableSrq(out handle);
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DEVICE_DOCMD)
+                {
+                    Console.WriteLine("  == DEVICE_DOCMD ==");
+                    byte[] data_in;
+                    Vxi11.DEVICE_DOCMD_PARAMS dcm = ReceiveDeviceDoCmd(out data_in);
+                    ReplyDeviceDoCmd(msg.xid, dcm.data_in_len);
+                }
+                else if (msg.proc == Vxi11.DESTROY_LINK)
+                {
+                    Console.WriteLine("  == DESTROY_LINK ==");
+                    long dlink = ReceiveDeviceLink();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.CREATE_INTR_CHAN)
+                {
+                    Console.WriteLine("  == CREATE_INTR_CHAN ==");
+                    ReceiveCreateIntrchan();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else if (msg.proc == Vxi11.DESTROY_INTR_CHAN)
+                {
+                    Console.WriteLine("  == DESTROY_INTR_CHAN ==");
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
+                }
+                else
+                {
+                    Console.WriteLine("  == clear buffer ==");
+                    serverCore.ClearArgs();
+                }
+            }
+            catch (Exception)
+            {
+                serverCore.Close();
             }
         }
         private void AbortThread()
         {
-            while (!tokenSource.Token.IsCancellationRequested)
+            try
             {
-                try
+                Console.WriteLine("  == Wait RPC ==");
+                Rpc.RPC_MESSAGE_PARAMS msg = serverAbort.ReceiveMsg();
+                Console.WriteLine("    received VXI-11 abort channel.");
+                Console.WriteLine("      xid     = {0}", msg.xid);
+                Console.WriteLine("      type    = {0}", msg.msg_type);
+                Console.WriteLine("      prog    = {0}", msg.prog);
+                Console.WriteLine("      proc    = {0}", msg.proc);
+                Console.WriteLine("      vers    = {0}", msg.vers);
+                if (msg.proc == Vxi11.DEVICE_ABORT)
                 {
-                    Console.WriteLine("  == Wait RPC ==");
-                    Rpc.RPC_MESSAGE_PARAMS msg = serverAbort.ReceiveMsg();
-                    Console.WriteLine("    received VXI-11 abort channel.");
-                    Console.WriteLine("      xid     = {0}", msg.xid);
-                    Console.WriteLine("      type    = {0}", msg.msg_type);
-                    Console.WriteLine("      prog    = {0}", msg.prog);
-                    Console.WriteLine("      proc    = {0}", msg.proc);
-                    Console.WriteLine("      vers    = {0}", msg.vers);
-                    if (msg.proc == Vxi11.DEVICE_ABORT)
-                    {
-                        Console.WriteLine("  == DEVICE_ABORT ==");
-                        long dlink = ReceiveDeviceLink();
-                        serverScpi.Abort();
-                        ReplyDeviceError(msg.xid, Rpc.SUCCESS);
-                    }
-                    else
-                    {
-                        Console.WriteLine("  == clear buffer ==");
-                        serverAbort.ClearArgs();
-                    }
-                } catch (Exception)
-                {
-                    serverAbort.Close();
+                    Console.WriteLine("  == DEVICE_ABORT ==");
+                    long dlink = ReceiveDeviceLink();
+                    serverScpi.Abort();
+                    ReplyDeviceError(msg.xid, Rpc.SUCCESS);
                 }
+                else
+                {
+                    Console.WriteLine("  == clear buffer ==");
+                    serverAbort.ClearArgs();
+                }
+            }
+            catch (Exception)
+            {
+                serverAbort.Close();
             }
         }
         private int lid = 123;
@@ -452,6 +448,24 @@ namespace Vxi11Net
         {
             return serverCore.ReceiveMsg();
         }
+        public void OneShot(string host, int port, int count)
+        {
+            tokenSource.TryReset();
+
+            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
+            Create(host, port);
+            ServerPortmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP, port);
+            Console.WriteLine("  listen({0}:{1})...", host, port);
+
+            Task.Run(() =>
+            {
+                while (0 < count)
+                {
+                    CoreThread();
+                    count--;
+                }
+            });
+        }
         public void RunCoreThread(string host, int port)
         {
             tokenSource.TryReset();
@@ -464,9 +478,23 @@ namespace Vxi11Net
 
             Task.Run(() =>
             {
-                CoreThread();
+                while (!tokenSource.Token.IsCancellationRequested)
+                {
+                    CoreThread();
+                }
             });
             Thread.Sleep(10);
+        }
+        public void OneShort(string host, int port)
+        {
+            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
+            Create(host, port);
+            ServerPortmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP, port);
+            Console.WriteLine("  listen({0}:{1})...", host, port);
+            Task.Run(() =>
+            {
+                CoreThread();
+            });
         }
         public void RunAbortThread(string host, int port)
         {
@@ -480,11 +508,18 @@ namespace Vxi11Net
 
             Task.Run(() =>
             {
-                AbortThread();
+                while (!tokenSource.Token.IsCancellationRequested)
+                {
+                    AbortThread();
+                }
             });
             Thread.Sleep(10);
         }
         public void Shutdown()
+        {
+            tokenSource.Cancel();
+        }
+        public void Destroy()
         {
             tokenSource.Cancel();
             serverCore.Destroy();

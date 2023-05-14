@@ -40,10 +40,10 @@ namespace Ivi.Visa
         String EndReadString(IVisaAsyncResult result);
         void EndWrite(IVisaAsyncResult result);
     }
-    public class Vxi11RawIO488 : IMessageBasedRawIO
+    public class RawIO488 : IMessageBasedRawIO
     {
-        private Vxi11Session sesn;
-        public Vxi11RawIO488(Vxi11Session sesn)
+        private IMessageBasedSession sesn;
+        public RawIO488(IMessageBasedSession sesn)
         {
             this.sesn = sesn;
         }
