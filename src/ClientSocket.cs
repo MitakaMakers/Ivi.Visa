@@ -5,6 +5,11 @@ namespace Vxi11Net
 {
     public class ClientSocket
     {
+        public int Send(byte[] buffer)
+        {
+            int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
+            return bytes;
+        }
         public int Receive(byte[] buffer)
         {
             int i = 0;
@@ -17,12 +22,6 @@ namespace Vxi11Net
                 }
             }
             return i;
-        }
-
-        public int Send(byte[] buffer)
-        {
-            int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-            return bytes;
         }
         public void Flush()
         {

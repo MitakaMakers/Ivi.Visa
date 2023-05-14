@@ -12,8 +12,10 @@
 
   <ItemGroup>
     <Compile Include="ClientRpc.cs" />
+    <Compile Include="Hislip.cs" />
     <Compile Include="Portmap.cs" />
     <Compile Include="Rpc.cs" />
+    <Compile Include="ServerHislip.cs" />
     <Compile Include="ServerPortmap.cs" />
     <Compile Include="ServerProgram.cs" />
     <Compile Include="ServerRpc.cs" />

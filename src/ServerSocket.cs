@@ -5,6 +5,11 @@ namespace Vxi11Net
 {
     public class ServerSocket
     {
+        public int Send(byte[] buffer)
+        {
+            int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
+            return bytes;
+        }
         public int Receive(byte[] buffer)
         {
             int i = 0;
@@ -18,10 +23,23 @@ namespace Vxi11Net
             }
             return i;
         }
-        public int Send(byte[] buffer)
+        public void Flush()
         {
-            int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-            return bytes;
+            int timeout = socket.ReceiveTimeout;
+            socket.ReceiveTimeout = 1;
+            try
+            {
+                int bytes;
+                byte[] buffer = new byte[1000];
+                do
+                {
+                    bytes = socket.Receive(buffer, SocketFlags.None);
+                } while (0 < bytes);
+            }
+            catch (Exception)
+            {
+            }
+            socket.ReceiveTimeout = timeout;
         }
 
         private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
@@ -55,24 +73,6 @@ namespace Vxi11Net
         {
             server.Close();
             socket.Close();
-        }
-        public void Flush()
-        {
-            int timeout = socket.ReceiveTimeout;
-            socket.ReceiveTimeout = 1;
-            try
-            {
-                int bytes;
-                byte[] buffer = new byte[1000];
-                do
-                {
-                    bytes = socket.Receive(buffer, SocketFlags.None);
-                } while (0 < bytes);
-            }
-            catch (Exception)
-            {
-            }
-            socket.ReceiveTimeout = timeout;
         }
     }
 }

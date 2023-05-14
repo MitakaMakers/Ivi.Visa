@@ -649,16 +649,6 @@ namespace Vxi11Net
 
     public class ClientVxi11
     {
-        private ClientRpcTcp clientCore = new ClientRpcTcp();
-        private ClientRpcTcp clientAbort = new ClientRpcTcp();
-        private ServerRpcTcp serverInterrupt = new ServerRpcTcp();
-        private int xid = 123;
-        private int GetXid()
-        {
-            int _xid = xid;
-            xid = xid + 1;
-            return _xid;
-        }
         // call create_link
         public int CreateLink(int cliendId, int lockDevice, int lock_timeout, string handle, out int lid, out int abortPort, out int maxRecvSize)
         {
@@ -779,6 +769,16 @@ namespace Vxi11Net
             int xid = GetXid();
             int status = AbortChannel.DeviceAbort(clientAbort, xid, lid, flags, lock_timeout, io_timeout);
             return status;
+        }
+        private ClientRpcTcp clientCore = new ClientRpcTcp();
+        private ClientRpcTcp clientAbort = new ClientRpcTcp();
+        private ServerRpcTcp serverInterrupt = new ServerRpcTcp();
+        private int xid = 123;
+        private int GetXid()
+        {
+            int _xid = xid;
+            xid = xid + 1;
+            return _xid;
         }
         public void Create(string host, int port)
         {

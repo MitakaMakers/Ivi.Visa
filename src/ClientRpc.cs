@@ -5,37 +5,29 @@ namespace Vxi11Net
 {
     public class ClientRpcTcp
     {
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-        IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
-
-        private bool last_fragment = true;
-        private int remain = 0;
-
-        public void Create(string ipString, int port)
+        private int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
         {
-            // get IP address from IPv4 address string
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            /* if get ipaddress from hostname, 　
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-            int i = 0;
-            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
+            int bytes = 0;
+            if (IsFirst)
             {
-                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                    break;
+                int frag_header = size;
+                if (IsLast == true)
+                {
+                    frag_header = frag_header + int.MinValue;
+                }
+                byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
+                byte[] tmp = new byte[array.Length + buffer.Length];
+                Buffer.BlockCopy(array, 0, tmp, 0, array.Length);
+                Buffer.BlockCopy(buffer, 0, tmp, array.Length, buffer.Length);
+                bytes = socket.Send(tmp);
             }
-            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            endPoint = new IPEndPoint(ipAddress, port);
-            socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(endPoint);
-
-        }
-        public void Destroy()
-        {
-            socket.Close();
+            else
+            {
+                bytes = socket.Send(buffer, offset, size, socketFlags);
+            }
+            return bytes;
         }
         // call message を受信する
-        
         // TCP: frag_header が1になるまで受信する
         private int Receive(byte[] buffer, int offset, int buffsize, SocketFlags socketFlags, bool IsFirst)
         {
@@ -64,13 +56,20 @@ namespace Vxi11Net
             {
                 bytes = remain;
             }
-            if (0 < bytes) {
+            if (0 < bytes)
+            {
                 socket.Receive(buffer, offset, bytes, socketFlags);
                 remain -= bytes;
             }
             return bytes;
         }
-
+        public void Call(byte[] msg, bool IsFirst, bool IsLast)
+        {
+            Send(msg, 0, msg.Length, SocketFlags.None, IsFirst, IsLast);
+            last_fragment = true;
+            remain = 0;
+            return;
+        }
         public int GetReply(byte[] buffer, bool IsFirst)
         {
             int bytes = 0;
@@ -113,36 +112,6 @@ namespace Vxi11Net
             }
             last_fragment = false;
         }
-
-        private int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
-        {
-            int bytes = 0;
-            if (IsFirst)
-            {
-                int frag_header = size;
-                if (IsLast == true)
-                {
-                    frag_header = frag_header + int.MinValue;
-                }
-                byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
-                byte[] tmp = new byte[array.Length + buffer.Length];
-                Buffer.BlockCopy(array, 0, tmp, 0, array.Length);
-                Buffer.BlockCopy(buffer, 0, tmp, array.Length, buffer.Length);
-                bytes = socket.Send(tmp);
-            }
-            else
-            {
-                bytes = socket.Send(buffer, offset, size, socketFlags);
-            }
-            return bytes;
-        }
-        public void Call(byte[] msg, bool IsFirst, bool IsLast)
-        {
-            Send(msg, 0, msg.Length, SocketFlags.None, IsFirst, IsLast);
-            last_fragment = true;
-            remain = 0;
-            return;
-        }
         public void Flush()
         {
             int timeout = socket.ReceiveTimeout;
@@ -165,9 +134,104 @@ namespace Vxi11Net
             last_fragment = true;
             remain = 0;
         }
+
+        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
+        private bool last_fragment = true;
+        private int remain = 0;
+
+        public void Create(string ipString, int port)
+        {
+            // get IP address from IPv4 address string
+            IPAddress ipAddress = IPAddress.Parse(ipString);
+            /* if get ipaddress from hostname, 　
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
+            int i = 0;
+            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
+            {
+                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    break;
+            }
+            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
+            endPoint = new IPEndPoint(ipAddress, port);
+            socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(endPoint);
+
+        }
+        public void Destroy()
+        {
+            socket.Close();
+        }
     }
     public class ClientRpcUdp
     {
+        // UDP 1回分受信する
+        private int Send(byte[] buffer, int size, SocketFlags socketFlags)
+        {
+            return socket.SendTo(buffer, size, socketFlags, endPoint);
+        }
+        // call message を受信する
+        // UDP 1回分受信する
+        private int Receive(byte[] buffer, int offset, int buffsize, bool IsFirst)
+        {
+            if (IsFirst)
+            {
+                readsize = 0;
+                raw_buf = new byte[UDPMSGSIZE];
+                recvsize = socket.ReceiveFrom(raw_buf, ref endPoint);
+            }
+            int size;
+            if (buffsize <= (recvsize - readsize))
+            {
+                size = buffsize;
+            }
+            else
+            {
+                size = recvsize - readsize;
+            }
+            Buffer.BlockCopy(raw_buf, readsize, buffer, offset, size);
+            readsize += size;
+            return size;
+        }
+        public void Call(byte[] msg, bool IsFirst, bool IsLast)
+        {
+            Send(msg, msg.Length, SocketFlags.None);
+            recvsize = 0;
+            readsize = 0;
+            return;
+        }
+        public int GetReply(byte[] buffer, bool IsFirst)
+        {
+            int bytes = Receive(buffer, 0, buffer.Length, IsFirst);
+            return bytes;
+        }
+        public void ClearReply()
+        {
+            readsize = 0;
+            recvsize = 0;
+        }
+        public void Flush()
+        {
+            int timeout = socket.ReceiveTimeout;
+            socket.ReceiveTimeout = 1;
+            try
+            {
+                int byteCount;
+                do
+                {
+                    byteCount = socket.ReceiveFrom(raw_buf, SocketFlags.None, ref endPoint);
+                }
+                while (0 < byteCount);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            socket.ReceiveTimeout = timeout;
+            recvsize = 0;
+            readsize = 0;
+        }
+
         private const int UDPMSGSIZE = 2000;
 
         private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
@@ -197,72 +261,6 @@ namespace Vxi11Net
         public void Destroy()
         {
             socket.Close();
-        }
-        // call message を受信する
-        // UDP 1回分受信する
-        private int Receive(byte[] buffer, int offset, int buffsize, bool IsFirst)
-        {
-            if (IsFirst)
-            {
-                readsize = 0;
-                raw_buf = new byte[UDPMSGSIZE];
-                recvsize = socket.ReceiveFrom(raw_buf, ref endPoint);
-            }
-            int size;
-            if (buffsize <= (recvsize - readsize))
-            {
-                size = buffsize;
-            }
-            else
-            {
-                size = recvsize - readsize;
-            }
-            Buffer.BlockCopy(raw_buf, readsize, buffer, offset, size);
-            readsize += size;
-            return size;
-        }
-        public int GetReply(byte[] buffer, bool IsFirst)
-        {
-            int bytes = Receive(buffer, 0, buffer.Length, IsFirst);
-            return bytes;
-        }
-        public void ClearReply()
-        {
-            readsize = 0;
-            recvsize = 0;
-        }
-        // UDP 1回分受信する
-        private int Send(byte[] buffer, int size, SocketFlags socketFlags)
-        {
-            return socket.SendTo(buffer, size, socketFlags, endPoint);
-        }
-        public void Call(byte[] msg, bool IsFirst, bool IsLast)
-        {
-            Send(msg, msg.Length, SocketFlags.None);
-            recvsize = 0;
-            readsize = 0;
-            return;
-        }
-        public void Flush()
-        {
-            int timeout = socket.ReceiveTimeout;
-            socket.ReceiveTimeout = 1;
-            try
-            {
-                int byteCount;
-                do
-                {
-                    byteCount = socket.ReceiveFrom(raw_buf, SocketFlags.None, ref endPoint);
-                }
-                while (0 < byteCount);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            socket.ReceiveTimeout = timeout;
-            recvsize = 0;
-            readsize = 0;
         }
     }
 }

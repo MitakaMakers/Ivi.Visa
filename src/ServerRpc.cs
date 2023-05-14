@@ -6,39 +6,27 @@ namespace Vxi11Net
 {
     public class ServerRpcTcp
     {
-        private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-
-        IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
-
-        private bool last_fragment;
-        private int remain;
-        public void Create(string ipString, int port)
+        private int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
         {
-            // get IP address from IPv4 address string
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            /* if get ipaddress from hostname, 　
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-            int i = 0;
-            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
+            int bytes = 0;
+            if (IsFirst)
             {
-                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                    break;
+                int frag_header = size;
+                if (IsLast == true)
+                {
+                    frag_header = frag_header + int.MinValue;
+                }
+                byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
+                byte[] tmp = new byte[array.Length + buffer.Length];
+                Buffer.BlockCopy(array, 0, tmp, 0, array.Length);
+                Buffer.BlockCopy(buffer, 0, tmp, array.Length, buffer.Length);
+                bytes = socket.Send(tmp);
             }
-            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            endPoint = new IPEndPoint(ipAddress, port);
-            server = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            server.Bind(endPoint);
-            server.Listen();
-        }
-        public void Close()
-        {
-            socket.Close();
-        }
-        public void Destroy()
-        {
-            server.Close();
-            socket.Close();
+            else
+            {
+                bytes = socket.Send(buffer, offset, size, socketFlags);
+            }
+            return bytes;
         }
         // call message を受信する
         // TCP: frag_header が1になるまで受信する
@@ -157,28 +145,6 @@ namespace Vxi11Net
             }
             last_fragment = false;
         }
-        private int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
-        {
-            int bytes = 0;
-            if (IsFirst)
-            {
-                int frag_header = size;
-                if (IsLast == true)
-                {
-                    frag_header = frag_header + int.MinValue;
-                }
-                byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
-                byte[] tmp = new byte[array.Length + buffer.Length];
-                Buffer.BlockCopy(array, 0, tmp, 0, array.Length);
-                Buffer.BlockCopy(buffer, 0, tmp, array.Length, buffer.Length);
-                bytes = socket.Send(tmp);
-            }
-            else
-            {
-                bytes = socket.Send(buffer, offset, size, socketFlags);
-            }
-            return bytes;
-        }
         public void Reply(byte[] reply, bool IsFirst, bool IsLast)
         {
             Send(reply, 0, reply.Length, SocketFlags.None, IsFirst, IsLast);
@@ -206,17 +172,14 @@ namespace Vxi11Net
             last_fragment = true;
             remain = 0;
         }
-    }
-    public class ServerRpcUdp
-    {
+
+        private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        private EndPoint endPoint = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
 
-        private const int UDPMSGSIZE = 2000;
-        private byte[] raw_buf = new byte[UDPMSGSIZE];
-        private int recvsize = 0;
-        private int readsize = 0;
+        IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
 
+        private bool last_fragment;
+        private int remain;
         public void Create(string ipString, int port)
         {
             // get IP address from IPv4 address string
@@ -230,24 +193,27 @@ namespace Vxi11Net
                     break;
             }
             IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            endPoint = (EndPoint)new IPEndPoint(ipAddress, port);
-            socket = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
-            socket.Bind(endPoint);
+            endPoint = new IPEndPoint(ipAddress, port);
+            server = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            server.Bind(endPoint);
+            server.Listen();
         }
-        public void Destroy()
+        public void Close()
         {
             socket.Close();
         }
+        public void Destroy()
+        {
+            server.Close();
+            socket.Close();
+        }
+    }
+    public class ServerRpcUdp
+    {
         // UDP 1回分受信する
         private int Send(byte[] buffer, int size, SocketFlags socketFlags)
         {
             return socket.SendTo(buffer, size, socketFlags, endPoint);
-        }
-        public void Reply(byte[] reply)
-        {
-            Send(reply, reply.Length, SocketFlags.None);
-            recvsize = 0;
-            readsize = 0;
         }
         // call message を受信する
         // UDP 1回分受信する
@@ -303,6 +269,12 @@ namespace Vxi11Net
             readsize = 0;
             recvsize = 0;
         }
+        public void Reply(byte[] reply)
+        {
+            Send(reply, reply.Length, SocketFlags.None);
+            recvsize = 0;
+            readsize = 0;
+        }
         public void Flush()
         {
             int timeout = socket.ReceiveTimeout;
@@ -322,6 +294,36 @@ namespace Vxi11Net
             socket.ReceiveTimeout = -1;
             recvsize = 0;
             readsize = 0;
+        }
+
+        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private EndPoint endPoint = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
+
+        private const int UDPMSGSIZE = 2000;
+        private byte[] raw_buf = new byte[UDPMSGSIZE];
+        private int recvsize = 0;
+        private int readsize = 0;
+
+        public void Create(string ipString, int port)
+        {
+            // get IP address from IPv4 address string
+            IPAddress ipAddress = IPAddress.Parse(ipString);
+            /* if get ipaddress from hostname, 　
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
+            int i = 0;
+            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
+            {
+                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    break;
+            }
+            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
+            endPoint = (EndPoint)new IPEndPoint(ipAddress, port);
+            socket = new Socket(endPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            socket.Bind(endPoint);
+        }
+        public void Destroy()
+        {
+            socket.Close();
         }
     }
 }

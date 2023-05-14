@@ -11,11 +11,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="ClientHislip.cs" />
     <Compile Include="ClientPortmap.cs" />
     <Compile Include="ClientProgram.cs" />
     <Compile Include="ClientRpc.cs" />
     <Compile Include="ClientSocket.cs" />
     <Compile Include="ClientVxi11.cs" />
+    <Compile Include="Hislip.cs" />
     <Compile Include="Ivi.Visa.cs" />
     <Compile Include="Ivi.Visa.IGpibSession.cs" />
     <Compile Include="Ivi.Visa.IMessageBasedFormattedIO.cs" />
