@@ -3,16 +3,16 @@ using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
-    public class Portmap
+    public class ServerPortmap
     {
-        private static List<Pmap.MAPPING> pmaplist = new List<Pmap.MAPPING>();
-        public static bool AddPort(int prog, int vers, Pmap.IPPROTO prot, int port)
+        private static List<Portmap.MAPPING> pmaplist = new List<Portmap.MAPPING>();
+        public static bool AddPort(int prog, int vers, Portmap.IPPROTO prot, int port)
         {
             bool ret = false;
-            Pmap.MAPPING? find = null;
+            Portmap.MAPPING? find = null;
             for (int i = 0; i < pmaplist.Count; i++)
             {
-                Pmap.MAPPING map = pmaplist[i];
+                Portmap.MAPPING map = pmaplist[i];
                 if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
                 {
                     find = map;
@@ -21,7 +21,7 @@ namespace Vxi11Net
             }
             if (find == null)
             {
-                Pmap.MAPPING map = new Pmap.MAPPING();
+                Portmap.MAPPING map = new Portmap.MAPPING();
                 map.vers = vers;
                 map.prog = prog;
                 map.prot = prot;
@@ -31,12 +31,12 @@ namespace Vxi11Net
             }
             return ret;
         }
-        public static bool RemovePort(int prog, int vers, Pmap.IPPROTO prot)
+        public static bool RemovePort(int prog, int vers, Portmap.IPPROTO prot)
         {
             bool ret = false;
             for (int i = 0; i < pmaplist.Count; i++)
             {
-                Pmap.MAPPING map = pmaplist[i];
+                Portmap.MAPPING map = pmaplist[i];
                 if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
                 {
                     pmaplist.Remove(map);
@@ -47,12 +47,12 @@ namespace Vxi11Net
             return ret;
         }
 
-        public static int FindPort(int prog, int vers, Pmap.IPPROTO prot)
+        public static int FindPort(int prog, int vers, Portmap.IPPROTO prot)
         {
             int port = 0; ;
             for (int i = 0; i < pmaplist.Count; i++)
             {
-                Pmap.MAPPING map = pmaplist[i];
+                Portmap.MAPPING map = pmaplist[i];
                 if ((map.prog == prog) && (map.vers == vers) && (map.prot == prot))
                 {
                     port = map.port;
@@ -69,34 +69,34 @@ namespace Vxi11Net
         public void Create(string host, int port)
         {
             serverRpcTcp.Create(host, port);
-            Portmap.AddPort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.TCP, port);
+            ServerPortmap.AddPort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.TCP, port);
         }
         public void Destroy()
         {
             tokenSource.Cancel();
             serverRpcTcp.Destroy();
-            Portmap.RemovePort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.TCP);
+            ServerPortmap.RemovePort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.TCP);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
             return serverRpcTcp.ReceiveMsg();
         }
-        public Pmap.MAPPING ReceiveSet()
+        public Portmap.MAPPING ReceiveSet()
         {
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
             serverRpcTcp.GetArgs(buffer);
 
-            Pmap.MAPPING map = new Pmap.MAPPING();
+            Portmap.MAPPING map = new Portmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            map.prot = (Pmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            map.prot = (Portmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             map.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return map;
         }
 
         public void ReplySet(int xid, bool status)
         {
-            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            Portmap.PMAP_UNSET_REPLY reply = new Portmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
@@ -105,27 +105,27 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.boolean = (status == true) ? 1 : 0;
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             serverRpcTcp.Reply(packet, true, true);
         }
-        public Pmap.MAPPING ReceiveUnset()
+        public Portmap.MAPPING ReceiveUnset()
         {
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
             serverRpcTcp.GetArgs(buffer);
 
-            Pmap.MAPPING map = new Pmap.MAPPING();
+            Portmap.MAPPING map = new Portmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            map.prot = (Pmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            map.prot = (Portmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             map.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return map;
         }
         public void ReplyUnset(int xid, bool status)
         {
-            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            Portmap.PMAP_UNSET_REPLY reply = new Portmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
@@ -134,27 +134,27 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.boolean = (status == true) ? 1 : 0;
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             serverRpcTcp.Reply(packet, true, true);
         }
-        public Pmap.MAPPING ReceiveGetPort()
+        public Portmap.MAPPING ReceiveGetPort()
         {
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
             serverRpcTcp.GetArgs(buffer);
 
-            Pmap.MAPPING map = new Pmap.MAPPING();
+            Portmap.MAPPING map = new Portmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            map.prot = (Pmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            map.prot = (Portmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             map.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return map;
         }
         public void ReplyGetPort(int xid, int port)
         {
-            Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
+            Portmap.PMAP_GETPORT_REPLY reply = new Portmap.PMAP_GETPORT_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
@@ -163,7 +163,7 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.port = IPAddress.HostToNetworkOrder(port);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_GETPORT_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
@@ -187,38 +187,38 @@ namespace Vxi11Net
                 Console.WriteLine("      prog    = {0}", msg.prog);
                 Console.WriteLine("      proc    = {0}", msg.proc);
                 Console.WriteLine("      vers    = {0}", msg.vers);
-                if (msg.proc == Pmap.PROC_SET)
+                if (msg.proc == Portmap.PMAPPROC_SET)
                 {
                     Console.WriteLine("    == PMAPPROC_SET ==");
-                    Pmap.MAPPING map = ReceiveSet();
+                    Portmap.MAPPING map = ReceiveSet();
                     Console.WriteLine("      prog    = {0}", map.prog);
                     Console.WriteLine("      vers    = {0}", map.vers);
                     Console.WriteLine("      prot    = {0}", map.prot);
                     Console.WriteLine("      port    = {0}", map.port);
                     Console.WriteLine("");
-                    bool status = Portmap.AddPort(map.prog, map.vers, map.prot, map.port);
+                    bool status = ServerPortmap.AddPort(map.prog, map.vers, map.prot, map.port);
                     ReplySet(msg.xid, status);
                 }
-                else if (msg.proc == Pmap.PROC_UNSET)
+                else if (msg.proc == Portmap.PMAPPROC_UNSET)
                 {
                     Console.WriteLine("    == PMAPPROC_UNSET ==");
-                    Pmap.MAPPING map = ReceiveUnset();
+                    Portmap.MAPPING map = ReceiveUnset();
                     Console.WriteLine("      prog    = {0}", map.prog);
                     Console.WriteLine("      vers    = {0}", map.vers);
                     Console.WriteLine("      prot    = {0}", map.prot);
                     Console.WriteLine("");
-                    bool status = Portmap.RemovePort(map.prog, map.vers, map.prot);
+                    bool status = ServerPortmap.RemovePort(map.prog, map.vers, map.prot);
                     ReplyUnset(msg.xid, status);
                 }
-                else if (msg.proc == Pmap.PROC_GETPORT)
+                else if (msg.proc == Portmap.PMAPPROC_GETPORT)
                 {
                     Console.WriteLine("    == PMAPPROC_GETPORT ==");
-                    Pmap.MAPPING map = ReceiveGetPort();
+                    Portmap.MAPPING map = ReceiveGetPort();
                     Console.WriteLine("      prog    = {0}", map.prog);
                     Console.WriteLine("      vers    = {0}", map.vers);
                     Console.WriteLine("      prot    = {0}", map.prot);
                     Console.WriteLine("");
-                    int prog_port = Portmap.FindPort(map.prog, map.vers, map.prot);
+                    int prog_port = ServerPortmap.FindPort(map.prog, map.vers, map.prot);
                     ReplyGetPort(msg.xid, prog_port);
                 }
                 else
@@ -226,7 +226,7 @@ namespace Vxi11Net
                     Console.WriteLine("    == clear buffer ==");
                     ClearArgs();
                 }
-                } catch (Exception e)
+                } catch (Exception)
                 {
                     serverRpcTcp.Close();
                 }
@@ -258,35 +258,35 @@ namespace Vxi11Net
         public void Create(string host, int port)
         {
             serverRpcUdp.Create(host, port);
-            Portmap.AddPort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.UDP, port);
+            ServerPortmap.AddPort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.UDP, port);
         }
         public void Destroy()
         {
             tokenSource.Cancel();
             serverRpcUdp.Destroy();
-            Portmap.RemovePort(Pmap.PROG, Pmap.VERS, Pmap.IPPROTO.UDP);
+            ServerPortmap.RemovePort(Portmap.PMAP_PROG, Portmap.PMAP_VERS, Portmap.IPPROTO.UDP);
         }
         public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
         {
             return serverRpcUdp.ReceiveMsg();
         }
 
-        public Pmap.MAPPING ReceiveSet()
+        public Portmap.MAPPING ReceiveSet()
         {
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
             serverRpcUdp.GetArgs(buffer);
 
-            Pmap.MAPPING map = new Pmap.MAPPING();
+            Portmap.MAPPING map = new Portmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            map.prot = (Pmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            map.prot = (Portmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             map.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return map;
         }
 
         public void ReplySet(int xid, bool status)
         {
-            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            Portmap.PMAP_UNSET_REPLY reply = new Portmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
@@ -295,27 +295,27 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.boolean = (status == true) ? 1 : 0;
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             serverRpcUdp.Reply(packet);
         }
-        public Pmap.MAPPING ReceiveUnset()
+        public Portmap.MAPPING ReceiveUnset()
         {
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
             serverRpcUdp.GetArgs(buffer);
 
-            Pmap.MAPPING map = new Pmap.MAPPING();
+            Portmap.MAPPING map = new Portmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            map.prot = (Pmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            map.prot = (Portmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             map.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return map;
         }
         public void ReplyUnset(int xid, bool status)
         {
-            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            Portmap.PMAP_UNSET_REPLY reply = new Portmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
@@ -324,27 +324,27 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.boolean = (status == true) ? 1 : 0;
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             serverRpcUdp.Reply(packet);
         }
-        public Pmap.MAPPING ReceiveGetPort()
+        public Portmap.MAPPING ReceiveGetPort()
         {
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.MAPPING))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.MAPPING))];
             serverRpcUdp.GetArgs(buffer);
 
-            Pmap.MAPPING map = new Pmap.MAPPING();
+            Portmap.MAPPING map = new Portmap.MAPPING();
             map.prog = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             map.vers = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
-            map.prot = (Pmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
+            map.prot = (Portmap.IPPROTO)IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
             map.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             return map;
         }
         public void ReplyGetPort(int xid, int port)
         {
-            Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
+            Portmap.PMAP_GETPORT_REPLY reply = new Portmap.PMAP_GETPORT_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
             reply.stat = IPAddress.HostToNetworkOrder(Rpc.MSG_ACCEPTED);
@@ -353,7 +353,7 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.port = IPAddress.HostToNetworkOrder(port);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_GETPORT_REPLY))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
@@ -376,38 +376,38 @@ namespace Vxi11Net
                 Console.WriteLine("      prog    = {0}", msg.prog);
                 Console.WriteLine("      proc    = {0}", msg.proc);
                 Console.WriteLine("      vers    = {0}", msg.vers);
-                if (msg.proc == Pmap.PROC_SET)
+                if (msg.proc == Portmap.PMAPPROC_SET)
                 {
                     Console.WriteLine("    == PMAPPROC_SET ==");
-                    Pmap.MAPPING map = ReceiveSet();
+                    Portmap.MAPPING map = ReceiveSet();
                     Console.WriteLine("      prog    = {0}", map.prog);
                     Console.WriteLine("      vers    = {0}", map.vers);
                     Console.WriteLine("      prot    = {0}", map.prot);
                     Console.WriteLine("      port    = {0}", map.port);
                     Console.WriteLine("");
-                    bool status = Portmap.AddPort(map.prog, map.vers, map.prot, map.port);
+                    bool status = ServerPortmap.AddPort(map.prog, map.vers, map.prot, map.port);
                     ReplySet(msg.xid, status);
                 }
-                else if (msg.proc == Pmap.PROC_UNSET)
+                else if (msg.proc == Portmap.PMAPPROC_UNSET)
                 {
                     Console.WriteLine("    == PMAPPROC_UNSET ==");
-                    Pmap.MAPPING map = ReceiveUnset();
+                    Portmap.MAPPING map = ReceiveUnset();
                     Console.WriteLine("      prog    = {0}", map.prog);
                     Console.WriteLine("      vers    = {0}", map.vers);
                     Console.WriteLine("      prot    = {0}", map.prot);
                     Console.WriteLine("");
-                    bool status = Portmap.RemovePort(map.prog, map.vers, map.prot);
+                    bool status = ServerPortmap.RemovePort(map.prog, map.vers, map.prot);
                     ReplyUnset(msg.xid, status);
                 }
-                else if (msg.proc == Pmap.PROC_GETPORT)
+                else if (msg.proc == Portmap.PMAPPROC_GETPORT)
                 {
                     Console.WriteLine("    == PMAPPROC_GETPORT ==");
-                    Pmap.MAPPING map = ReceiveGetPort();
+                    Portmap.MAPPING map = ReceiveGetPort();
                     Console.WriteLine("      prog    = {0}", map.prog);
                     Console.WriteLine("      vers    = {0}", map.vers);
                     Console.WriteLine("      prot    = {0}", map.prot);
                     Console.WriteLine("");
-                    int prog_port = Portmap.FindPort(map.prog, map.vers, map.prot);
+                    int prog_port = ServerPortmap.FindPort(map.prog, map.vers, map.prot);
                     ReplyGetPort(msg.xid, prog_port);
                 }
                 else

@@ -8,11 +8,10 @@ namespace Vxi11Net
     {
         private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-        private const int UDPMSGSIZE = 2000;
-        private byte[] raw_buf = new byte[UDPMSGSIZE];
+        IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
+
         private bool last_fragment = true;
-        private int recvsize = 0;
-        private int readsize = 0;
+        private int remain = 0;
 
         public void Create(string ipString, int port)
         {
@@ -27,7 +26,7 @@ namespace Vxi11Net
                     break;
             }
             IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            EndPoint endPoint = (EndPoint)new IPEndPoint(ipAddress, port);
+            endPoint = new IPEndPoint(ipAddress, port);
             socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(endPoint);
 
@@ -41,35 +40,34 @@ namespace Vxi11Net
         // TCP: frag_header が1になるまで受信する
         private int Receive(byte[] buffer, int offset, int buffsize, SocketFlags socketFlags, bool IsFirst)
         {
-            if ((IsFirst) || ((last_fragment == false) && (recvsize <= readsize)))
+            if ((IsFirst) || ((last_fragment == false) && (remain <= 0)))
             {
-                readsize = 0;
-                raw_buf = new byte[UDPMSGSIZE];
-                socket.Receive(raw_buf, 4, SocketFlags.None);
-                int frag_header = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(raw_buf, 0));
+                byte[] record_marking = new byte[4];
+                socket.Receive(record_marking, 4, SocketFlags.None);
+                int frag_header = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(record_marking, 0));
                 if (frag_header < 0)
                 {
                     last_fragment = true;
-                    recvsize = frag_header + int.MaxValue + 1;
+                    remain = frag_header + int.MaxValue + 1;
                 }
                 else
                 {
                     last_fragment = false;
-                    recvsize = frag_header;
+                    remain = frag_header;
                 }
             }
             int bytes;
-            if (buffsize <= (recvsize - readsize))
+            if (buffsize <= remain)
             {
                 bytes = buffsize;
             }
             else
             {
-                bytes = recvsize - readsize;
+                bytes = remain;
             }
             if (0 < bytes) {
                 socket.Receive(buffer, offset, bytes, socketFlags);
-                readsize += bytes;
+                remain -= bytes;
             }
             return bytes;
         }
@@ -98,10 +96,23 @@ namespace Vxi11Net
         public void ClearReply()
         {
             int bytes;
-            do
+            int size;
+            byte[] buffer = new byte[2000];
+            while (remain > 0)
             {
-                bytes = Receive(raw_buf, 0, UDPMSGSIZE, SocketFlags.None, false);
-            } while (0 < bytes);
+                if (buffer.Length <= remain)
+                {
+                    size = buffer.Length;
+                }
+                else
+                {
+                    size = remain;
+                }
+                bytes = socket.Receive(buffer, 0, size, SocketFlags.None);
+                Console.WriteLine("    == RPC(TCP:{0}):Received ({1}) ==", endPoint.Port, bytes);
+                remain = remain - bytes;
+            }
+            last_fragment = false;
         }
 
         private int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
@@ -130,8 +141,7 @@ namespace Vxi11Net
         {
             Send(msg, 0, msg.Length, SocketFlags.None, IsFirst, IsLast);
             last_fragment = true;
-            recvsize = 0;
-            readsize = 0;
+            remain = 0;
             return;
         }
         public void Flush()
@@ -141,9 +151,10 @@ namespace Vxi11Net
             try
             {
                 int bytes = 1;
+                byte[] buffer = new byte[1000];
                 do
                 {
-                    bytes = socket.Receive(raw_buf, SocketFlags.None);
+                    bytes = socket.Receive(buffer, SocketFlags.None);
                 }
                 while (0 < bytes);
             }
@@ -153,8 +164,7 @@ namespace Vxi11Net
             }
             socket.ReceiveTimeout = timeout;
             last_fragment = true;
-            recvsize = 0;
-            readsize = 0;
+            remain = 0;
         }
     }
     public class ClientRpcUdp

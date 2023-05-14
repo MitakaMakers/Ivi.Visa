@@ -372,7 +372,7 @@
                 {
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    serverVxi11.RunCoreChannel("127.0.0.1", port);
+                    serverVxi11.RunCoreThread("127.0.0.1", port);
                 }
                 else if (code == "27")
                 {
@@ -434,29 +434,29 @@
                     Console.WriteLine("      prog    = {0}", msg.prog);
                     Console.WriteLine("      proc    = {0}", msg.proc);
                     Console.WriteLine("      vers    = {0}", msg.vers);
-                    if (msg.proc == Pmap.PROC_SET)
+                    if (msg.proc == Portmap.PMAPPROC_SET)
                     {
                         Console.WriteLine("    == PMAPPROC_SET ==");
-                        Pmap.MAPPING map = serverPortmapTcp.ReceiveSet();
+                        Portmap.MAPPING map = serverPortmapTcp.ReceiveSet();
                         Console.WriteLine("      prog    = {0}", map.prog);
                         Console.WriteLine("      vers    = {0}", map.vers);
                         Console.WriteLine("      prot    = {0}", map.prot);
                         Console.WriteLine("      port    = {0}", map.port);
                         Console.WriteLine("");
                     }
-                    else if (msg.proc == Pmap.PROC_UNSET)
+                    else if (msg.proc == Portmap.PMAPPROC_UNSET)
                     {
                         Console.WriteLine("    == PMAPPROC_UNSET ==");
-                        Pmap.MAPPING map = serverPortmapTcp.ReceiveUnset();
+                        Portmap.MAPPING map = serverPortmapTcp.ReceiveUnset();
                         Console.WriteLine("      prog    = {0}", map.prog);
                         Console.WriteLine("      vers    = {0}", map.vers);
                         Console.WriteLine("      prot    = {0}", map.prot);
                         Console.WriteLine("");
                     }
-                    else if (msg.proc == Pmap.PROC_GETPORT)
+                    else if (msg.proc == Portmap.PMAPPROC_GETPORT)
                     {
                         Console.WriteLine("    == PMAPPROC_GETPORT ==");
-                        Pmap.MAPPING map = serverPortmapTcp.ReceiveGetPort();
+                        Portmap.MAPPING map = serverPortmapTcp.ReceiveGetPort();
                         Console.WriteLine("      prog    = {0}", map.prog);
                         Console.WriteLine("      vers    = {0}", map.vers);
                         Console.WriteLine("      prot    = {0}", map.prot);
@@ -503,19 +503,19 @@
                     Console.WriteLine("    received Portmap(UDP).");
                     Console.WriteLine("      xid     = {0}", msg.xid);
                     Console.WriteLine("      proc    = {0}", msg.proc);
-                    if (msg.proc == Pmap.PROC_SET)
+                    if (msg.proc == Portmap.PMAPPROC_SET)
                     {
-                        Pmap.MAPPING map = serverPortmapUdp.ReceiveSet();
+                        Portmap.MAPPING map = serverPortmapUdp.ReceiveSet();
                         Console.WriteLine("== PMAPPROC_SET ==");
                     }
-                    else if (msg.proc == Pmap.PROC_UNSET)
+                    else if (msg.proc == Portmap.PMAPPROC_UNSET)
                     {
-                        Pmap.MAPPING map = serverPortmapUdp.ReceiveUnset();
+                        Portmap.MAPPING map = serverPortmapUdp.ReceiveUnset();
                         Console.WriteLine("== PMAPPROC_UNSET ==");
                     }
-                    else if (msg.proc == Pmap.PROC_GETPORT)
+                    else if (msg.proc == Portmap.PMAPPROC_GETPORT)
                     {
-                        Pmap.MAPPING map = serverPortmapUdp.ReceiveGetPort();
+                        Portmap.MAPPING map = serverPortmapUdp.ReceiveGetPort();
                         Console.WriteLine("== PMAPPROC_GETPORT ==");
                     }
                     else
@@ -575,10 +575,10 @@
                 if (code == "1")
                 {
                     Console.WriteLine("== Run demo server ==");
-                    serverPortmapTcp.Run("127.0.0.1", Pmap.PMAPPORT);
-                    serverPortmapUdp.Run("127.0.0.1", Pmap.PMAPPORT);
-                    serverVxi11.RunCoreChannel("127.0.0.1", 50240);
-                    serverVxi11.RunAbortChannel("127.0.0.1", 50250);
+                    serverPortmapTcp.Run("127.0.0.1", Portmap.PMAPPORT);
+                    serverPortmapUdp.Run("127.0.0.1", Portmap.PMAPPORT);
+                    serverVxi11.RunCoreThread("127.0.0.1", 50240);
+                    serverVxi11.RunAbortThread("127.0.0.1", 50250);
                 }
                 else if (code == "2")
                 {

@@ -47,6 +47,8 @@
 - Support USBTMC and USB raw
   - [Usb.Net](https://www.nuget.org/packages/Usb.Net/)
   - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
+- Support GPIB
+  - [Linux GPIB](hhttps://sourceforge.net/projects/linux-gpib/)
 - Support C library interface
   - [DllExport](https://github.com/3F/DllExport)
 - Support Native AOT compile

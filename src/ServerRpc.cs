@@ -59,15 +59,15 @@ namespace Vxi11Net
 
                 if ((last_fragment == false) && (remain <= 0))
                 {
-                    byte[] frag_head = new byte[4];
-                    int bytes = socket.Receive(frag_head, 4, SocketFlags.None);
+                    byte[] record_marking = new byte[4];
+                    int bytes = socket.Receive(record_marking, 4, SocketFlags.None);
                     if (bytes == 0)
                     {
                         socket.Close();
                         continue;
                     }
                     Console.WriteLine("    == RPC(TCP:{0}):Received ({1}) ==", endPoint.Port, bytes);
-                    int frag_header = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(frag_head, 0));
+                    int frag_header = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(record_marking, 0));
                     if (frag_header < 0)
                     {
                         last_fragment = true;

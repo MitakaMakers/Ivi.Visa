@@ -6,29 +6,6 @@ namespace Vxi11Net
 {
     public class ServerVxi11
     {
-        private int lid = 123;
-        private int abortPort = 456;
-        private ServerRpcTcp serverCore = new ServerRpcTcp();
-        private ServerRpcTcp serverAbort = new ServerRpcTcp();
-        private ClientRpcTcp serverInterrupt = new ClientRpcTcp();
-        private ServerScpi serverScpi = new ServerScpi();
-
-        public void Create(string host, int port)
-        {
-            serverCore.Create(host, port);
-        }
-        public void CreateAbort(string host, int port)
-        {
-            serverAbort.Create(host, port);
-        }
-        public void CreateInterrupt(string host, int port)
-        {
-            serverInterrupt.Create(host, port);
-        }
-        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
-        {
-            return serverCore.ReceiveMsg();
-        }
         // reply create_link
         public Vxi11.CREATE_LINK_PARAMS ReceiveCreateLink(out string handle)
         {
@@ -294,10 +271,9 @@ namespace Vxi11Net
         public void Flush()
         {
             serverCore.Flush();
+            serverAbort.Flush();
         }
-
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        public void CoreThread()
+        private void CoreThread()
         {
             while (!tokenSource.Token.IsCancellationRequested)
             {
@@ -413,29 +389,13 @@ namespace Vxi11Net
                         Console.WriteLine("  == clear buffer ==");
                         serverCore.ClearArgs();
                     }
-                } catch (Exception e)
+                } catch (Exception)
                 {
                     serverCore.Close();
                 }
             }
         }
-        public void RunCoreChannel(string host, int port)
-        {
-            tokenSource.TryReset();
-
-            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
-            Create(host, port);
-            Portmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Pmap.IPPROTO.TCP, port);
-
-            Console.WriteLine("  listen({0}:{1})...", host, port);
-
-            Task.Run(() =>
-            {
-                CoreThread();
-            });
-            Thread.Sleep(10);
-        }
-        public void AbortThread()
+        private void AbortThread()
         {
             while (!tokenSource.Token.IsCancellationRequested)
             {
@@ -461,19 +421,60 @@ namespace Vxi11Net
                         Console.WriteLine("  == clear buffer ==");
                         serverAbort.ClearArgs();
                     }
-                } catch (Exception e)
+                } catch (Exception)
                 {
                     serverAbort.Close();
                 }
             }
         }
-        public void RunAbortChannel(string host, int port)
+        private int lid = 123;
+        private int abortPort = 456;
+        private ServerRpcTcp serverCore = new ServerRpcTcp();
+        private ServerRpcTcp serverAbort = new ServerRpcTcp();
+        private ClientRpcTcp serverInterrupt = new ClientRpcTcp();
+        private ServerScpi serverScpi = new ServerScpi();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+        public void Create(string host, int port)
+        {
+            serverCore.Create(host, port);
+        }
+        public void CreateAbort(string host, int port)
+        {
+            abortPort = port;
+            serverAbort.Create(host, port);
+        }
+        public void CreateInterrupt(string host, int port)
+        {
+            serverInterrupt.Create(host, port);
+        }
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
+        {
+            return serverCore.ReceiveMsg();
+        }
+        public void RunCoreThread(string host, int port)
+        {
+            tokenSource.TryReset();
+
+            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
+            Create(host, port);
+            ServerPortmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP, port);
+
+            Console.WriteLine("  listen({0}:{1})...", host, port);
+
+            Task.Run(() =>
+            {
+                CoreThread();
+            });
+            Thread.Sleep(10);
+        }
+        public void RunAbortThread(string host, int port)
         {
             tokenSource.TryReset();
 
             Console.WriteLine("== Run VXI-11 Abort channel(TCP, {0}, {1}) ==", host, port);
             CreateAbort(host, port);
-            Portmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Pmap.IPPROTO.TCP, port);
+            ServerPortmap.AddPort(Vxi11.DEVICE_ABORT_PROG, Vxi11.DEVICE_ABORT_VERSION, Portmap.IPPROTO.TCP, port);
 
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
@@ -487,6 +488,7 @@ namespace Vxi11Net
         {
             tokenSource.Cancel();
             serverCore.Destroy();
+            serverAbort.Destroy();
         }
     }
 }

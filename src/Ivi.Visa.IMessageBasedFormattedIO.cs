@@ -1,181 +1,312 @@
-﻿using System.Runtime.Serialization;
-using System.Text;
-using Vxi11Net;
+﻿using System.Text;
 
 namespace Ivi.Visa
 {
-    public class Vxi11RawIO488 : IMessageBasedRawIO
+    public interface IMessageBasedFormattedIO
     {
-        private Vxi11Session sesn;
-        public Vxi11RawIO488(Vxi11Session sesn)
-        {
-            this.sesn = sesn;
-        }
+        public BinaryEncoding BinaryEncoding_ { get; set; }
+        public Int32 ReadBufferSize { get; set; }
+        public Int32 WriteBufferSize { get; set; }
+        public ITypeFormatter TypeFormatter { get; set; }
+        public void DiscardBuffers();
+        public void FlushWrite(Boolean sendEnd);
+        public void Printf(String data);
+        public void Printf(String format, params object[] args);
+        public void PrintfAndFlush(String data);
+        public void PrintfAndFlush(String format, params object[] args);
+        // public unsafe void PrintfArray(String format, Byte* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, SByte* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, Int16* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, UInt16* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, Int32* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, UInt32* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, Int64* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, UInt64* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, Single* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArray(String format, Double* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, Byte* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, SByte* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, Int16* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, UInt16* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, Int32* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, UInt32* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, Int64* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, UInt64* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, Single* pArray, params Int64[] inputs);
+        // public unsafe void PrintfArrayAndFlush(String format, Double* pArray, params Int64[] inputs
+        public void Scanf<T>(String format, out T output);
+        public void Scanf<T1, T2>(String format, out T1 output1, out T2 output2);
+        public void Scanf<T1, T2, T3>(String format, out T1 output1, out T2 output2, out T3 output3);
+        public void Scanf<T1, T2, T3, T4>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4);
+        public void Scanf<T1, T2, T3, T4, T5>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5);
+        public void Scanf<T1, T2, T3, T4, T5, T6>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5, out T6 output6);
+        public void Scanf<T1, T2, T3, T4, T5, T6, T7>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5, out T6 output6, out T7 output7);
+        public void Scanf<T>(String format, Int32[] inputs, out T output);
+        public void Scanf<T1, T2>(String format, Int32[] inputs, out T1 output1, out T2 output2);
+        public void Scanf<T1, T2, T3>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3);
+        public void Scanf<T1, T2, T3, T4>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3, out T4 output4);
+        public void Scanf<T1, T2, T3, T4, T5>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5);
+        public void Scanf<T1, T2, T3, T4, T5, T6>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5, out T6 output6);
+        public void Scanf<T1, T2, T3, T4, T5, T6, T7>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5, out T6 output6, out T7 output7);
+        // public unsafe Int64 ScanfArray(String format, Byte* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, SByte* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, Int16* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, UInt16* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, Int32* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, UInt32* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, Int64* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, UInt64* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, Single* pArray, params Int64[] inputs);
+        // public unsafe Int64 ScanfArray(String format, Double* pArray, params Int64[] inputs);
+        public void Write(Char data);
+        public void Write(String data);
+        public void Write(Int64 data);
+        public void Write(UInt64 data);
+        public void Write(Double data);
+        public void WriteLine();
+        public void WriteLine(Char data);
+        public void WriteLine(String data);
+        public void WriteLine(Int64 data);
+        public void WriteLine(UInt64 data);
+        public void WriteLine(Double data);
+        public void WriteList(Byte[] data);
+        public void WriteList(Byte[] data, Int64 index, Int64 count);
+        public void WriteList(SByte[] data);
+        public void WriteList(SByte[] data, Int64 index, Int64 count);
+        public void WriteList(Int16[] data);
+        public void WriteList(Int16[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteList(UInt16[] data);
+        // [CLSCompliant(false)]
+        public void WriteList(UInt16[] data, Int64 index, Int64 count);
+        public void WriteList(Int32[] data);
+        public void WriteList(Int32[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteList(UInt32[] data);
+        // [CLSCompliant(false)]
+        public void WriteList(UInt32[] data, Int64 index, Int64 count);
+        public void WriteList(Int64[] data);
+        public void WriteList(Int64[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteList(UInt64[] data);
+        // [CLSCompliant(false)]
+        public void WriteList(UInt64[] data, Int64 index, Int64 count);
+        public void WriteList(Single[] data);
 
-        public void AbortAsyncOperation(IVisaAsyncResult result)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(int count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(int count, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(int count, VisaAsyncCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(byte[] buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(byte[] buffer, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(byte[] buffer, long index, long count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(byte[] buffer, long index, long count, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(byte[] buffer, VisaAsyncCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginRead(byte[] buffer, long index, long count, VisaAsyncCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(string buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(string buffer, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(string buffer, VisaAsyncCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(byte[] buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(byte[] buffer, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(byte[] buffer, long index, long count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(byte[] buffer, long index, long count, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(byte[] buffer, VisaAsyncCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IVisaAsyncResult BeginWrite(byte[] buffer, long index, long count, VisaAsyncCallback callback, object state)
-        {
-            throw new NotImplementedException();
-        }
-
-        public long EndRead(IVisaAsyncResult result)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string EndReadString(IVisaAsyncResult result)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void EndWrite(IVisaAsyncResult result)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] Read()
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] Read(long count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public byte[] Read(long count, out ReadStatus readStatus)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Read(byte[] buffer, long index, long count, out long actualCount, out ReadStatus readStatus)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ReadString()
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ReadString(long count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string ReadString(long count, out ReadStatus readStatus)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Write(byte[] buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Write(byte[] buffer, long index, long count)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Write(string buffer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Write(string buffer, long index, long count)
-        {
-            throw new NotImplementedException();
-        }
+        public void WriteList(Single[] data, Int64 index, Int64 count);
+        public void WriteList(Double[] data);
+        public void WriteList(Double[] data, Int64 index, Int64 count);
+        public void WriteLineList(Byte[] data);
+        public void WriteLineList(Byte[] data, Int64 index, Int64 count);
+        public void WriteLineList(SByte[] data);
+        public void WriteLineList(SByte[] data, Int64 index, Int64 count);
+        public void WriteLineList(Int16[] data);
+        public void WriteLineList(Int16[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteLineList(UInt16[] data);
+        // [CLSCompliant(false)]
+        public void WriteLineList(UInt16[] data, Int64 index, Int64 count);
+        public void WriteLineList(Int32[] data);
+        public void WriteLineList(Int32[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteLineList(UInt32[] data);
+        // [CLSCompliant(false)]
+        public void WriteLineList(UInt32[] data, Int64 index, Int64 count);
+        public void WriteLineList(Int64[] data);
+        public void WriteLineList(Int64[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteLineList(UInt64[] data);
+        // [CLSCompliant(false)]
+        public void WriteLineList(UInt64[] data, Int64 index, Int64 count);
+        public void WriteLineList(Single[] data);
+        public void WriteLineList(Single[] data, Int64 index, Int64 count);
+        public void WriteLineList(Double[] data);
+        public void WriteLineList(Double[] data, Int64 index, Int64 count);
+        public void WriteBinary(Byte[] data);
+        public void WriteBinary(Byte[] data, Int64 index, Int64 count);
+        public void WriteBinary(SByte[] data);
+        public void WriteBinary(SByte[] data, Int64 index, Int64 count);
+        public void WriteBinary(Int16[] data);
+        public void WriteBinary(Int16[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteBinary(UInt16[] data);
+        // [CLSCompliant(false)]
+        public void WriteBinary(UInt16[] data, Int64 index, Int64 count);
+        public void WriteBinary(Int32[] data);
+        public void WriteBinary(Int32[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteBinary(UInt32[] data);
+        // [CLSCompliant(false)]
+        public void WriteBinary(UInt32[] data, Int64 index, Int64 count);
+        public void WriteBinary(Int64[] data);
+        public void WriteBinary(Int64[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteBinary(UInt64[] data);
+        // [CLSCompliant(false)]
+        public void WriteBinary(UInt64[] data, Int64 index, Int64 count);
+        public void WriteBinary(Single[] data);
+        public void WriteBinary(Single[] data, Int64 index, Int64 count);
+        public void WriteBinary(Double[] data);
+        public void WriteBinary(Double[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(Byte[] data);
+        public void WriteBinaryAndFlush(Byte[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(SByte[] data);
+        public void WriteBinaryAndFlush(SByte[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(Int16[] data);
+        public void WriteBinaryAndFlush(Int16[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteBinaryAndFlush(UInt16[] data);
+        // [CLSCompliant(false)]
+        public void WriteBinaryAndFlush(UInt16[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(Int32[] data);
+        public void WriteBinaryAndFlush(Int32[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteBinaryAndFlush(UInt32[] data);
+        // [CLSCompliant(false)]
+        public void WriteBinaryAndFlush(UInt32[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(Int64[] data);
+        public void WriteBinaryAndFlush(Int64[] data, Int64 index, Int64 count);
+        // [CLSCompliant(false)]
+        public void WriteBinaryAndFlush(UInt64[] data);
+        // [CLSCompliant(false)]
+        public void WriteBinaryAndFlush(UInt64[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(Single[] data);
+        public void WriteBinaryAndFlush(Single[] data, Int64 index, Int64 count);
+        public void WriteBinaryAndFlush(Double[] data);
+        public void WriteBinaryAndFlush(Double[] data, Int64 index, Int64 count);
+        public String ReadString();
+        public String ReadString(Int32 count);
+        public Int32 ReadString(StringBuilder data);
+        public Int32 ReadString(StringBuilder data, Int32 count);
+        public Char ReadChar();
+        public Int64 ReadInt64();
+        public UInt64 ReadUInt64();
+        public Double ReadDouble();
+        public String ReadLine();
+        public Int32 ReadLine(StringBuilder data);
+        public Char ReadLineChar();
+        public Int64 ReadLineInt64();
+        public UInt64 ReadLineUInt64();
+        public Double ReadLineDouble();
+        public Byte[] ReadListOfByte(Int64 count);
+        public Int64 ReadListOfByte(Byte[] data, Int64 index, Int64 count);
+        public SByte[] ReadListOfSByte(Int64 count);
+        public Int64 ReadListOfSByte(SByte[] data, Int64 index, Int64 count);
+        public Int16[] ReadListOfInt16(Int64 count);
+        public Int64 ReadListOfInt16(Int16[] data, Int64 index, Int64 count);
+        public UInt16[] ReadListOfUInt16(Int64 count);
+        public Int64 ReadListOfUInt16(UInt16[] data, Int64 index, Int64 count);
+        public Int32[] ReadListOfInt32(Int64 count);
+        public Int64 ReadListOfInt32(Int32[] data, Int64 index, Int64 count);
+        public UInt32[] ReadListOfUInt32(Int64 count);
+        public Int64 ReadListOfUInt32(UInt32[] data, Int64 index, Int64 count);
+        public Int64[] ReadListOfInt64(Int64 count);
+        public Int64 ReadListOfInt64(Int64[] data, Int64 index, Int64 count);
+        public UInt64[] ReadListOfUInt64(Int64 count);
+        public Int64 ReadListOfUInt64(UInt64[] data, Int64 index, Int64 count);
+        public Single[] ReadListOfSingle(Int64 count);
+        public Int64 ReadListOfSingle(Single[] data, Int64 index, Int64 count);
+        public Double[] ReadListOfDouble(Int64 count);
+        public Int64 ReadListOfDouble(Double[] data, Int64 index, Int64 count);
+        public Byte[] ReadLineListOfByte();
+        public Int64 ReadLineListOfByte(Byte[] data, Int64 index);
+        public SByte[] ReadLineListOfSByte();
+        public Int64 ReadLineListOfSByte(SByte[] data, Int64 index);
+        public Int16[] ReadLineListOfInt16();
+        public Int64 ReadLineListOfInt16(Int16[] data, Int64 index);
+        public UInt16[] ReadLineListOfUInt16();
+        public Int64 ReadLineListOfUInt16(UInt16[] data, Int64 index);
+        public Int32[] ReadLineListOfInt32();
+        public Int64 ReadLineListOfInt32(Int32[] data, Int64 index);
+        public UInt32[] ReadLineListOfUInt32();
+        public Int64 ReadLineListOfUInt32(UInt32[] data, Int64 index);
+        public Int64[] ReadLineListOfInt64();
+        public Int64 ReadLineListOfInt64(Int64[] data, Int64 index);
+        public UInt64[] ReadLineListOfUInt64();
+        public Int64 ReadLineListOfUInt64(UInt64[] data, Int64 index);
+        public Single[] ReadLineListOfSingle();
+        public Int64 ReadLineListOfSingle(Single[] data, Int64 index);
+        public Double[] ReadLineListOfDouble();
+        public Int64 ReadLineListOfDouble(Double[] data, Int64 index);
+        public Byte[] ReadBinaryBlockOfByte();
+        public Byte[] ReadBinaryBlockOfByte(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfByte(Byte[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfByte(Byte[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public SByte[] ReadBinaryBlockOfSByte();
+        public SByte[] ReadBinaryBlockOfSByte(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfSByte(SByte[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfSByte(SByte[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Int16[] ReadBinaryBlockOfInt16();
+        public Int16[] ReadBinaryBlockOfInt16(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfInt16(Int16[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfInt16(Int16[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public UInt16[] ReadBinaryBlockOfUInt16();
+        public UInt16[] ReadBinaryBlockOfUInt16(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfUInt16(UInt16[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfUInt16(UInt16[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Int32[] ReadBinaryBlockOfInt32();
+        public Int32[] ReadBinaryBlockOfInt32(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfInt32(Int32[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfInt32(Int32[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public UInt32[] ReadBinaryBlockOfUInt32();
+        public UInt32[] ReadBinaryBlockOfUInt32(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfUInt32(UInt32[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfUInt32(UInt32[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Int64[] ReadBinaryBlockOfInt64();
+        public Int64 ReadBinaryBlockOfInt64(Int64[] data, Int64 index, Int64 count);
+        public UInt64[] ReadBinaryBlockOfUInt64();
+        public Int64 ReadBinaryBlockOfUInt64(UInt64[] data, Int64 index, Int64 count);
+        public Single[] ReadBinaryBlockOfSingle();
+        public Single[] ReadBinaryBlockOfSingle(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfSingle(Single[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfSingle(Single[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Double[] ReadBinaryBlockOfDouble();
+        public Double[] ReadBinaryBlockOfDouble(Boolean seekToBlock);
+        public Int64 ReadBinaryBlockOfDouble(Double[] data, Int64 index, Int64 count);
+        public Int64 ReadBinaryBlockOfDouble(Double[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Byte[] ReadLineBinaryBlockOfByte();
+        public Byte[] ReadLineBinaryBlockOfByte(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfByte(Byte[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfByte(Byte[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public SByte[] ReadLineBinaryBlockOfSByte();
+        public SByte[] ReadLineBinaryBlockOfSByte(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfSByte(SByte[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfSByte(SByte[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Int16[] ReadLineBinaryBlockOfInt16();
+        public Int16[] ReadLineBinaryBlockOfInt16(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfInt16(Int16[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfInt16(Int16[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public UInt16[] ReadLineBinaryBlockOfUInt16();
+        public UInt16[] ReadLineBinaryBlockOfUInt16(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfUInt16(UInt16[] data, Int64 index, Int64 coun);
+        public Int64 ReadLineBinaryBlockOfUInt16(UInt16[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Int32[] ReadLineBinaryBlockOfInt32();
+        public Int32[] ReadLineBinaryBlockOfInt32(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfInt32(Int32[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfInt32(Int32[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public UInt32[] ReadLineBinaryBlockOfUInt32();
+        public UInt32[] ReadLineBinaryBlockOfUInt32(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfUInt32(UInt32[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfUInt32(UInt32[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Int64[] ReadLineBinaryBlockOfInt64();
+        public Int64 ReadLineBinaryBlockOfInt64(Int64[] data, Int64 index, Int64 count);
+        public UInt64[] ReadLineBinaryBlockOfUInt64();
+        public Int64 ReadLineBinaryBlockOfUInt64(UInt64[] data, Int64 index, Int64 count);
+        public Single[] ReadLineBinaryBlockOfSingle();
+        public Single[] ReadLineBinaryBlockOfSingle(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfSingle(Single[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfSingle(Single[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public Double[] ReadLineBinaryBlockOfDouble();
+        public Double[] ReadLineBinaryBlockOfDouble(Boolean seekToBlock);
+        public Int64 ReadLineBinaryBlockOfDouble(Double[] data, Int64 index, Int64 count);
+        public Int64 ReadLineBinaryBlockOfDouble(Double[] data, Int64 index, Int64 count, Boolean seekToBlock);
+        public String ReadWhileMatch(String characters);
+        public String ReadUntilMatch(Char ch);
+        public String ReadUntilMatch(String characters, Boolean discardMatch);
+        public String ReadUntilEnd();
+        public void Skip(Int64 count);
+        public void SkipString(String data);
+        public void SkipUntilEnd();
     }
     public class Vxi11FormattedIO488 : IMessageBasedFormattedIO
     {
@@ -1409,132 +1540,6 @@ namespace Ivi.Visa
         public void SkipUntilEnd()
         {
             throw new NotImplementedException();
-        }
-    }
-    public class Vxi11Session : ITcpipSocketSession
-    {
-        public const int default_timeout_value = 2000;
-        public Int32 TimeoutMilliseconds { get; set; }
-        public String ResourceName { get; } = string.Empty;
-        public String HardwareInterfaceName { get; } = string.Empty;
-        public HardwareInterfaceType HardwareInterfaceType { get; }
-        public Int16 HardwareInterfaceNumber { get; }
-        public String ResourceClass { get; } = string.Empty;
-        public String ResourceManufacturerName { get; } = string.Empty;
-        public Int16 ResourceManufacturerId { get; }
-        public Version ResourceImplementationVersion { get; } = Environment.Version;
-        public Version ResourceSpecificationVersion { get; } = Environment.Version;
-        public ResourceLockState ResourceLockState { get; }
-
-        public event EventHandler<VisaEventArgs> ServiceRequest;
-
-        public void LockResource() { }
-        public void LockResource(TimeSpan timeout) { }
-        public void LockResource(Int32 timeoutMilliseconds) { }
-        public string LockResource(TimeSpan timeout, String sharedKey) { return ""; }
-        public string LockResource(Int32 timeoutMilliseconds, String sharedKey) { return ""; }
-        public void UnlockResource() { }
-        public Int32 EventQueueCapacity { get; set; }
-        public Boolean SynchronizeCallbacks { get; set; }
-        public void EnableEvent(EventType eventType) { }
-        public void DisableEvent(EventType eventType) { }
-        public void DiscardEvent(EventType eventType) { }
-        public VisaEventArgs WaitOnEvent(EventType eventType)
-        {
-            return new VisaEventArgs(EventType.Custom);
-        }
-        public VisaEventArgs WaitOnEvent(EventType eventType, out EventQueueStatus status)
-        {
-            status = EventQueueStatus.Empty;
-            return new VisaEventArgs(EventType.Custom);
-        }
-        public VisaEventArgs WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds)
-        {
-            return new VisaEventArgs(EventType.Custom);
-        }
-        public VisaEventArgs WaitOnEvent(EventType eventType, TimeSpan timeout)
-        {
-            return new VisaEventArgs(EventType.Custom);
-        }
-        public VisaEventArgs WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds, out EventQueueStatus status)
-        {
-            status = EventQueueStatus.Empty;
-            return new VisaEventArgs(EventType.Custom);
-        }
-        public VisaEventArgs WaitOnEvent(EventType eventType, TimeSpan timeout, out EventQueueStatus status)
-        {
-            status = EventQueueStatus.Empty;
-            return new VisaEventArgs(EventType.Custom);
-        }
-        public void Dispose() { }
-
-        public String Address { get; } = string.Empty;
-        public String HostName { get; } = string.Empty;
-        public Boolean KeepAlive { get; set; }
-        public Boolean NoDelay { get; set; }
-        public Int16 Port { get; }
-        public void Flush(IOBuffers buffers, Boolean discard) { }
-        public Boolean SetBufferSize(IOBuffers buffers, Int32 size) { return true;  }
-        public IOProtocol IOProtocol { get; set; }
-        public Boolean SendEndEnabled { get; set; }
-        public Byte TerminationCharacter { get; set; }
-        public Boolean TerminationCharacterEnabled { get; set; }
-        public void AssertTrigger() { }
-        public void Clear() { }
-        public StatusByteFlags ReadStatusByte()
-        {
-            throw new NotImplementedException();
-        }
-        public IMessageBasedFormattedIO FormattedIO { get; }
-        public IMessageBasedRawIO RawIO { get; }
-        private ClientVxi11 client = new ClientVxi11();
-
-        private int lock_timeout = default_timeout_value;
-        private int io_timeout = default_timeout_value;
-        private int lid;
-        private int abortPort;
-        private int maxRecvSize;
-        public static void ServiceRequestHandler(object? sender, VisaEventArgs args)
-        {
-            return;
-        }
-        public Vxi11Session(string resourceName)
-        {
-            // TCPIP[board]::host address[::LAN device name][::INSTR]
-            this.Address = "127.0.0.1";
-            this.Port = 10240;
-            string deviceName = "inst0";
-            client.Create(this.Address, this.Port);
-            int clientId = 0;
-            int lockDevice = 0;
-            client.CreateLink(clientId, lockDevice, this.lock_timeout, deviceName, out this.lid, out this.abortPort, out this.maxRecvSize);
-
-            this.FormattedIO = new Vxi11FormattedIO488(this);
-            this.RawIO = new Vxi11RawIO488(this);
-            this.ServiceRequest = ServiceRequestHandler;
-        }
-        public int Read(string buf, int count, out int retCount)
-        {
-            Vxi11.Flags flags = Vxi11.Flags.end;
-            Vxi11.TermChar term = Vxi11.TermChar.None;
-            int reason = 0;
-            byte[] data = new byte[count];
-            client.DeviceRead(this.lid, count, flags, this.lock_timeout, this.io_timeout, term, out reason, out data);
-            retCount = data.Length;
-            return 0;
-        }
-        public int Write(string buf, int count, out int retCount)
-        {
-            Vxi11.Flags flags = Vxi11.Flags.end;
-            client.DeviceWrite(this.lid, flags, this.lock_timeout, this.io_timeout, buf, out retCount);
-            return 0;
-        }
-        public int Terminate()
-        {
-            client.Create(this.Address, this.abortPort);
-            Vxi11.Flags flags = Vxi11.Flags.end;
-            client.DeviceAbort(this.lid, flags, this.lock_timeout, this.io_timeout);
-            return 0;
         }
     }
 }

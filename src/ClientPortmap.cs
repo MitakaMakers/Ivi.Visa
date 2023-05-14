@@ -26,13 +26,13 @@ namespace Vxi11Net
 
         public int Set(int program, int version, int protocol, int port)
         {
-            Pmap.PMAP_SET_CALL arg = new Pmap.PMAP_SET_CALL();
+            Portmap.PMAP_SET_CALL arg = new Portmap.PMAP_SET_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
-            arg.prog = IPAddress.HostToNetworkOrder(Pmap.PMAP_PROG);
-            arg.vers = IPAddress.HostToNetworkOrder(Pmap.PMAP_VERS);
-            arg.proc = IPAddress.HostToNetworkOrder(Pmap.PROC_SET);
+            arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(Portmap.PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(Portmap.PMAPPROC_SET);
             arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -42,16 +42,16 @@ namespace Vxi11Net
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(port);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_CALL))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_SET_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             clientRpcTcp.Call(packet, true, true);
 
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_REPLY))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_SET_REPLY))];
             clientRpcTcp.GetReply(buffer, true);
 
-            Pmap.PMAP_SET_REPLY reply = new Pmap.PMAP_SET_REPLY();
+            Portmap.PMAP_SET_REPLY reply = new Portmap.PMAP_SET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -64,13 +64,13 @@ namespace Vxi11Net
         }
         public int Unset(int program, int version, int protocol)
         {
-            Pmap.PMAP_UNSET_CALL arg = new Pmap.PMAP_UNSET_CALL();
+            Portmap.PMAP_UNSET_CALL arg = new Portmap.PMAP_UNSET_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
-            arg.prog = IPAddress.HostToNetworkOrder(Pmap.PMAP_PROG);
-            arg.vers = IPAddress.HostToNetworkOrder(Pmap.PMAP_VERS);
-            arg.proc = IPAddress.HostToNetworkOrder(Pmap.PROC_UNSET);
+            arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(Portmap.PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(Portmap.PMAPPROC_UNSET);
             arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -80,16 +80,16 @@ namespace Vxi11Net
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(0);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_CALL))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             clientRpcTcp.Call(packet, true, true);
 
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_REPLY))];
             clientRpcTcp.GetReply(buffer, true);
 
-            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            Portmap.PMAP_UNSET_REPLY reply = new Portmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -100,34 +100,34 @@ namespace Vxi11Net
             return reply.boolean;
         }
 
-        public int GetPort(int program, int version, int protocol)
+        public int GetPort(int program, int version, Portmap.IPPROTO protocol)
         {
-            Pmap.PMAP_GETPORT_CALL arg = new Pmap.PMAP_GETPORT_CALL();
+            Portmap.PMAP_GETPORT_CALL arg = new Portmap.PMAP_GETPORT_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
-            arg.prog = IPAddress.HostToNetworkOrder(Pmap.PMAP_PROG);
-            arg.vers = IPAddress.HostToNetworkOrder(Pmap.PMAP_VERS);
-            arg.proc = IPAddress.HostToNetworkOrder(Pmap.PROC_GETPORT);
+            arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(Portmap.PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(Portmap.PMAPPROC_GETPORT);
             arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
             arg.verf_len = IPAddress.HostToNetworkOrder(0);
             arg.prognum = IPAddress.HostToNetworkOrder(program);
             arg.progvers = IPAddress.HostToNetworkOrder(version);
-            arg.proto = IPAddress.HostToNetworkOrder(protocol);
+            arg.proto = IPAddress.HostToNetworkOrder((int)protocol);
             arg.port = IPAddress.HostToNetworkOrder(0);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_CALL))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_GETPORT_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             clientRpcTcp.Call(packet, true, true);
 
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_GETPORT_REPLY))];
             clientRpcTcp.GetReply(buffer, true);
 
-            Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
+            Portmap.PMAP_GETPORT_REPLY reply = new Portmap.PMAP_GETPORT_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -162,13 +162,13 @@ namespace Vxi11Net
 
         public int Set(int program, int version, int protocol, int port)
         {
-            Pmap.PMAP_SET_CALL arg = new Pmap.PMAP_SET_CALL();
+            Portmap.PMAP_SET_CALL arg = new Portmap.PMAP_SET_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
-            arg.prog = IPAddress.HostToNetworkOrder(Pmap.PMAP_PROG);
-            arg.vers = IPAddress.HostToNetworkOrder(Pmap.PMAP_VERS);
-            arg.proc = IPAddress.HostToNetworkOrder(Pmap.PROC_SET);
+            arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(Portmap.PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(Portmap.PMAPPROC_SET);
             arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -178,16 +178,16 @@ namespace Vxi11Net
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(port);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_CALL))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_SET_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             clientRpcUdp.Call(packet, true, true);
 
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_SET_REPLY))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_SET_REPLY))];
             clientRpcUdp.GetReply(buffer, true);
 
-            Pmap.PMAP_SET_REPLY reply = new Pmap.PMAP_SET_REPLY();
+            Portmap.PMAP_SET_REPLY reply = new Portmap.PMAP_SET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -200,13 +200,13 @@ namespace Vxi11Net
         }
         public int Unset(int program, int version, int protocol)
         {
-            Pmap.PMAP_UNSET_CALL arg = new Pmap.PMAP_UNSET_CALL();
+            Portmap.PMAP_UNSET_CALL arg = new Portmap.PMAP_UNSET_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
-            arg.prog = IPAddress.HostToNetworkOrder(Pmap.PMAP_PROG);
-            arg.vers = IPAddress.HostToNetworkOrder(Pmap.PMAP_VERS);
-            arg.proc = IPAddress.HostToNetworkOrder(Pmap.PROC_UNSET);
+            arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(Portmap.PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(Portmap.PMAPPROC_UNSET);
             arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -216,16 +216,16 @@ namespace Vxi11Net
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(0);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_CALL))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             clientRpcUdp.Call(packet, true, true);
 
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_UNSET_REPLY))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_UNSET_REPLY))];
             clientRpcUdp.GetReply(buffer, true);
 
-            Pmap.PMAP_UNSET_REPLY reply = new Pmap.PMAP_UNSET_REPLY();
+            Portmap.PMAP_UNSET_REPLY reply = new Portmap.PMAP_UNSET_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));
@@ -238,13 +238,13 @@ namespace Vxi11Net
 
         public int GetPort(int program, int version, int protocol)
         {
-            Pmap.PMAP_GETPORT_CALL arg = new Pmap.PMAP_GETPORT_CALL();
+            Portmap.PMAP_GETPORT_CALL arg = new Portmap.PMAP_GETPORT_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(GetXid());
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
-            arg.prog = IPAddress.HostToNetworkOrder(Pmap.PMAP_PROG);
-            arg.vers = IPAddress.HostToNetworkOrder(Pmap.PMAP_VERS);
-            arg.proc = IPAddress.HostToNetworkOrder(Pmap.PROC_GETPORT);
+            arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
+            arg.vers = IPAddress.HostToNetworkOrder(Portmap.PMAP_VERS);
+            arg.proc = IPAddress.HostToNetworkOrder(Portmap.PMAPPROC_GETPORT);
             arg.cred_flavor = IPAddress.HostToNetworkOrder(0);
             arg.cred_len = IPAddress.HostToNetworkOrder(0);
             arg.verf_flavor = IPAddress.HostToNetworkOrder(0);
@@ -254,16 +254,16 @@ namespace Vxi11Net
             arg.proto = IPAddress.HostToNetworkOrder(protocol);
             arg.port = IPAddress.HostToNetworkOrder(0);
 
-            byte[] packet = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_CALL))];
+            byte[] packet = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_GETPORT_CALL))];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(arg, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             clientRpcUdp.Call(packet, true, true);
 
-            byte[] buffer = new byte[Marshal.SizeOf(typeof(Pmap.PMAP_GETPORT_REPLY))];
+            byte[] buffer = new byte[Marshal.SizeOf(typeof(Portmap.PMAP_GETPORT_REPLY))];
             clientRpcUdp.GetReply(buffer, true);
 
-            Pmap.PMAP_GETPORT_REPLY reply = new Pmap.PMAP_GETPORT_REPLY();
+            Portmap.PMAP_GETPORT_REPLY reply = new Portmap.PMAP_GETPORT_REPLY();
             reply.xid = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 0));
             reply.msg_type = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
             reply.stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 8));

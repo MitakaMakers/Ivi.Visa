@@ -16,8 +16,8 @@ namespace TmctlAPINet.Tests
             ServerVxi11 serverVxi11 = new ServerVxi11();
             serverPortmapTcp.Run("127.0.0.1", port);
             serverPortmapUdp.Run("127.0.0.1", port);
-            serverVxi11.RunCoreChannel("127.0.0.1", port);
-            serverVxi11.RunAbortChannel("127.0.0.1", port + 1);
+            serverVxi11.RunCoreThread("127.0.0.1", port);
+            serverVxi11.RunAbortThread("127.0.0.1", port + 1);
 
             int id, ret;
             System.Text.StringBuilder buff = new System.Text.StringBuilder();

@@ -1,4 +1,5 @@
 ﻿using Ivi.Visa;
+using System.Diagnostics;
 using System.Text;
 using TmctlAPINet;
 
@@ -92,7 +93,7 @@ namespace Vxi11Net
                     int port = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.Create(address, port);
                     Console.WriteLine("== create RPC clientVxi11 (core channel.) ==");
-                    Console.WriteLine(" Call : create_rpc_client_core_channel : ret=0");
+                    Console.WriteLine(" Call : create_rpc_client_core_channel");
                 }
                 else if (code == "2")
                 {
@@ -102,7 +103,7 @@ namespace Vxi11Net
                     int abortPort2 = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.Create(address, abortPort2);
                     Console.WriteLine("== create RPC clientVxi11 (abort channel.) ==");
-                    Console.WriteLine(" Call : create_rpc_client_abort_channel : ret=0");
+                    Console.WriteLine(" Call : create_rpc_client_abort_channel");
                 }
                 else if (code == "3")
                 {
@@ -112,7 +113,7 @@ namespace Vxi11Net
                     int port = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.CreateInterruptChannel(address, port);
                     Console.WriteLine("== create RPC server (interrupt channel.) ==");
-                    Console.WriteLine(" Call : create_rpc_server_interrupt_channel : ret=0");
+                    Console.WriteLine(" Call : create_rpc_server_interrupt_channel");
                 }
                 else if (code == "4")
                 {
@@ -126,7 +127,7 @@ namespace Vxi11Net
                     String handle = new String(Console.ReadLine());
                     clientVxi11.CreateLink(cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
                     Console.WriteLine("== create_link ==");
-                    Console.WriteLine(" Call : create_link : ret=0");
+                    Console.WriteLine(" Call : create_link : lid={0}, abortPort={1}, maxRecvSize={2}", lid, abortPort, maxRecvSize);
                 }
                 else if (code == "5")
                 {
@@ -138,7 +139,7 @@ namespace Vxi11Net
                     int data_len;
                     clientVxi11.DeviceWrite(lid, flags, lock_timeout, io_timeout, msg, out data_len);
                     Console.WriteLine("== device_write ==");
-                    Console.WriteLine(" Call : device_write : ret=0");
+                    Console.WriteLine(" Call : device_write : data_len={0}", data_len);
                 }
                 else if (code == "6")
                 {
@@ -154,13 +155,13 @@ namespace Vxi11Net
                     string data;
                     clientVxi11.DeviceRead(lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
                     Console.WriteLine("== device_read ==");
-                    Console.WriteLine(" Call : device_read : ret={0}", data);
+                    Console.WriteLine(" Call : device_read : reason={0}, data={1}", reason, data);
                 }
                 else if (code == "7")
                 {
                     clientVxi11.DestroyLink(lid);
                     Console.WriteLine("== destroy_link ==");
-                    Console.WriteLine(" Call : destroy_link : ret=0");
+                    Console.WriteLine(" Call : destroy_link");
                 }
                 else if (code == "8")
                 {
@@ -170,7 +171,7 @@ namespace Vxi11Net
                     char stb;
                     clientVxi11.DeviceReadstb(lid, flags, lock_timeout, io_timeout, out stb);
                     Console.WriteLine("== device_readstb ==");
-                    Console.WriteLine(" Call : device_readstb : ret=0");
+                    Console.WriteLine(" Call : device_readstb : stb={0}", stb);
                 }
                 else if (code == "9")
                 {
@@ -179,7 +180,7 @@ namespace Vxi11Net
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceTrigger(lid, flags, lock_timeout, io_timeout);
                     Console.WriteLine("== device_trigger ==");
-                    Console.WriteLine(" Call : device_trigger : ret=0");
+                    Console.WriteLine(" Call : device_trigger");
                 }
                 else if (code == "10")
                 {
@@ -188,7 +189,7 @@ namespace Vxi11Net
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceClear(lid, flags, lock_timeout, io_timeout);
                     Console.WriteLine("== device_clear ==");
-                    Console.WriteLine(" Call : device_clear : ret=0");
+                    Console.WriteLine(" Call : device_clear");
                 }
                 else if (code == "11")
                 {
@@ -197,7 +198,7 @@ namespace Vxi11Net
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceRemote(lid, flags, lock_timeout, io_timeout);
                     Console.WriteLine("== device_remote ==");
-                    Console.WriteLine(" Call : device_remote : ret=0");
+                    Console.WriteLine(" Call : device_remote");
                 }
                 else if (code == "12")
                 {
@@ -206,7 +207,7 @@ namespace Vxi11Net
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceLocal(lid, flags, lock_timeout, io_timeout);
                     Console.WriteLine("== device_local ==");
-                    Console.WriteLine(" Call : device_local : ret=0");
+                    Console.WriteLine(" Call : device_local");
                 }
                 else if (code == "13")
                 {
@@ -215,7 +216,7 @@ namespace Vxi11Net
                     int lid2 = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceLock(lid2, flags, lock_timeout);
                     Console.WriteLine("== device_lock ==");
-                    Console.WriteLine(" Call : device_lock : ret=0");
+                    Console.WriteLine(" Call : device_lock");
                 }
                 else if (code == "14")
                 {
@@ -223,7 +224,7 @@ namespace Vxi11Net
                     int lid2 = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceUnlock(lid2);
                     Console.WriteLine("== device_unlock ==");
-                    Console.WriteLine(" Call : device_unlock : ret=0");
+                    Console.WriteLine(" Call : device_unlock");
                 }
                 else if (code == "15")
                 {
@@ -233,7 +234,7 @@ namespace Vxi11Net
                     string handle = new String(Console.ReadLine());
                     clientVxi11.DeviceEnableSrq(lid, enable, handle);
                     Console.WriteLine("== device_enable_srq ==");
-                    Console.WriteLine(" Call : device_enable_srq : ret=0");
+                    Console.WriteLine(" Call : device_enable_srq");
                 }
                 else if (code == "16")
                 {
@@ -252,7 +253,7 @@ namespace Vxi11Net
                     byte[] data_out;
                     clientVxi11.DeviceDocmd(lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
                     Console.WriteLine("== device_docmd ==");
-                    Console.WriteLine(" Call : device_docmd : ret=0");
+                    Console.WriteLine(" Call : device_docmd : data_out={0}", data_out);
                 }
                 else if (code == "17")
                 {
@@ -268,13 +269,13 @@ namespace Vxi11Net
                     int progfamily = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.CreateIntrChan(hostaddr, hostport, prognum, progvers, progfamily);
                     Console.WriteLine("== create_intr_chan ==");
-                    Console.WriteLine(" Call : create_intr_chan : ret=0");
+                    Console.WriteLine(" Call : create_intr_chan");
                 }
                 else if (code == "18")
                 {
                     clientVxi11.DestroyIntrChan();
                     Console.WriteLine("== destroy_intr_chan ==");
-                    Console.WriteLine(" Call : destroy_intr_chan : ret=0");
+                    Console.WriteLine(" Call : destroy_intr_chan");
                 }
                 else if (code == "19")
                 {
@@ -285,30 +286,30 @@ namespace Vxi11Net
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceAbort(lid2, flags, lock_timeout, io_timeout);
                     Console.WriteLine("== device_abort ==");
-                    Console.WriteLine(" Call : device_abort : ret=0");
+                    Console.WriteLine(" Call : device_abort");
                 }
                 else if (code == "20")
                 {
                     Console.WriteLine("== device_intr_srq ==");
-                    Console.WriteLine(" Call : device_intr_srq : ret=0");
+                    Console.WriteLine(" Call : device_intr_srq");
                 }
                 else if (code == "21")
                 {
                     clientVxi11.DestroyInterruptChannel();
                     Console.WriteLine("== close RPC server (interrupt channel) ==");
-                    Console.WriteLine(" Call : close RPC server (interrupt channel) : ret=0");
+                    Console.WriteLine(" Call : close RPC server (interrupt channel)");
                 }
                 else if (code == "22")
                 {
                     clientVxi11.DestroyAbortChannel();
                     Console.WriteLine("== close RPC clientVxi11 (abort channel) ==");
-                    Console.WriteLine(" Call : close RPC clientVxi11 (abort channel) : ret=0");
+                    Console.WriteLine(" Call : close RPC clientVxi11 (abort channel)");
                 }
                 else if (code == "23")
                 {
                     clientVxi11.Destroy();
                     Console.WriteLine("== close RPC clientVxi11 (core channel) ==");
-                    Console.WriteLine(" Call : close RPC clientVxi11 (core channel) : ret=0");
+                    Console.WriteLine(" Call : close RPC clientVxi11 (core channel)");
                 }
                 else if ((code == "B") || (code == "b"))
                 {
@@ -350,7 +351,7 @@ namespace Vxi11Net
                     int port = Convert.ToInt32(Console.ReadLine());
                     clientPortmapTcp.Create(host, port);
                     Console.WriteLine("== pmap client(TCP) ==");
-                    Console.WriteLine(" Call : pmap client(TCP) : ret=0");
+                    Console.WriteLine(" Call : pmap client(TCP)");
                 }
                 else if (code == "2")
                 {
@@ -360,7 +361,7 @@ namespace Vxi11Net
                     int port = Convert.ToInt32(Console.ReadLine());
                     int err = clientPortmapTcp.Set(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot, port);
                     Console.WriteLine("== pmap_set ==");
-                    Console.WriteLine(" Call : pmap_set : ret=0");
+                    Console.WriteLine(" Call : pmap_set : err={0}", err);
                 }
                 else if (code == "3")
                 {
@@ -368,15 +369,24 @@ namespace Vxi11Net
                     int prot = Convert.ToInt32(Console.ReadLine());
                     int err = clientPortmapTcp.Unset(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot);
                     Console.WriteLine("== pmap_unset ==");
-                    Console.WriteLine(" Call : pmap_set : ret=0");
+                    Console.WriteLine(" Call : pmap_set : err={0}", err);
                 }
                 else if (code == "4")
                 {
                     Console.Write("  protocol?(6:TCP, 17:UDP) : ");
-                    int prot = Convert.ToInt32(Console.ReadLine());
+                    int protocol = Convert.ToInt32(Console.ReadLine());
+                    Portmap.IPPROTO prot;
+                    if (protocol == 6)
+                    {
+                        prot = Portmap.IPPROTO.TCP;
+                    }
+                    else
+                    {
+                        prot = Portmap.IPPROTO.UDP;
+                    }
                     int err = clientPortmapTcp.GetPort(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot);
                     Console.WriteLine("== pmap_getport ==");
-                    Console.WriteLine(" Call : pmap_getport : ret=0");
+                    Console.WriteLine(" Call : pmap_getport : err={0}", err);
                 }
                 else if (code == "5")
                 {
@@ -386,7 +396,7 @@ namespace Vxi11Net
                     int port = Convert.ToInt32(Console.ReadLine());
                     clientPortmapUdp.Create(host, port);
                     Console.WriteLine("== pmap client(UDP) ==");
-                    Console.WriteLine(" Call : pmap client(UDP) : ret=0");
+                    Console.WriteLine(" Call : pmap client(UDP)");
                 }
                 else if (code == "6")
                 {
@@ -396,7 +406,7 @@ namespace Vxi11Net
                     int port = Convert.ToInt32(Console.ReadLine());
                     int err = clientPortmapUdp.Set(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot, port);
                     Console.WriteLine("== pmap_set ==");
-                    Console.WriteLine(" Call : pmap_set : ret=0");
+                    Console.WriteLine(" Call : pmap_set : err={0}", err);
                 }
                 else if (code == "7")
                 {
@@ -404,7 +414,7 @@ namespace Vxi11Net
                     int prot = Convert.ToInt32(Console.ReadLine());
                     int err = clientPortmapUdp.Unset(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot);
                     Console.WriteLine("== pmap_unset ==");
-                    Console.WriteLine(" Call : pmap_set : ret=0");
+                    Console.WriteLine(" Call : pmap_set : err={0}", err);
                 }
                 else if (code == "8")
                 {
@@ -412,7 +422,7 @@ namespace Vxi11Net
                     int prot = Convert.ToInt32(Console.ReadLine());
                     int err = clientPortmapUdp.GetPort(Vxi11.DEVICE_CORE, Vxi11.DEVICE_CORE_VERSION, prot);
                     Console.WriteLine("== pmap_getport ==");
-                    Console.WriteLine(" Call : pmap_getport : ret=0");
+                    Console.WriteLine(" Call : pmap_getport : err={0}", err);
                 }
                 else if ((code == "B") || (code == "b"))
                 {
@@ -483,10 +493,10 @@ namespace Vxi11Net
         }
         public static void TmctlConsole()
         {
+            TMCTL tmctl = new TMCTL();
             bool isLoop = true;
             while (isLoop)
             {
-                TMCTL tmctl = new TMCTL();
                 Console.WriteLine("Select Tmctl Function");
                 Console.WriteLine("   1:TmcInitialize");
                 Console.WriteLine("   2:TmcFinish");
@@ -506,18 +516,18 @@ namespace Vxi11Net
                     Console.Write("  adr? : ");
                     string adr = new String(Console.ReadLine());
                     int id;
-                    int re = tmctl.Initialize(wire, adr, out id);
+                    int ret = tmctl.Initialize(wire, adr, out id);
                     Console.WriteLine("== TmcInitialize ==");
-                    Console.WriteLine(" Call : TmcInitialize : ret=0,  id=0");
+                    Console.WriteLine(" Call : TmcInitialize : ret={0}, id={1}", ret, id);
                 }
                 else if (code == "2")
                 {
                     Console.Write("  id? : ");
                     int id = Convert.ToInt32(Console.ReadLine());
-                    int re = tmctl.Finish(id);
+                    int ret = tmctl.Finish(id);
                     Console.ReadLine();
                     Console.WriteLine("== TmcFinish ==");
-                    Console.WriteLine(" Call : TmcFinish : ret=0");
+                    Console.WriteLine(" Call : TmcFinish : ret={0}", ret);
                 }
                 else if (code == "3")
                 {
@@ -527,7 +537,7 @@ namespace Vxi11Net
                     string msg = new String(Console.ReadLine());
                     int ret = tmctl.Send(id, msg);
                     Console.WriteLine("== TmcSend ==");
-                    Console.WriteLine(" Call : TmcSend : ret=0");
+                    Console.WriteLine(" Call : TmcSend : ret={0}", ret);
                 }
                 else if (code == "4")
                 {
@@ -539,7 +549,7 @@ namespace Vxi11Net
                     int rlen = 0;
                     int ret = tmctl.Receive(id, ref  buff ,blen, ref rlen);
                     Console.WriteLine("== TmcReceive ==");
-                    Console.WriteLine(" Call : TmcReceive : ret=0,  id=0");
+                    Console.WriteLine(" Call : TmcReceive : ret={0}, buff={1}", ret, buff);
                 }
                 else if (code == "5")
                 {
@@ -549,7 +559,7 @@ namespace Vxi11Net
                     int flag = Convert.ToInt32(Console.ReadLine());
                     int ret = tmctl.SetRen(id, flag);
                     Console.WriteLine("== TmcSetRen ==");
-                    Console.WriteLine(" Call : TmcSetRen : ret=0,  id=0");
+                    Console.WriteLine(" Call : TmcSetRen : ret={0}, id={1}", ret, id);
                 }
                 else if (code == "6")
                 {
@@ -557,7 +567,7 @@ namespace Vxi11Net
                     int id = Convert.ToInt32(Console.ReadLine());
                     int ret = tmctl.DeviceClear(id);
                     Console.WriteLine("== TmcDeviceClear ==");
-                    Console.WriteLine(" Call : TmcDeviceClear : ret=0");
+                    Console.WriteLine(" Call : TmcDeviceClear : ret={0}", ret);
                 }
                 else if (code == "7")
                 {
@@ -565,7 +575,7 @@ namespace Vxi11Net
                     int id = Convert.ToInt32(Console.ReadLine());
                     int ret = tmctl.DeviceTrigger(id);
                     Console.WriteLine("== TmcDeviceTrigger ==");
-                    Console.WriteLine(" Call : TmcDeviceTrigger : ret=0,  id=0");
+                    Console.WriteLine(" Call : TmcDeviceTrigger : ret={0}, id={1}", ret, id);
                 }
                 else if ((code == "B") || (code == "b"))
                 {

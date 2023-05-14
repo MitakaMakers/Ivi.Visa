@@ -1,5 +1,4 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System.Security.Cryptography;
 using System.Text;
 using Vxi11Net;
 
@@ -20,127 +19,169 @@ namespace TmctlAPINet
         public const int TM_CTL_USBTMC3 = 12;
         public const int TM_CTL_HISLIP = 14;
 
-        public Socket? socket;
-        public ClientVxi11 client = new ClientVxi11();
-        public int lid;
-        public int abortPort;
-        public int maxRecvSize;
-        public int flags;
-        public int lock_timeout = 123;
-        public int io_timeout = 456;
-        public int xid = 789;
+        private TmVxi11 client = new TmVxi11();
 
         public int Initialize(int wire, string adr, out int id)
         {
             id = 0;
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-            IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint remoteEP = new IPEndPoint(ipAddress, 10240);
-
-            this.socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            this.socket.Connect(remoteEP);
-            this.socket.NoDelay = true;
-
-            int cliendId  = 0;
-            int lockDevice = 0;
-            string handle = "inst0";
-            client.CreateLink(cliendId, lockDevice, this.lock_timeout, handle, out this.lid, out this.abortPort, out this.maxRecvSize);
+            client.Initialize(adr);
             return 0;
         }
         public int Finish(int id)
         {
-            if (this.socket != null)
-            {
-                client.DestroyLink(this.lid);
-                this.socket.Close();
-            }
+            client.Finish();
             return 0;
         }
         public int SetTimeout(int id, int tmo)
         {
-            if (this.socket != null)
-            {
-                socket.SendTimeout = tmo * 100;
-                socket.SendTimeout = tmo * 100;
-            }
+            client.SetTimeout(tmo);
             return 0;
         }
         public int SetTerm(int id, int eos, int eot)
         {
+            client.SetTerm(eos, eot);
             return 0;
         }
         public int Send(int id, string msg)
         {
-            Vxi11.Flags flags = Vxi11.Flags.none;
-            int data_len;
-            if (this.socket != null)
-            {
-                client.DeviceWrite(this.lid, flags, this.lock_timeout, this.io_timeout, msg, out data_len);
-            }
+            client.Send(msg);
             return 0;
         }
         public int Receive(int id, ref StringBuilder buff, int blen, ref int rlen)
         {
-            int requestSize = blen;
-            Vxi11.Flags flags = Vxi11.Flags.none;
-            Vxi11.TermChar termchar = Vxi11.TermChar.LF;
-            int reason;
-            byte[] data ;
-            if (this.socket == null)
-            {
-                return 0;
-            }
-            client.DeviceRead(this.lid,  requestSize, flags, this.lock_timeout, this.io_timeout, termchar, out reason, out data);
-            string str = Encoding.GetEncoding("ASCII").GetString(data);
-            buff = new StringBuilder(str);
-            rlen = data.Length;
+            client.Receive(ref buff, blen, ref rlen);
             return 0;
         }
         public int ReceiveSetup(int id)
         {
+            client.ReceiveSetup();
             return 0;
         }
         public int ReceiveBlockHeader(int id, ref int length)
         {
+            client.ReceiveBlockHeader(ref length);
             return 0;
         }
         public int ReceiveBlockData(int id, ref sbyte buff, int blen, ref int rlen, ref int end)
         {
+            client.ReceiveBlockData(ref buff, blen, ref rlen, ref end);
             return 1;
         }
         public int SetRen(int id, int flag)
         {
-            Vxi11.Flags flags = Vxi11.Flags.none;
-            if (this.socket == null)
-            {
-                return 0;
-            }
             if (flag == 0)
             {
-                client.DeviceLocal(this.lid, flags, this.lock_timeout, this.io_timeout);
+                client.SetLocal();
             }
             else
             {
-                client.DeviceRemote(this.lid, flags, this.lock_timeout, this.io_timeout);
+                client.SetRemote();
             }
             return 0;
         }
         public int DeviceClear(int id)
         {
-            Vxi11.Flags flags = Vxi11.Flags.none;
-            if (this.socket != null)
-            {
-                client.DeviceClear(this.lid, flags, this.lock_timeout, this.io_timeout);
-            }
+            client.DeviceClear();
             return 0;
         }
         public int DeviceTrigger(int id)
         {
+            client.DeviceTrigger();
+            return 0;
+        }
+    }
+    internal class TmVxi11
+    {
+        private ClientVxi11 client = new ClientVxi11();
+
+        private int lid;
+        private int corePort;
+        private int abortPort;
+        private int maxRecvSize;
+        private int lock_timeout = 123;
+        private int io_timeout = 456;
+
+        internal void Initialize(string address)
+        {
+            int cliendId = 0;
+            int lockDevice = 0;
+            string handle = "inst0";
+            ClientPortmapTcp pmap = new ClientPortmapTcp();
+
+            string ipStr = address;
+
+            pmap.Create(ipStr, 111);
+            corePort = pmap.GetPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP);
+            client.Create(ipStr, corePort);
+            client.CreateLink(cliendId, lockDevice, lock_timeout, handle, out lid, out abortPort, out maxRecvSize);
+            client.CreateAbortChannel(ipStr, abortPort);
+        }
+        internal void Finish()
+        {
+            client.DestroyLink(lid);
+            client.Destroy();
+        }
+
+        internal int SetTimeout(int tmo)
+        {
+            io_timeout = tmo * 100;
+            lock_timeout = tmo * 100;
+            return 0;
+        }
+        internal int SetTerm(int eos, int eot)
+        {
+            return 0;
+        }
+        internal int Send(string msg)
+        {
+            int data_len;
+            client.DeviceWrite(lid, Vxi11.Flags.none, lock_timeout, io_timeout, msg, out data_len);
+            return 0;
+        }
+        internal int Receive(ref StringBuilder buff, int blen, ref int rlen)
+        {
+            int requestSize = blen;
             Vxi11.Flags flags = Vxi11.Flags.none;
-            if (this.socket != null)
-            {
-                client.DeviceTrigger(this.lid, flags, this.lock_timeout, this.io_timeout);
-            }
+            Vxi11.TermChar termchar = Vxi11.TermChar.LF;
+            int reason;
+            byte[] data;
+            client.DeviceRead(lid, requestSize, flags, lock_timeout, io_timeout, termchar, out reason, out data);
+            string str = Encoding.GetEncoding("ASCII").GetString(data);
+            buff = new StringBuilder(str);
+            rlen = data.Length;
+            return 0;
+        }
+        internal int ReceiveSetup()
+        {
+            return 0;
+        }
+        internal int ReceiveBlockHeader(ref int length)
+        {
+            return 0;
+        }
+        internal int ReceiveBlockData(ref sbyte buff, int blen, ref int rlen, ref int end)
+        {
+            return 1;
+        }
+        internal int SetLocal()
+        {
+            client.DeviceLocal(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            return 0;
+        }
+        internal int SetRemote()
+        {
+            client.DeviceRemote(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            return 0;
+        }
+
+        internal int DeviceClear()
+        {
+            client.DeviceClear(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            return 0;
+        }
+        internal int DeviceTrigger()
+        {
+            client.DeviceTrigger(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
             return 0;
         }
     }

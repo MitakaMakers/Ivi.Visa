@@ -160,6 +160,7 @@
         public static IVisaSession Open(String resourceName, AccessMode accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)
         {
             IVisaSession sesn = new Vxi11Session(resourceName);
+            // TODO Implement
             openStatus = ResourceOpenStatus.Success;
             return sesn;
         }
