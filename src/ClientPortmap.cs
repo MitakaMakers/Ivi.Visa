@@ -5,25 +5,6 @@ namespace Vxi11Net
 {
     public class ClientPortmapTcp
     {
-        private ClientRpcTcp clientRpcTcp = new ClientRpcTcp();
-        private int xid = 1;
-
-        public void Create(string host, int port)
-        {
-            clientRpcTcp.Create(host, port);
-        }
-        public void Destroy()
-        {
-            clientRpcTcp.Destroy();
-        }
-
-        private int GetXid()
-        {
-            int _xid = xid;
-            xid = xid + 1;
-            return _xid;
-        }
-
         public int Set(int program, int version, int protocol, int port)
         {
             Portmap.PMAP_SET_CALL arg = new Portmap.PMAP_SET_CALL();
@@ -138,19 +119,16 @@ namespace Vxi11Net
 
             return reply.port;
         }
-    }
-    public class ClientPortmapUdp
-    {
-        private ClientRpcUdp clientRpcUdp = new ClientRpcUdp();
+        private ClientRpcTcp clientRpcTcp = new ClientRpcTcp();
         private int xid = 1;
 
         public void Create(string host, int port)
         {
-            clientRpcUdp.Create(host, port);
+            clientRpcTcp.Create(host, port);
         }
         public void Destroy()
         {
-            clientRpcUdp.Destroy();
+            clientRpcTcp.Destroy();
         }
 
         private int GetXid()
@@ -159,7 +137,9 @@ namespace Vxi11Net
             xid = xid + 1;
             return _xid;
         }
-
+    }
+    public class ClientPortmapUdp
+    {
         public int Set(int program, int version, int protocol, int port)
         {
             Portmap.PMAP_SET_CALL arg = new Portmap.PMAP_SET_CALL();
@@ -273,6 +253,23 @@ namespace Vxi11Net
             reply.port = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
 
             return reply.port;
+        }
+        private ClientRpcUdp clientRpcUdp = new ClientRpcUdp();
+        private int xid = 1;
+        public void Create(string host, int port)
+        {
+            clientRpcUdp.Create(host, port);
+        }
+        public void Destroy()
+        {
+            clientRpcUdp.Destroy();
+        }
+
+        private int GetXid()
+        {
+            int _xid = xid;
+            xid = xid + 1;
+            return _xid;
         }
     }
 }
