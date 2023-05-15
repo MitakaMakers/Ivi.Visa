@@ -47,6 +47,7 @@
 - Support USBTMC and USB raw
   - [Usb.Net](https://www.nuget.org/packages/Usb.Net/)
   - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
+  - [emulated USB devices](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/developing-windows-drivers-for-emulated-usb-host-controllers-and-devices)
 - Support GPIB
   - [Linux GPIB(C)](hhttps://sourceforge.net/projects/linux-gpib/)
 - Support C library interface
