@@ -13,16 +13,6 @@
         {
             return 1024;
         }
-        public int Parse(string s)
-        {
-            command = s;
-            if (TERMCHAR_EN)
-            {
-                
-            }
-            response = "XYZCO,246B,S000-0123-02,0";
-            return 0;
-        }
         public string GetResponse()
         {
             string resp = response; 
@@ -34,8 +24,15 @@
         }
         public void Abort()
         { }
-        public void bav()
-        { }
+        public void bav(string message)
+        {
+            command = message;
+            if (TERMCHAR_EN)
+            {
+
+            }
+            response = "XYZCO,246B,S000-0123-02,0";
+        }
         public void dcas()
         { }
         public void brq()

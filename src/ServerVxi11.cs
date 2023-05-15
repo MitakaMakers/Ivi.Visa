@@ -298,7 +298,8 @@ namespace Vxi11Net
                     Console.WriteLine("  == DEVICE_WRITE ==");
                     string data;
                     Vxi11.DEVICE_WRITE_PARAMS wrt = ReceiveDeviceWrite(out data);
-                    serverScpi.Parse(data);
+                    serverScpi.bav(data);
+                    serverScpi.RMT_sent();
                     ReplyDeviceWrite(msg.xid, wrt.data_len);
                 }
                 else if (msg.proc == Vxi11.DEVICE_READ)
@@ -448,55 +449,27 @@ namespace Vxi11Net
         {
             return serverCore.ReceiveMsg();
         }
-        public void OneShot(string host, int port, int count)
+        public void RunCoreThread(string host, int port, int count)
         {
             tokenSource.TryReset();
 
             Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
             Create(host, port);
             ServerPortmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP, port);
+
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
             Task.Run(() =>
             {
-                while (0 < count)
+                while ((0 < count) && (!tokenSource.Token.IsCancellationRequested))
                 {
                     CoreThread();
                     count--;
                 }
             });
-        }
-        public void RunCoreThread(string host, int port)
-        {
-            tokenSource.TryReset();
-
-            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
-            Create(host, port);
-            ServerPortmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP, port);
-
-            Console.WriteLine("  listen({0}:{1})...", host, port);
-
-            Task.Run(() =>
-            {
-                while (!tokenSource.Token.IsCancellationRequested)
-                {
-                    CoreThread();
-                }
-            });
             Thread.Sleep(10);
         }
-        public void OneShort(string host, int port)
-        {
-            Console.WriteLine("== Run VXI-11 Core channel(TCP, {0}, {1}) ==", host, port);
-            Create(host, port);
-            ServerPortmap.AddPort(Vxi11.DEVICE_CORE_PROG, Vxi11.DEVICE_CORE_VERSION, Portmap.IPPROTO.TCP, port);
-            Console.WriteLine("  listen({0}:{1})...", host, port);
-            Task.Run(() =>
-            {
-                CoreThread();
-            });
-        }
-        public void RunAbortThread(string host, int port)
+        public void RunAbortThread(string host, int port, int count)
         {
             tokenSource.TryReset();
 
@@ -508,9 +481,10 @@ namespace Vxi11Net
 
             Task.Run(() =>
             {
-                while (!tokenSource.Token.IsCancellationRequested)
+                while ((0 < count) && (!tokenSource.Token.IsCancellationRequested))
                 {
                     AbortThread();
+                    count--;
                 }
             });
             Thread.Sleep(10);

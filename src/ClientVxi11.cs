@@ -652,7 +652,6 @@ namespace Vxi11Net
         // call create_link
         public int CreateLink(int cliendId, int lockDevice, int lock_timeout, string handle, out int lid, out int abortPort, out int maxRecvSize)
         {
-            int xid = GetXid();
             byte[] array = System.Text.Encoding.ASCII.GetBytes(handle);
             int status = CoreChannel.CreateLink(clientCore, xid, cliendId, lockDevice, lock_timeout, array, out lid, out abortPort, out maxRecvSize);
             return status;
@@ -660,7 +659,6 @@ namespace Vxi11Net
         // call device_write
         public int DeviceWrite(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, string data, out int data_len)
         {
-            int xid = GetXid();
             byte[] buff = System.Text.Encoding.ASCII.GetBytes(data);
             int status = CoreChannel.DeviceWrite(clientCore, xid, lid, flags, lock_timeout, io_timeout, buff, out data_len);
             return status;
@@ -675,111 +673,91 @@ namespace Vxi11Net
         }
         public int DeviceRead(int lid, int requestSize, Vxi11.Flags flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out byte[] data)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceRead(clientCore, xid, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
+            int status = CoreChannel.DeviceRead(clientCore, xid++, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
             return status;
         }
         // call device_readstb
         public int DeviceReadstb(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, out char stb)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceReadstb(clientCore, xid, lid, flags, lock_timeout, io_timeout, out stb);
+            int status = CoreChannel.DeviceReadstb(clientCore, xid++, lid, flags, lock_timeout, io_timeout, out stb);
             return status;
         }
         // call device_trigger
         public int DeviceTrigger(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceTrigger(clientCore, xid, lid, flags, lock_timeout, io_timeout);
+            int status = CoreChannel.DeviceTrigger(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_clear
         public int DeviceClear(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceClear(clientCore, xid, lid, flags, lock_timeout, io_timeout);
+            int status = CoreChannel.DeviceClear(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_remote
         public int DeviceRemote(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceRemote(clientCore, xid, lid, flags, lock_timeout, io_timeout);
+            int status = CoreChannel.DeviceRemote(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_local
         public int DeviceLocal(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceLocal(clientCore, xid, lid, flags, lock_timeout, io_timeout);
+            int status = CoreChannel.DeviceLocal(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_lock
         public int DeviceLock(int lid, Vxi11.Flags flags, int lock_timeout)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceLock(clientCore, xid, lid, flags, lock_timeout);
+            int status = CoreChannel.DeviceLock(clientCore, xid++, lid, flags, lock_timeout);
             return status;
         }
         // call device_unlock
         public int DeviceUnlock(int lid)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DeviceUnlock(clientCore, xid, lid);
+            int status = CoreChannel.DeviceUnlock(clientCore, xid++, lid);
             return status;
         }
         // call create_intr_chan
         public int CreateIntrChan(int hostaddr, int hostport, int prognum, int progvers, int progfamily)
         {
-            int xid = GetXid();
-            int status = CoreChannel.CreateIntrChan(clientCore, xid, hostaddr, hostport, prognum, progvers, progfamily);
+            int status = CoreChannel.CreateIntrChan(clientCore, xid++, hostaddr, hostport, prognum, progvers, progfamily);
             return status;
         }
         // call destroy_intr_chan
         public int DestroyIntrChan()
         {
-            int xid = GetXid();
-            int status = CoreChannel.DestroyIntrChan(clientCore, xid);
+            int status = CoreChannel.DestroyIntrChan(clientCore, xid++);
             return status;
         }
         // call device_enable_srq
         public int DeviceEnableSrq(int lid, int enable, string handle)
         {
-            int xid = GetXid();
             byte[] array = System.Text.Encoding.ASCII.GetBytes(handle);
-            int status = CoreChannel.DeviceEnableSrq(clientCore, xid, lid, enable, array);
+            int status = CoreChannel.DeviceEnableSrq(clientCore, xid++, lid, enable, array);
             return status;
         }
         // call device_docmd
         public void DeviceDocmd(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
         {
-            int xid = GetXid();
-            CoreChannel.DeviceDocmd(clientCore, xid, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
+            CoreChannel.DeviceDocmd(clientCore, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
         }
         // call destroy_link
         public int DestroyLink(int lid)
         {
-            int xid = GetXid();
-            int status = CoreChannel.DestroyLink(clientCore, xid, lid);
+            int status = CoreChannel.DestroyLink(clientCore, xid++, lid);
             return status;
         }
         // call device_abort
         public int DeviceAbort(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
         {
-            int xid = GetXid();
-            int status = AbortChannel.DeviceAbort(clientAbort, xid, lid, flags, lock_timeout, io_timeout);
+            int status = AbortChannel.DeviceAbort(clientAbort, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         private ClientRpcTcp clientCore = new ClientRpcTcp();
         private ClientRpcTcp clientAbort = new ClientRpcTcp();
         private ServerRpcTcp serverInterrupt = new ServerRpcTcp();
         private int xid = 123;
-        private int GetXid()
-        {
-            int _xid = xid;
-            xid = xid + 1;
-            return _xid;
-        }
         public void Create(string host, int port)
         {
             clientCore.Create(host, port);

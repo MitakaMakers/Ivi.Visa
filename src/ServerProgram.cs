@@ -8,22 +8,32 @@
             while (isLoop)
             {
                 Console.WriteLine("Select Test target");
-                Console.WriteLine("   1:Test VXI-11 server");
-                Console.WriteLine("   2:Test Portmap server");
-                Console.WriteLine("   3:Run Demo server");
+                Console.WriteLine("   1:Test HiSLIP server");
+                Console.WriteLine("   2:Test Socket server");
+                Console.WriteLine("   3:Test VXI-11 server");
+                Console.WriteLine("   4:Test Portmap server");
+                Console.WriteLine("   5:Run Demo server");
                 Console.WriteLine(" E/Q:exit program");
                 Console.WriteLine("");
                 Console.Write("Input fuction number? : ");
                 string a = new String(Console.ReadLine());
                 if (a == "1")
                 {
-                    Vxi11Console();
+                    //HislipConsole();
                 }
                 else if (a == "2")
                 {
-                    PortmapConsole();
+                    //SocketConsole();
                 }
                 else if (a == "3")
+                {
+                    Vxi11Console();
+                }
+                else if (a == "4")
+                {
+                    PortmapConsole();
+                }
+                else if (a == "5")
                 {
                     DemoConsole();
                 }
@@ -372,7 +382,7 @@
                 {
                     Console.Write("  port number? : ");
                     int port = Convert.ToInt32(Console.ReadLine());
-                    serverVxi11.RunCoreThread("127.0.0.1", port);
+                    serverVxi11.RunCoreThread("127.0.0.1", port, 100000);
                 }
                 else if (code == "27")
                 {
@@ -561,12 +571,16 @@
             ServerPortmapTcp serverPortmapTcp = new ServerPortmapTcp();
             ServerPortmapUdp serverPortmapUdp = new ServerPortmapUdp();
             ServerVxi11 serverVxi11 = new ServerVxi11();
+            ServerHislip serverHislip = new ServerHislip();
+            ServerSocket serverSocket = new ServerSocket();
 
             while (isLoop)
             {
                 Console.WriteLine("Select Function");
-                Console.WriteLine("   1:run demo server");
-                Console.WriteLine("   2:shutdown demo server");
+                Console.WriteLine("   1:run VXI-11 and Portmap server");
+                Console.WriteLine("   2:shutdown VXI-11 and Portmap server");
+                Console.WriteLine("   3:run HiSLIP server");
+                Console.WriteLine("   4:run Socket server");
                 Console.WriteLine("   B:back to Main menu");
                 Console.WriteLine(" E/Q:Exit program");
                 Console.WriteLine("");
@@ -577,14 +591,24 @@
                     Console.WriteLine("== Run demo server ==");
                     serverPortmapTcp.Run("127.0.0.1", Portmap.PMAPPORT);
                     serverPortmapUdp.Run("127.0.0.1", Portmap.PMAPPORT);
-                    serverVxi11.RunCoreThread("127.0.0.1", 50240);
-                    serverVxi11.RunAbortThread("127.0.0.1", 50250);
+                    serverVxi11.RunCoreThread("127.0.0.1", 50240, 100000);
+                    serverVxi11.RunAbortThread("127.0.0.1", 50250, 100000);
                 }
                 else if (code == "2")
                 {
                     serverPortmapTcp.Shutdown();
                     serverPortmapUdp.Shutdown();
                     serverVxi11.Shutdown();
+                }
+                else if (code == "3")
+                {
+                    Console.WriteLine("== Run demo server ==");
+                    serverHislip.RunThread("127.0.0.1", 50240, 100000);
+                }
+                else if (code == "4")
+                {
+                    Console.WriteLine("== Run demo server ==");
+                    //serverSocket.RunThread("127.0.0.1", 50240);
                 }
                 else if ((code == "B") || (code == "b"))
                 {

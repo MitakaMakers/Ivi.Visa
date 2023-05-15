@@ -8,7 +8,7 @@ namespace Vxi11Net
         public int Set(int program, int version, int protocol, int port)
         {
             Portmap.PMAP_SET_CALL arg = new Portmap.PMAP_SET_CALL();
-            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
+            arg.xid = IPAddress.HostToNetworkOrder(xid++);
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
@@ -46,7 +46,7 @@ namespace Vxi11Net
         public int Unset(int program, int version, int protocol)
         {
             Portmap.PMAP_UNSET_CALL arg = new Portmap.PMAP_UNSET_CALL();
-            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
+            arg.xid = IPAddress.HostToNetworkOrder(xid++);
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
@@ -84,7 +84,7 @@ namespace Vxi11Net
         public int GetPort(int program, int version, Portmap.IPPROTO protocol)
         {
             Portmap.PMAP_GETPORT_CALL arg = new Portmap.PMAP_GETPORT_CALL();
-            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
+            arg.xid = IPAddress.HostToNetworkOrder(xid++);
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
@@ -130,20 +130,13 @@ namespace Vxi11Net
         {
             clientRpcTcp.Destroy();
         }
-
-        private int GetXid()
-        {
-            int _xid = xid;
-            xid = xid + 1;
-            return _xid;
-        }
     }
     public class ClientPortmapUdp
     {
         public int Set(int program, int version, int protocol, int port)
         {
             Portmap.PMAP_SET_CALL arg = new Portmap.PMAP_SET_CALL();
-            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
+            arg.xid = IPAddress.HostToNetworkOrder(xid++);
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
@@ -181,7 +174,7 @@ namespace Vxi11Net
         public int Unset(int program, int version, int protocol)
         {
             Portmap.PMAP_UNSET_CALL arg = new Portmap.PMAP_UNSET_CALL();
-            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
+            arg.xid = IPAddress.HostToNetworkOrder(xid++);
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
@@ -219,7 +212,7 @@ namespace Vxi11Net
         public int GetPort(int program, int version, int protocol)
         {
             Portmap.PMAP_GETPORT_CALL arg = new Portmap.PMAP_GETPORT_CALL();
-            arg.xid = IPAddress.HostToNetworkOrder(GetXid());
+            arg.xid = IPAddress.HostToNetworkOrder(xid++);
             arg.msg_type = IPAddress.HostToNetworkOrder(Rpc.CALL);
             arg.rpcvers = IPAddress.HostToNetworkOrder(Rpc.RPC_VER);
             arg.prog = IPAddress.HostToNetworkOrder(Portmap.PMAP_PROG);
@@ -263,13 +256,6 @@ namespace Vxi11Net
         public void Destroy()
         {
             clientRpcUdp.Destroy();
-        }
-
-        private int GetXid()
-        {
-            int _xid = xid;
-            xid = xid + 1;
-            return _xid;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace TmctlAPINet.Tests
             ServerPortmapTcp serverPortmapTcp = new ServerPortmapTcp();
             ServerVxi11 serverVxi11 = new ServerVxi11();
             serverPortmapTcp.OneShot("127.0.0.1", 111, 1);
-            serverVxi11.OneShot("127.0.0.1", 50250, 4);
+            serverVxi11.RunCoreThread("127.0.0.1", 50250, 4);
 
             int id, ret;
             System.Text.StringBuilder buff = new System.Text.StringBuilder();
