@@ -178,6 +178,42 @@ namespace Vxi11Net
             s.Send(packet);
             return 0;
         }
+        public int Interrupted(int messageID)
+        {
+            Hislip.Message msg = new Hislip.Message();
+            msg.Prologue0 = 'H';
+            msg.Prologue1 = 'S';
+            msg.MessageType = Hislip.Interrupted;
+            msg.ControlCode = 0;
+            msg.MessageParameter = messageID;
+            msg.PayloadLength = 0;
+
+            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] packet = new byte[size];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            gchw.Free();
+            s.Send(packet);
+            return 0;
+        }
+        public int AsyncInterrupted(int messageID)
+        {
+            Hislip.Message msg = new Hislip.Message();
+            msg.Prologue0 = 'H';
+            msg.Prologue1 = 'S';
+            msg.MessageType = Hislip.AsyncInterrupted;
+            msg.ControlCode = 0;
+            msg.MessageParameter = messageID;
+            msg.PayloadLength = 0;
+
+            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] packet = new byte[size];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            gchw.Free();
+            s.Send(packet);
+            return 0;
+        }
         public int ReplyAsyncMaximumMessageSizeResponse()
         {
             Hislip.Message msg = new Hislip.Message();
@@ -264,7 +300,7 @@ namespace Vxi11Net
                 Console.WriteLine("      ControlCode = {0}", msg.ControlCode);
                 Console.WriteLine("      MessageParameter = {0}", msg.MessageParameter);
                 Console.WriteLine("      PayloadLength = {0}", msg.PayloadLength);
-                if (msg.MessageType == Hislip.Initialize)
+                if (msg.MessageType == Hislip.Initialize_)
                 {
                     Console.WriteLine("  == Initialize ==");
                     string data = ReceiveString(msg.PayloadLength);

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -6,39 +7,43 @@ namespace Vxi11Net
 {
     public class ClientHislip
     {
-        public int Initialization(string host)
+        public int Initialization(string host, short version, short vendorID, string sub_address)
         {
             s.Create(host, Hislip.PORT);
-            Hislip.Message msg = new Hislip.Message();
+            Hislip.Initialize msg = new Hislip.Initialize();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.Initialize;
+            msg.MessageType = Hislip.Initialize_;
             msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
+            msg.Version = version;
+            msg.VendorID = vendorID;
+            msg.PayloadLength = (ulong)sub_address.Length;
 
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(sub_address);
+            int size = Marshal.SizeOf(typeof(Hislip.Initialize)) + array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Initialize)), array.Length);
             gchw.Free();
             s.Send(packet);
 
             byte[] buffer = new byte[size];
             s.Receive(buffer);
 
-            s.Create(host, Hislip.PORT);
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncInitialize;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
+            a.Create(host, Hislip.PORT);
+            Hislip.Message msg1 = new Hislip.Message();
+            msg1.Prologue0 = 'H';
+            msg1.Prologue1 = 'S';
+            msg1.MessageType = Hislip.AsyncInitialize;
+            msg1.ControlCode = 0;
+            msg1.MessageParameter = 0;
+            msg1.PayloadLength = 0;
 
             size = Marshal.SizeOf(typeof(Hislip.Message));
             packet = new byte[size];
             gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(msg1, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             a.Send(packet);
 
@@ -47,7 +52,7 @@ namespace Vxi11Net
 
             return 0;
         }
-        public int FatalErrorNotification()
+        public int FatalErrorNotification(string message)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
@@ -55,17 +60,19 @@ namespace Vxi11Net
             msg.MessageType = Hislip.FatalError;
             msg.ControlCode = 0;
             msg.MessageParameter = 0;   
-            msg.PayloadLength = 0;
+            msg.PayloadLength = (ulong)message.Length;
 
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Initialize)), array.Length);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
-        public int ErrorNotification()
+        public int ErrorNotification(string message)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
@@ -73,48 +80,72 @@ namespace Vxi11Net
             msg.MessageType = Hislip.Error;
             msg.ControlCode = 0;
             msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
+            msg.PayloadLength = (ulong)message.Length;
 
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Initialize)), array.Length);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
-        public int DataTransfer()
+        public int DataTransfer(byte controlcode, int messageID, byte[] data)
+        {
+            Hislip.Message msg = new Hislip.Message();
+            msg.Prologue0 = 'H';
+            msg.Prologue1 = 'S';
+            msg.MessageType = Hislip.Data;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
+            msg.PayloadLength = (ulong)data.Length;
+
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+data.Length;
+            byte[] packet = new byte[size];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(data, 0, packet, Marshal.SizeOf(typeof(Hislip.Initialize)), data.Length);
+            gchw.Free();
+            s.Send(packet);
+            return 0;
+        }
+        public int DataEndTransfer(byte controlcode, int messageID, byte[] data)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.DataEnd;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
+            msg.PayloadLength = (ulong)data.Length;
 
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(data, 0, packet, Marshal.SizeOf(typeof(Hislip.Initialize)), data.Length);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
-        public int Lock()
+        public int Lock(byte controlcode, int timeout, string lockstring)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.AsyncLock;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = timeout;
+            msg.PayloadLength = (ulong)lockstring.Length;
 
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(lockstring);
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Initialize)), array.Length);
             gchw.Free();
             a.Send(packet);
 
@@ -122,14 +153,14 @@ namespace Vxi11Net
             a.Receive(buffer);
             return 0;
         }
-        public int ReleaseLock()
+        public int ReleaseLock(byte controlcode, int messageID)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.AsyncLock;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
             msg.PayloadLength = 0;
 
             int size = Marshal.SizeOf(typeof(Hislip.Message));
@@ -164,14 +195,14 @@ namespace Vxi11Net
             a.Receive(buffer);
             return 0;
         }
-        public int Remote()
+        public int Remote(byte controlcode, int messageID)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.AsyncRemoteLocalControl;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
             msg.PayloadLength = 0;
 
             int size = Marshal.SizeOf(typeof(Hislip.Message));
@@ -185,14 +216,14 @@ namespace Vxi11Net
             a.Receive(buffer);
             return 0;
         }
-        public int Local()
+        public int Local(byte controlcode, int messageID)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.AsyncRemoteLocalControl;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
             msg.PayloadLength = 0;
 
             int size = Marshal.SizeOf(typeof(Hislip.Message));
@@ -206,52 +237,13 @@ namespace Vxi11Net
             a.Receive(buffer);
             return 0;
         }
-        public int Trigger()
-        {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.Trigger;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
-            byte[] packet = new byte[size];
-            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
-            gchw.Free();
-            s.Send(packet);
-            return 0;
-        }
-        public int MaximumMessageSize()
-        {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncMaximumMessageSize;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
-            byte[] packet = new byte[size];
-            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
-            gchw.Free();
-            a.Send(packet);
-
-            byte[] buffer = new byte[size];
-            a.Receive(buffer);
-            return 0;
-        }
-        public int DeviceClear()
+        public int DeviceClear(byte feature)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.AsyncDeviceClear;
-            msg.ControlCode = 0;
+            msg.ControlCode = feature;
             msg.MessageParameter = 0;
             msg.PayloadLength = 0;
 
@@ -271,7 +263,7 @@ namespace Vxi11Net
             msg.ControlCode = 0;
             msg.MessageParameter = 0;
             msg.PayloadLength = 0;
-            
+
             size = Marshal.SizeOf(typeof(Hislip.Message));
             packet = new byte[size];
             gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -284,14 +276,53 @@ namespace Vxi11Net
 
             return 0;
         }
-        public int StatusQuery()
+        public int Trigger(byte controlcode, int messageID)
+        {
+            Hislip.Message msg = new Hislip.Message();
+            msg.Prologue0 = 'H';
+            msg.Prologue1 = 'S';
+            msg.MessageType = Hislip.Trigger;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
+            msg.PayloadLength = 0;
+
+            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] packet = new byte[size];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            gchw.Free();
+            s.Send(packet);
+            return 0;
+        }
+        public int MaximumMessageSize(ulong maxmsgsize)
+        {
+            Hislip.Message msg = new Hislip.Message();
+            msg.Prologue0 = 'H';
+            msg.Prologue1 = 'S';
+            msg.MessageType = Hislip.AsyncMaximumMessageSize;
+            msg.ControlCode = 0;
+            msg.MessageParameter = 0;
+            msg.PayloadLength = maxmsgsize;
+
+            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] packet = new byte[size];
+            GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
+            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            gchw.Free();
+            a.Send(packet);
+
+            byte[] buffer = new byte[size];
+            a.Receive(buffer);
+            return 0;
+        }
+        public int StatusQuery(byte controlcode, int messageID)
         {
             Hislip.Message msg = new Hislip.Message();
             msg.Prologue0 = 'H';
             msg.Prologue1 = 'S';
             msg.MessageType = Hislip.AsyncStatusQuery;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
+            msg.ControlCode = controlcode;
+            msg.MessageParameter = messageID;
             msg.PayloadLength = 0;
 
             int size = Marshal.SizeOf(typeof(Hislip.Message));
@@ -309,15 +340,9 @@ namespace Vxi11Net
         ClientSynchronousChannel s = new ClientSynchronousChannel();
         ClientAsynchronousChannel a = new ClientAsynchronousChannel();
         private uint MessageID = 0xfffffefe;
-        private uint GetMessageID()
-        {
-            uint _MessageID = MessageID;
-            MessageID = MessageID + 1;
-            return _MessageID;
-        }
         public void Create(string host)
         {
-            Initialization(host);
+            //Initialization(host);
         }
         public void Destroy()
         {

@@ -6,7 +6,7 @@ namespace Vxi11Net
     {
         public const int PORT = 4880;
 
-        public const int Initialize = 0;
+        public const int Initialize_ = 0;
         public const int InitializeResponse_ = 1;
         public const int FatalError = 2;
         public const int Error = 3;
@@ -92,6 +92,16 @@ namespace Vxi11Net
             public byte MessageType;
             public byte ControlCode;
             public int MessageParameter;
+            public ulong PayloadLength;
+        };
+        public struct Initialize
+        {
+            public char Prologue0;
+            public char Prologue1;
+            public byte MessageType;
+            public byte ControlCode;
+            public short Version;
+            public short VendorID;
             public ulong PayloadLength;
         };
         public struct InitializeResponse
