@@ -41,8 +41,6 @@
 説明は簡潔で1ページを2000文字以内にします。
 
 ## ToDo
-- Support HISLIP
-- Support RawSokcet
 - Support RS232
   - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/)
   - [Null-modem emulator](https://sourceforge.net/projects/com0com/)
