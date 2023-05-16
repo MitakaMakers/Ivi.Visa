@@ -74,6 +74,9 @@ namespace Vxi11Net
         public const int EnableRemoteGotoRemoteAndSetLocalLockout = 5;
         public const int GotoLocalWithoutChangingRENorLockoutState = 6;
 
+        public const int SynchronizedMode = 0;
+        public const int OverlappedMode = 1;
+
         // Error Codes
         public const int UnidentifiedError = 0;
         // Fatal Error Codes

@@ -273,7 +273,6 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-
         public Hislip.Message ReceiveMsg(Socket socket)
         {
             int size = Marshal.SizeOf(typeof(Hislip.Message));
@@ -303,9 +302,9 @@ namespace Vxi11Net
         internal void Flush(Socket socket)
         {
             int timeout = socket.ReceiveTimeout;
-            socket.ReceiveTimeout = 1;
             try
             {
+                socket.ReceiveTimeout = 1;
                 int bytes = 1;
                 byte[] buffer = new byte[1000];
                 do
@@ -342,7 +341,7 @@ namespace Vxi11Net
                 Console.WriteLine("      ControlCode = {0}", call.ControlCode);
                 Console.WriteLine("      MessageParameter = {0}", call.MessageParameter);
                 Console.WriteLine("      PayloadLength = {0}", call.PayloadLength);
-                if ((call.Prologue0 != 'H') && (call.Prologue1 != 'S'))
+                if ((call.Prologue0 != 'H') || (call.Prologue1 != 'S'))
                 {
                     socket.Close();
                 }
@@ -371,25 +370,38 @@ namespace Vxi11Net
                 {
                     Console.WriteLine("  == Data ==");
                     byte[] data = ReceiveData(socket, call.PayloadLength);
+                    MessageID = call.MessageParameter;
+                    IsRMTwasDelivered = Hislip.RMTwasNotDelivered;
                     serverScpi.bav(data);
+                    if (serverScpi.IsMav())
+                    {
+                        string reply = serverScpi.GetResponse();
+                        DataTransfer(socket, IsRMTwasDelivered, MessageID, reply);
+                    }
                 }
                 else if (call.MessageType == Hislip.DataEnd)
                 {
                     Console.WriteLine("  == DataEnd ==");
                     byte[] data = ReceiveData(socket, call.PayloadLength);
+                    MessageID = call.MessageParameter;
+                    IsRMTwasDelivered = Hislip.RMTwasDelivered;
                     serverScpi.bav(data);
                     serverScpi.RMT_sent();
                     if (serverScpi.IsMav())
                     {
                         string reply = serverScpi.GetResponse();
-                        DataEndTransfer(socket, Hislip.RMTwasDelivered, MessageID++, reply);
+                        DataEndTransfer(socket, Hislip.RMTwasDelivered, MessageID, reply);
                     }
                 }
                 else if (call.MessageType == Hislip.AsyncLock)
                 {
                     Console.WriteLine("  == AsyncLock ==");
-                    if (call.ControlCode != 0)
+                    if (call.ControlCode == Hislip.LockRequest)
                     {
+                        if (call.PayloadLength > 0)
+                        {
+                            string data = ReceiveString(socket, call.PayloadLength);
+                        }
                         ReplyAsyncLockResponse(socket, Hislip.LockSuccess);
                     }
                     else
@@ -401,17 +413,18 @@ namespace Vxi11Net
                 {
                     Console.WriteLine("  == AsyncDeviceClear ==");
                     serverScpi.dcas();
-                    Flush(synchronous);
-                    ReplyAsyncDeviceClearAcknowledge(socket, 0);
+                    ReplyAsyncDeviceClearAcknowledge(socket, Hislip.SynchronizedMode);
                 }
                 else if (call.MessageType == Hislip.DeviceClearComplete)
                 {
                     Console.WriteLine("  == DeviceClearComplete ==");
-                    ReplyDeviceClearAcknowledge(socket, 0);
+                    ReplyDeviceClearAcknowledge(socket, Hislip.SynchronizedMode);
                 }
                 else if (call.MessageType == Hislip.Trigger)
                 {
                     Console.WriteLine("  == Trigger ==");
+                    MessageID = call.MessageParameter;
+                    IsRMTwasDelivered = Hislip.RMTwasDelivered;
                     serverScpi.get();
                 }
                 else if (call.MessageType == Hislip.AsyncMaximumMessageSize)
@@ -435,7 +448,7 @@ namespace Vxi11Net
                 else if (call.MessageType == Hislip.AsyncLockInfo)
                 {
                     Console.WriteLine("  == AsyncLockInfo ==");
-                    ReplyAsyncLockInfoResponse(socket, 0);
+                    ReplyAsyncLockInfoResponse(socket, lockCount);
                 }
                 else
                 {
@@ -444,7 +457,6 @@ namespace Vxi11Net
             }
             catch (Exception)
             {
-                socket.Close();
             }
             return socket;
         }
@@ -496,6 +508,8 @@ namespace Vxi11Net
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
         private short SessionID = 123;
         private int MessageID = 123;
+        private byte IsRMTwasDelivered = Hislip.RMTwasNotDelivered;
+        private byte lockCount = 0;
 
         public void Destroy()
         {

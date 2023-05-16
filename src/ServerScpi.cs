@@ -1,4 +1,8 @@
-﻿namespace Vxi11Net
+﻿using System.Data.Common;
+using System.Drawing;
+using System.Security.Cryptography;
+
+namespace Vxi11Net
 {
     internal class ServerScpi
     {
@@ -7,7 +11,50 @@
         private int recvsize = 0;
         private string OutputQue = "";
         private string ParseInput = "";
-
+        private Dictionary<string, string> command = new Dictionary<string, string>()
+        {
+            { "\\*AAD", "" },
+            { "\\*CAL\\?", "0" },
+            { "\\*CLS", "" },
+            { "\\*DDT", "" },
+            { "\\*DDT\\?", "0"} ,
+            { "\\*DLF", "" },
+            { "\\*DMC", "" },
+            { "\\*EMC", "" },
+            { "\\*EMC\\?", "0" },
+            { "\\*ESE", "" },
+            { "\\*ESE\\?", "0" },
+            { "\\*ESR\\?", "0" },
+            { "\\*GMC\\?", "0" },
+            { "\\*IDN\\?", "XYZCO,246B,S000-0123-02,0" },
+            { "\\*IST\\?", "0" },
+            { "\\*LMC\\?", "0" },
+            { "\\*LRN\\?", "0" },
+            { "\\*OPC", "" },
+            { "\\*OPC\\?", "0" },
+            { "\\*OPT\\?", "0" },
+            { "\\*PCB", "" },
+            { "\\*PMC", "" },
+            { "\\*PRE", "" },
+            { "\\*PRE\\?", "0" },
+            { "\\*PSC", "" },
+            { "\\*PSC\\?", "0" },
+            { "\\*PUD", "" },
+            { "\\*PUD\\?", "0" },
+            { "\\*RCL", "" },
+            { "\\*RDT", "" },
+            { "\\*RDT\\?", "0" },
+            { "\\*RMC", "" },
+            { "\\*RST", "" },
+            { "\\*SAV", "" },
+            { "\\*SDS", "" },
+            { "\\*SRE", "" },
+            { "\\*SRE\\?", "0" },
+            { "\\*STB\\?", "0" },
+            { "\\*TRG", "" },
+            { "\\*TST\\?", "0" },
+            { "\\*WAI", "" },
+        };
         public ServerScpi() { }
         public int GetMaxRecvSize()
         {
@@ -23,11 +70,14 @@
         public void Parse()
         {
             ParseInput = System.Text.Encoding.ASCII.GetString(InputBuffer);
-            var match = System.Text.RegularExpressions.Regex.Match(ParseInput, "\\*IDN\\?");
-            if (match.Success )
+            foreach (KeyValuePair<string, string> pair in command)
             {
-                OutputQue = "XYZCO,246B,S000-0123-02,0";
-                OutputQue = "YOKOGAWA, WT500,000,0";
+                var match = System.Text.RegularExpressions.Regex.Match(ParseInput, pair.Key);
+                if (match.Success)
+                {
+                    OutputQue = pair.Value;
+                    break;
+                }
             }
         }
         public void bav(byte[] data)
