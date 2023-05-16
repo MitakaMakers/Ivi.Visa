@@ -6,7 +6,7 @@ namespace Vxi11Net
 {
     public class ServerRpcTcp
     {
-        private int Send(byte[] buffer, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
+        private int Send(byte[] body, int offset, int size, SocketFlags socketFlags, bool IsFirst, bool IsLast)
         {
             int bytes = 0;
             if (IsFirst)
@@ -16,15 +16,15 @@ namespace Vxi11Net
                 {
                     frag_header = frag_header + int.MinValue;
                 }
-                byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
-                byte[] tmp = new byte[array.Length + buffer.Length];
-                Buffer.BlockCopy(array, 0, tmp, 0, array.Length);
-                Buffer.BlockCopy(buffer, 0, tmp, array.Length, buffer.Length);
-                bytes = socket.Send(tmp);
+                byte[] header = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(frag_header));
+                byte[] buffer = new byte[header.Length + body.Length];
+                Buffer.BlockCopy(header, 0, buffer, 0, header.Length);
+                Buffer.BlockCopy(body, 0, buffer, header.Length, body.Length);
+                bytes = socket.Send(buffer);
             }
             else
             {
-                bytes = socket.Send(buffer, offset, size, socketFlags);
+                bytes = socket.Send(body, offset, size, socketFlags);
             }
             return bytes;
         }

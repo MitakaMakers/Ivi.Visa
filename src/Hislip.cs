@@ -4,6 +4,8 @@ namespace Vxi11Net
 {
     public class Hislip
     {
+        public const short ServerVersion = 0x0100;
+        public const short VendorID = 0x5858;
         public const int PORT = 4880;
 
         public const int Initialize_ = 0;
@@ -49,39 +51,41 @@ namespace Vxi11Net
         public const int ServerProtocolVersion = 1;
         public const int PreferOverlap=0;
         public const int PreferSynchronized = 0;
-        public const int RMTwasnotdelivered = 0;
-        public const int RMTwasdelivered = 1;
-        public const int Request = 1;
-        public const int Release = 0;
+        public const int RMTwasNotDelivered = 0;
+        public const int RMTwasDelivered = 1;
 
-        public const int Failure = 0;
-        public const int Success = 1;
+        public const int LockRequest = 1;
+        public const int LockRelease = 0;
 
-        public const int Successexclusive = 1;
-        public const int Successshared = 2;
+        public const int LockFailure = 0;
+        public const int LockSuccess = 1;
+        public const int LockError = 3;
 
-        public const int Noexclusivelockgranted = 0;
-        public const int Exclusivelockgranted = 1;
-        public const int Disableremote = 0;
-        public const int Enableremote = 1;
-        public const int Disableremoteandgotolocal = 2;
-        public const int EnableRemoteandgotoremote = 3;
-        public const int Enableremoteandlockoutlocal = 4;
-        public const int Enableremotegotoremoteandsetlocallockout = 5;
-        public const int gotolocalwithoutchangingRENorlockoutstate = 6;
+        public const int UnlockSuccessExclusive = 1;
+        public const int UnlockSuccessShared = 2;
+
+        public const int NoexclusiveLockGranted = 0;
+        public const int ExclusiveLockGranted = 1;
+        public const int DisableRemote = 0;
+        public const int EnableRemote = 1;
+        public const int DisableRemoteAndGotoLocal = 2;
+        public const int EnableRemoteAndGotoRemote = 3;
+        public const int EnableRemoteAndLockoutLocal = 4;
+        public const int EnableRemoteGotoRemoteAndSetLocalLockout = 5;
+        public const int GotoLocalWithoutChangingRENorLockoutState = 6;
 
         // Error Codes
-        public const int Unidentifiederror = 0;
+        public const int UnidentifiedError = 0;
         // Fatal Error Codes
-        public const int Poorlyformedmessageheader = 1;
-        public const int Attempttouseconnectionwithoutbothchannelsestablished = 2;
+        public const int PoorlyFormedMessageHeader = 1;
+        public const int AttempttoUseConnectionWithoutBothChannelsEstablished = 2;
         public const int InvalidInitializationSequence = 3;
-        public const int Serverrefusedconnectionduetomaximumnumberofclientsexceeded = 4;
+        public const int ServerRefusedConnectionDueToMaximumNumberOfClientEexceeded = 4;
         // Error Codes
         public const int UnrecognizedMessageType = 1;
-        public const int Unrecognizedcontrolcode = 2;
+        public const int UnrecognizedControlcode = 2;
         public const int UnrecognizedVendorDefinedMessage = 3;
-        public const int Messagetoolarge = 4;
+        public const int MessageTooLarge = 4;
 
         // Error code
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -92,7 +96,7 @@ namespace Vxi11Net
             public byte MessageType;
             public byte ControlCode;
             public int MessageParameter;
-            public ulong PayloadLength;
+            public long PayloadLength;
         };
         public struct Initialize
         {
@@ -102,7 +106,7 @@ namespace Vxi11Net
             public byte ControlCode;
             public short Version;
             public short VendorID;
-            public ulong PayloadLength;
+            public long PayloadLength;
         };
         public struct InitializeResponse
         {
@@ -112,7 +116,7 @@ namespace Vxi11Net
             public byte ControlCode;
             public short Protocol;
             public short SessionID;
-            public ulong PayloadLength;
+            public long PayloadLength;
         };
         public struct AsyncInitializeResponse
         {
@@ -122,7 +126,7 @@ namespace Vxi11Net
             public byte ControlCode;
             public short dummy;
             public short ServerID;
-            public ulong PayloadLength;
+            public long PayloadLength;
         };
         public struct AsyncLockResponse
         {
@@ -131,7 +135,7 @@ namespace Vxi11Net
             public byte MessageType;
             public byte ControlCode;
             public int MessageParameter;
-            public ulong PayloadLength;
+            public long PayloadLength;
         };        
     }
 }

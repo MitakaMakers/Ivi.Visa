@@ -6,25 +6,25 @@ namespace Vxi11Net
 {
     public class ServerHislip
     {
-        public int ReplyInitializeResponse(byte control, short protocol, short SessionID)
+        public int ReplyInitializeResponse(Socket socket, byte control, short ServerVersion, short SessionID)
         {
             Hislip.InitializeResponse reply = new Hislip.InitializeResponse();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.InitializeResponse_;
             reply.ControlCode = control;
-            reply.Protocol = protocol;
-            reply.SessionID = SessionID;
+            reply.Protocol = IPAddress.HostToNetworkOrder(ServerVersion);
+            reply.SessionID = IPAddress.HostToNetworkOrder(SessionID);
             reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.InitializeResponse));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncInitializeResponse(byte control, short ServerID)
+        public int ReplyAsyncInitializeResponse(Socket socket, byte control, short VendorID)
         {
             Hislip.AsyncInitializeResponse reply = new Hislip.AsyncInitializeResponse();
             reply.Prologue0 = 'H';
@@ -32,55 +32,55 @@ namespace Vxi11Net
             reply.MessageType = Hislip.AsyncInitializeResponse_;
             reply.ControlCode = control;
             reply.dummy = 0;
-            reply.ServerID = ServerID;   
+            reply.ServerID = IPAddress.HostToNetworkOrder(VendorID);   
             reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.AsyncInitializeResponse));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyFatalError(byte control, string message)
+        public int ReplyFatalError(Socket socket, byte control, string message)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.FatalError;
             reply.ControlCode = control;
             reply.MessageParameter = 0;
-            reply.PayloadLength = (ulong)message.Length;
-            int size = Marshal.SizeOf(typeof(Hislip.Message))+message.Length;
+            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+ array.Length;
             byte[] packet = new byte[size];
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyErrorr(byte control, string message)
+        public int ReplyError(Socket socket, byte control, string message)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.Error;
             reply.ControlCode = control;
             reply.MessageParameter = 0;
-            reply.PayloadLength = (ulong)message.Length;
-            int size = Marshal.SizeOf(typeof(Hislip.Message)) + message.Length;
+            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message)) + array.Length;
             byte[] packet = new byte[size];
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncLockResponse(byte control)
+        public int ReplyAsyncLockResponse(Socket socket, byte control)
         {
             Hislip.AsyncLockResponse reply = new Hislip.AsyncLockResponse();
             reply.Prologue0 = 'H';
@@ -94,48 +94,48 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int DataTransfer(byte control, int messageID, string message)
+        public int DataTransfer(Socket socket, byte control, int messageID, string message)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.Data;
             reply.ControlCode = control;
-            reply.MessageParameter = messageID;
-            reply.PayloadLength = (ulong)message.Length;
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
+            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+ array.Length;
             byte[] packet = new byte[size];
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int DataEndTransfer(byte control, int messageID, string message)
+        public int DataEndTransfer(Socket socket, byte control, int messageID, string message)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.DataEnd;
             reply.ControlCode = control;
-            reply.MessageParameter = messageID;
-            reply.PayloadLength = (ulong)message.Length;
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
+            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+ array.Length;
             byte[] packet = new byte[size];
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncDeviceClearAcknowledge(byte feature)
+        public int ReplyAsyncDeviceClearAcknowledge(Socket socket, byte feature)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
@@ -149,10 +149,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyDeviceClearAcknowledge(byte feature)
+        public int ReplyDeviceClearAcknowledge(Socket socket, byte feature)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
@@ -166,61 +166,63 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int Interrupted(int messageID)
+        public int Interrupted(Socket socket, int messageID)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.Interrupted;
             reply.ControlCode = 0;
-            reply.MessageParameter = messageID;
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
             reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int AsyncInterrupted(int messageID)
+        public int AsyncInterrupted(Socket socket, int messageID)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.AsyncInterrupted;
             reply.ControlCode = 0;
-            reply.MessageParameter = messageID;
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
             reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            s.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncMaximumMessageSizeResponse()
+        public int ReplyAsyncMaximumMessageSizeResponse(Socket socket, long MaximumMessageSize)
         {
+            byte[] array = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(MaximumMessageSize));
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.AsyncMaximumMessageSizeResponse;
             reply.ControlCode = 0;
             reply.MessageParameter = 0;
-            reply.PayloadLength = 0;
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            reply.PayloadLength = IPAddress.NetworkToHostOrder((long)array.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+ array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
+            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
-            a.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncRemoteLocalResponse()
+        public int ReplyAsyncRemoteLocalResponse(Socket socket)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
@@ -234,10 +236,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            a.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncStatusResponse(byte status)
+        public int ReplyAsyncStatusResponse(Socket socket, byte status)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
@@ -251,10 +253,10 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            a.Send(packet);
+            socket.Send(packet);
             return 0;
         }
-        public int ReplyAsyncLockInfoResponse(byte control)
+        public int ReplyAsyncLockInfoResponse(Socket socket, byte control)
         {
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
@@ -268,100 +270,172 @@ namespace Vxi11Net
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
-            a.Send(packet);
+            socket.Send(packet);
             return 0;
         }
 
-        private void CoreThread()
+        public Hislip.Message ReceiveMsg(Socket socket)
+        {
+            int size = Marshal.SizeOf(typeof(Hislip.Message));
+            byte[] buffer = new byte[size];
+            int bytes = socket.Receive(buffer, 0, size, SocketFlags.None);
+            Hislip.Message call = new Hislip.Message();
+            call.Prologue0 = (char)buffer[0];
+            call.Prologue1 = (char)buffer[1];
+            call.MessageType = buffer[2];
+            call.ControlCode = buffer[3];
+            call.MessageParameter = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            call.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
+            return call;
+        }
+        public string ReceiveString(Socket socket, long size)
+        {
+            byte[] buffer = ReceiveData(socket, size);
+            string data = System.Text.Encoding.ASCII.GetString(buffer);
+            return data;
+        }
+        public byte[] ReceiveData(Socket socket, long size)
+        {
+            byte[] buffer = new byte[size];
+            int bytes = socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
+            return buffer;
+        }
+        internal void Flush(Socket socket)
+        {
+            int timeout = socket.ReceiveTimeout;
+            socket.ReceiveTimeout = 1;
+            try
+            {
+                int bytes = 1;
+                byte[] buffer = new byte[1000];
+                do
+                {
+                    bytes = socket.Receive(buffer, SocketFlags.None);
+                }
+                while (0 < bytes);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            socket.ReceiveTimeout = timeout;
+        }
+        internal void Create(string ipString, int port)
+        {
+            // get IP address from IPv4 address string
+            IPAddress ipAddress = IPAddress.Parse(ipString);
+            endPoint = new IPEndPoint(ipAddress, port);
+            server = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            server.Bind(endPoint);
+            server.Listen();
+        }
+        private Socket ChannelThread(Socket server, Socket socket)
         {
             try
             {
                 Console.WriteLine("  == Wait RPC ==");
-                Hislip.Message msg = ReceiveMsg();
-                Console.WriteLine("    received HiSLIP synchronous core channel.");
-                Console.WriteLine("      Prologue0 = {0}", msg.Prologue0);
-                Console.WriteLine("      Prologue1 = {0}", msg.Prologue1);
-                Console.WriteLine("      MessageType = {0}", msg.MessageType);
-                Console.WriteLine("      ControlCode = {0}", msg.ControlCode);
-                Console.WriteLine("      MessageParameter = {0}", msg.MessageParameter);
-                Console.WriteLine("      PayloadLength = {0}", msg.PayloadLength);
-                if (msg.MessageType == Hislip.Initialize_)
+                Hislip.Message call = ReceiveMsg(socket);
+                Console.WriteLine("    received HiSLIP synchronous channel.");
+                Console.WriteLine("      Prologue0 = {0}", call.Prologue0);
+                Console.WriteLine("      Prologue1 = {0}", call.Prologue1);
+                Console.WriteLine("      MessageType = {0}", call.MessageType);
+                Console.WriteLine("      ControlCode = {0}", call.ControlCode);
+                Console.WriteLine("      MessageParameter = {0}", call.MessageParameter);
+                Console.WriteLine("      PayloadLength = {0}", call.PayloadLength);
+                if ((call.Prologue0 != 'H') && (call.Prologue1 != 'S'))
+                {
+                    socket.Close();
+                }
+                else if (call.MessageType == Hislip.Initialize_)
                 {
                     Console.WriteLine("  == Initialize ==");
-                    string data = ReceiveString(msg.PayloadLength);
-                    ReplyInitializeResponse(0, 0, 0);
-
+                    string data = ReceiveString(socket, call.PayloadLength);
+                    ReplyInitializeResponse(socket, 0, Hislip.ServerVersion, SessionID);
                 }
-                else if (msg.MessageType == Hislip.AsyncInitialize)
+                if (call.MessageType == Hislip.AsyncInitialize)
                 {
                     Console.WriteLine("  == AsyncInitialize ==");
-                    ReplyAsyncInitializeResponse(0,0);
+                    ReplyAsyncInitializeResponse(socket, 0, Hislip.VendorID);
                 }
-                else if (msg.MessageType == Hislip.FatalError)
+                else if (call.MessageType == Hislip.FatalError)
                 {
                     Console.WriteLine("  == FatalError ==");
-                    string data = ReceiveString(msg.PayloadLength);
+                    string data = ReceiveString(socket, call.PayloadLength);
                 }
-                else if (msg.MessageType == Hislip.Error)
+                else if (call.MessageType == Hislip.Error)
                 {
                     Console.WriteLine("  == Error ==");
-                    string data = ReceiveString(msg.PayloadLength);
+                    string data = ReceiveString(socket, call.PayloadLength);
                 }
-                else if (msg.MessageType == Hislip.AsyncLock)
-                {
-                    Console.WriteLine("  == AsyncLock ==");
-                    string data = ReceiveString(msg.PayloadLength);
-                    ReplyAsyncLockResponse(0);
-                }
-                else if (msg.MessageType == Hislip.Data)
+                else if (call.MessageType == Hislip.Data)
                 {
                     Console.WriteLine("  == Data ==");
-                    string data = ReceiveString(msg.PayloadLength);
+                    byte[] data = ReceiveData(socket, call.PayloadLength);
                     serverScpi.bav(data);
                 }
-                else if (msg.MessageType == Hislip.DataEnd)
+                else if (call.MessageType == Hislip.DataEnd)
                 {
                     Console.WriteLine("  == DataEnd ==");
-                    string data = ReceiveString(msg.PayloadLength);
+                    byte[] data = ReceiveData(socket, call.PayloadLength);
                     serverScpi.bav(data);
                     serverScpi.RMT_sent();
+                    if (serverScpi.IsMav())
+                    {
+                        string reply = serverScpi.GetResponse();
+                        DataEndTransfer(socket, Hislip.RMTwasDelivered, MessageID++, reply);
+                    }
                 }
-                else if (msg.MessageType == Hislip.AsyncDeviceClear)
+                else if (call.MessageType == Hislip.AsyncLock)
+                {
+                    Console.WriteLine("  == AsyncLock ==");
+                    if (call.ControlCode != 0)
+                    {
+                        ReplyAsyncLockResponse(socket, Hislip.LockSuccess);
+                    }
+                    else
+                    {
+                        ReplyAsyncLockResponse(socket, Hislip.UnlockSuccessShared);
+                    }
+                }
+                else if (call.MessageType == Hislip.AsyncDeviceClear)
                 {
                     Console.WriteLine("  == AsyncDeviceClear ==");
-                    ReplyAsyncDeviceClearAcknowledge(0);
                     serverScpi.dcas();
+                    Flush(synchronous);
+                    ReplyAsyncDeviceClearAcknowledge(socket, 0);
                 }
-                else if (msg.MessageType == Hislip.DeviceClearComplete)
+                else if (call.MessageType == Hislip.DeviceClearComplete)
                 {
                     Console.WriteLine("  == DeviceClearComplete ==");
-                    ReplyDeviceClearAcknowledge(0);
+                    ReplyDeviceClearAcknowledge(socket, 0);
                 }
-                else if (msg.MessageType == Hislip.AsyncMaximumMessageSize)
-                {
-                    Console.WriteLine("  == AsyncMaximumMessageSize ==");
-                    ReplyAsyncMaximumMessageSizeResponse();
-                }
-                else if (msg.MessageType == Hislip.AsyncRemoteLocalControl)
-                {
-                    Console.WriteLine("  == AsyncRemoteLocalControl ==");
-                    ReplyAsyncRemoteLocalResponse();
-                }
-                else if (msg.MessageType == Hislip.Trigger)
+                else if (call.MessageType == Hislip.Trigger)
                 {
                     Console.WriteLine("  == Trigger ==");
                     serverScpi.get();
                 }
-                else if (msg.MessageType == Hislip.AsyncStatusQuery)
+                else if (call.MessageType == Hislip.AsyncMaximumMessageSize)
+                {
+                    Console.WriteLine("  == AsyncMaximumMessageSize ==");
+                    string data = ReceiveString(socket, call.PayloadLength);
+                    long size = serverScpi.GetMaxRecvSize();
+                    ReplyAsyncMaximumMessageSizeResponse(socket, size);
+                }
+                else if (call.MessageType == Hislip.AsyncRemoteLocalControl)
+                {
+                    Console.WriteLine("  == AsyncRemoteLocalControl ==");
+                    ReplyAsyncRemoteLocalResponse(socket);
+                }
+                else if (call.MessageType == Hislip.AsyncStatusQuery)
                 {
                     Console.WriteLine("  == AsyncStatusQuery ==");
                     byte stb = serverScpi.stb();
-                    ReplyAsyncStatusResponse(stb);
+                    ReplyAsyncStatusResponse(socket, stb);
                 }
-                else if (msg.MessageType == Hislip.AsyncLockInfo)
+                else if (call.MessageType == Hislip.AsyncLockInfo)
                 {
                     Console.WriteLine("  == AsyncLockInfo ==");
-                    ReplyAsyncLockInfoResponse(0);
+                    ReplyAsyncLockInfoResponse(socket, 0);
                 }
                 else
                 {
@@ -370,34 +444,9 @@ namespace Vxi11Net
             }
             catch (Exception)
             {
+                socket.Close();
             }
-        }
-        public Hislip.Message ReceiveMsg()
-        {
-            Hislip.Message msg = s.ReceiveMsg();
-            return msg;
-        }
-        public string ReceiveString(ulong size)
-        {
-            string msg = s.ReceiveString(size);
-            return msg;
-        }
-        public byte[] ReceiveData(ulong size)
-        {
-            byte[] msg = s.ReceiveData(size);
-            return msg;
-        }
-        ServerSynchronousChannel s = new ServerSynchronousChannel();
-        ServerAsynchronousChannel a = new ServerAsynchronousChannel();
-        private ServerScpi serverScpi = new ServerScpi();
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-        public void Create(string host, int port)
-        {
-        }
-        public void Destroy()
-        {
-            s.Destroy();
-            a.Destroy();
+            return socket;
         }
         public void RunThread(string host, int port, int count)
         {
@@ -405,164 +454,54 @@ namespace Vxi11Net
 
             Console.WriteLine("== Run Hislip synchronous channel(TCP, {0}, {1}) ==", host, port);
             Create(host, port);
-
             Console.WriteLine("  listen({0}:{1})...", host, port);
 
             Task.Run(() =>
             {
                 while ((0 < count) && (!tokenSource.Token.IsCancellationRequested))
                 {
-                    CoreThread();
+                    if (synchronous.Connected == false)
+                    {
+                        synchronous = server.Accept();
+                    }
+                    ChannelThread(server, synchronous);
+                    count--;
+                }
+            });
+            Task.Run(() =>
+            {
+                while ((0 < count) && (!tokenSource.Token.IsCancellationRequested))
+                {
+                    while (synchronous.Connected == false)
+                    {
+                        Thread.Sleep(100);
+                    }
+                    if (asynchronous.Connected == false)
+                    {
+                        asynchronous = server.Accept();
+                    }
+                    ChannelThread(server, asynchronous);
                     count--;
                 }
             });
             Thread.Sleep(10);
         }
-    }
-    internal class ServerSynchronousChannel
-    {
-        internal int Send(byte[] buffer)
-        {
-            int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-            return bytes;
-        }
-        internal int Receive(byte[] buffer)
-        {
-            int bytes = socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-            return bytes;
-        }
-        public Hislip.Message ReceiveMsg()
-        {
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
-            byte[] buffer = new byte[size];
-            int bytes = socket.Receive(buffer, 0, size, SocketFlags.None);
 
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = (char)buffer[0];
-            msg.Prologue1 = (char)buffer[1];
-            msg.MessageType = buffer[2];
-            msg.ControlCode = buffer[3];
-            msg.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            msg.PayloadLength = BitConverter.ToUInt64(buffer, 8);
-            return msg;
-        }
-        public string ReceiveString(ulong size)
-        {
-            byte[] buffer = new byte[size];
-            int bytes = socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-            string data = System.Text.Encoding.ASCII.GetString(buffer);
-            return data;
-        }
-        public byte[] ReceiveData(ulong size)
-        {
-            byte[] buffer = new byte[size];
-            int bytes = socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-            return buffer;
-        }
-        internal void Flush()
-        {
-            int timeout = socket.ReceiveTimeout;
-            socket.ReceiveTimeout = 1;
-            try
-            {
-                int bytes = 1;
-                byte[] buffer = new byte[1000];
-                do
-                {
-                    bytes = socket.Receive(buffer, SocketFlags.None);
-                }
-                while (0 < bytes);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            socket.ReceiveTimeout = timeout;
-        }
-
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
 
-        internal void Create(string ipString, int port)
-        {
-            // get IP address from IPv4 address string
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            /* if get ipaddress from hostname, 　
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-            int i = 0;
-            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
-            {
-                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                    break;
-            }
-            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            endPoint = new IPEndPoint(ipAddress, port);
-            socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(endPoint);
+        private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket synchronous = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket asynchronous = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private ServerScpi serverScpi = new ServerScpi();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private short SessionID = 123;
+        private int MessageID = 123;
 
-        }
-        internal void Destroy()
+        public void Destroy()
         {
-            socket.Close();
-        }
-    }
-    internal class ServerAsynchronousChannel
-    {
-        internal int Send(byte[] buffer)
-        {
-            int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
-            return bytes;
-        }
-        internal int Receive(byte[] buffer)
-        {
-            int bytes = socket.Receive(buffer, 0, buffer.Length, SocketFlags.None);
-            return bytes;
-        }
-        internal void Flush()
-        {
-            int timeout = socket.ReceiveTimeout;
-            socket.ReceiveTimeout = 1;
-            try
-            {
-                int bytes = 1;
-                byte[] buffer = new byte[1000];
-                do
-                {
-                    bytes = socket.Receive(buffer, SocketFlags.None);
-                }
-                while (0 < bytes);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            socket.ReceiveTimeout = timeout;
-        }
-
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
-
-        internal void Create(string ipString, int port)
-        {
-            // get IP address from IPv4 address string
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            /* if get ipaddress from hostname, 　
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-            int i = 0;
-            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
-            {
-                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                    break;
-            }
-            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            endPoint = new IPEndPoint(ipAddress, port);
-            socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(endPoint);
-
-        }
-        internal void Destroy()
-        {
-            socket.Close();
+            server.Close();
+            synchronous.Close();
+            asynchronous.Close();
         }
     }
 

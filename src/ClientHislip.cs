@@ -10,6 +10,7 @@ namespace Vxi11Net
         public int Initialization(string host, int port, short version, short vendorID, string sub_address)
         {
             s.Create(host, port);
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(sub_address);
             Hislip.Initialize call = new Hislip.Initialize();
             call.Prologue0 = 'H';
             call.Prologue1 = 'S';
@@ -17,8 +18,7 @@ namespace Vxi11Net
             call.ControlCode = 0;
             call.Version = version;
             call.VendorID = vendorID;
-            call.PayloadLength = (ulong)sub_address.Length;
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(sub_address);
+            call.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Initialize)) + array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -34,9 +34,9 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.Protocol = BitConverter.ToInt16(buffer, 4);
-            reply.SessionID = BitConverter.ToInt16(buffer, 6);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.Protocol = IPAddress.HostToNetworkOrder(BitConverter.ToInt16(buffer, 4));
+            reply.SessionID = IPAddress.HostToNetworkOrder(BitConverter.ToInt16(buffer, 6));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
 
             a.Create(host, port);
             Hislip.Message acall = new Hislip.Message();
@@ -60,22 +60,22 @@ namespace Vxi11Net
             areply.Prologue1 = (char)buffer[1];
             areply.MessageType = buffer[2];
             areply.ControlCode = buffer[3];
-            areply.dummy = BitConverter.ToInt16(buffer, 4);
-            areply.ServerID = BitConverter.ToInt16(buffer, 6);
-            areply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            areply.dummy = IPAddress.HostToNetworkOrder(BitConverter.ToInt16(buffer, 4));
+            areply.ServerID = IPAddress.HostToNetworkOrder(BitConverter.ToInt16(buffer, 6));
+            areply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
 
             return 0;
         }
         public int FatalErrorNotification(string message)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
             call.Prologue1 = 'S';
             call.MessageType = Hislip.FatalError;
             call.ControlCode = 0;
             call.MessageParameter = 0;   
-            call.PayloadLength = (ulong)message.Length;
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
+            call.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Message))+array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -87,14 +87,14 @@ namespace Vxi11Net
         }
         public int ErrorNotification(string message)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
             call.Prologue1 = 'S';
             call.MessageType = Hislip.Error;
             call.ControlCode = 0;
             call.MessageParameter = 0;
-            call.PayloadLength = (ulong)message.Length;
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
+            call.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Message))+array.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -112,7 +112,7 @@ namespace Vxi11Net
             call.MessageType = Hislip.Data;
             call.ControlCode = controlcode;
             call.MessageParameter = messageID;
-            call.PayloadLength = (ulong)data.Length;
+            call.PayloadLength = IPAddress.HostToNetworkOrder((long)data.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Message))+data.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -130,8 +130,7 @@ namespace Vxi11Net
             call.MessageType = Hislip.DataEnd;
             call.ControlCode = controlcode;
             call.MessageParameter = messageID;
-            call.PayloadLength = (ulong)data.Length;
-
+            call.PayloadLength = IPAddress.HostToNetworkOrder((long)data.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -143,14 +142,14 @@ namespace Vxi11Net
         }
         public int Lock(byte controlcode, int timeout, string lockstring)
         {
+            byte[] array = System.Text.Encoding.ASCII.GetBytes(lockstring);
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
             call.Prologue1 = 'S';
             call.MessageType = Hislip.AsyncLock;
             call.ControlCode = controlcode;
             call.MessageParameter = timeout;
-            call.PayloadLength = (ulong)lockstring.Length;
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(lockstring);
+            call.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -166,8 +165,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int ReleaseLock(byte controlcode, int messageID)
@@ -193,8 +192,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int LockInfo()
@@ -220,8 +219,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int Remote(byte controlcode, int messageID)
@@ -247,8 +246,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int Local(byte controlcode, int messageID)
@@ -274,8 +273,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int DeviceClear(byte feature)
@@ -301,8 +300,8 @@ namespace Vxi11Net
             areply.Prologue1 = (char)buffer[1];
             areply.MessageType = buffer[2];
             areply.ControlCode = buffer[3];
-            areply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            areply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            areply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            areply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
 
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -325,8 +324,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int Trigger(byte controlcode, int messageID)
@@ -346,7 +345,7 @@ namespace Vxi11Net
             s.Send(packet);
             return 0;
         }
-        public int MaximumMessageSize(ulong maxmsgsize)
+        public int MaximumMessageSize(long maxmsgsize)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -354,7 +353,7 @@ namespace Vxi11Net
             call.MessageType = Hislip.AsyncMaximumMessageSize;
             call.ControlCode = 0;
             call.MessageParameter = 0;
-            call.PayloadLength = maxmsgsize;
+            call.PayloadLength = IPAddress.HostToNetworkOrder(maxmsgsize);
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -369,8 +368,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
         public int StatusQuery(byte controlcode, int messageID)
@@ -396,8 +395,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.MessageParameter = BitConverter.ToInt32(buffer, 4);
-            reply.PayloadLength = BitConverter.ToUInt64(buffer, 8);
+            reply.MessageParameter = IPAddress.HostToNetworkOrder(BitConverter.ToInt32(buffer, 4));
+            reply.PayloadLength = IPAddress.HostToNetworkOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
 

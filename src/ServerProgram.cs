@@ -116,7 +116,7 @@
                     }
                     else if (msg.proc == Vxi11.DEVICE_WRITE)
                     {
-                        string data;
+                        byte[] data;
                         Vxi11.DEVICE_WRITE_PARAMS wrt = serverVxi11.ReceiveDeviceWrite(out data);
                         Console.WriteLine("    == DEVICE_WRITE ==");
                         Console.WriteLine("      lid          = {0}", wrt.lid);
@@ -588,9 +588,10 @@
                 string code = new String(Console.ReadLine());
                 if (code == "1")
                 {
-                    Console.WriteLine("== Run demo server ==");
+                    Console.WriteLine("== Run Portmap server ==");
                     serverPortmapTcp.Run("127.0.0.1", Portmap.PMAPPORT);
                     serverPortmapUdp.Run("127.0.0.1", Portmap.PMAPPORT);
+                    Console.WriteLine("== Run VXI-11 server ==");
                     serverVxi11.RunCoreThread("127.0.0.1", 50240, 100000);
                     serverVxi11.RunAbortThread("127.0.0.1", 50250, 100000);
                 }
@@ -602,8 +603,8 @@
                 }
                 else if (code == "3")
                 {
-                    Console.WriteLine("== Run demo server ==");
-                    serverHislip.RunThread("127.0.0.1", 50240, 100000);
+                    Console.WriteLine("== Run HiSLIP server ==");
+                    serverHislip.RunThread("127.0.0.1", 4880, 100000);
                 }
                 else if (code == "4")
                 {

@@ -46,7 +46,7 @@ namespace Vxi11Net
             serverCore.Reply(packet, true, true);
         }
         // reply device_write
-        public Vxi11.DEVICE_WRITE_PARAMS ReceiveDeviceWrite(out string data)
+        public Vxi11.DEVICE_WRITE_PARAMS ReceiveDeviceWrite(out byte[] data)
         {
             byte[] buffer = new byte[Marshal.SizeOf(typeof(Vxi11.DEVICE_WRITE_PARAMS))];
             int byteCount = serverCore.GetArgs(buffer);
@@ -58,9 +58,8 @@ namespace Vxi11Net
             args.io_timeout = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 12));
             args.data_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 16));
 
-            buffer = new Byte[args.data_len];
-            byteCount = serverCore.GetArgs(buffer);
-            data = System.Text.Encoding.ASCII.GetString(buffer);
+            data = new Byte[args.data_len];
+            byteCount = serverCore.GetArgs(data);
 
             serverCore.ClearArgs();
             return args;
@@ -296,7 +295,7 @@ namespace Vxi11Net
                 else if (msg.proc == Vxi11.DEVICE_WRITE)
                 {
                     Console.WriteLine("  == DEVICE_WRITE ==");
-                    string data;
+                    byte[] data = new byte[0];
                     Vxi11.DEVICE_WRITE_PARAMS wrt = ReceiveDeviceWrite(out data);
                     serverScpi.bav(data);
                     serverScpi.RMT_sent();
