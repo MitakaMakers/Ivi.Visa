@@ -16,7 +16,6 @@ namespace Vxi11Net
             reply.Protocol = protocol;
             reply.SessionID = SessionID;
             reply.PayloadLength = 0;
-
             int size = Marshal.SizeOf(typeof(Hislip.InitializeResponse));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -35,7 +34,6 @@ namespace Vxi11Net
             reply.dummy = 0;
             reply.ServerID = ServerID;   
             reply.PayloadLength = 0;
-
             int size = Marshal.SizeOf(typeof(Hislip.AsyncInitializeResponse));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
@@ -53,7 +51,6 @@ namespace Vxi11Net
             reply.ControlCode = control;
             reply.MessageParameter = 0;
             reply.PayloadLength = (ulong)message.Length;
-
             int size = Marshal.SizeOf(typeof(Hislip.Message))+message.Length;
             byte[] packet = new byte[size];
             byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
@@ -73,7 +70,6 @@ namespace Vxi11Net
             reply.ControlCode = control;
             reply.MessageParameter = 0;
             reply.PayloadLength = (ulong)message.Length;
-
             int size = Marshal.SizeOf(typeof(Hislip.Message)) + message.Length;
             byte[] packet = new byte[size];
             byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
@@ -86,37 +82,35 @@ namespace Vxi11Net
         }
         public int ReplyAsyncLockResponse(byte control)
         {
-            Hislip.AsyncLockResponse msg = new Hislip.AsyncLockResponse();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncLockResponse_;
-            msg.ControlCode = control;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.AsyncLockResponse reply = new Hislip.AsyncLockResponse();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncLockResponse_;
+            reply.ControlCode = control;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.AsyncLockResponse));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
         public int DataTransfer(byte control, int messageID, string message)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.Data;
-            msg.ControlCode = control;
-            msg.MessageParameter = messageID;
-            msg.PayloadLength = (ulong)message.Length;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.Data;
+            reply.ControlCode = control;
+            reply.MessageParameter = messageID;
+            reply.PayloadLength = (ulong)message.Length;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
             s.Send(packet);
@@ -124,19 +118,18 @@ namespace Vxi11Net
         }
         public int DataEndTransfer(byte control, int messageID, string message)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.DataEnd;
-            msg.ControlCode = control;
-            msg.MessageParameter = messageID;
-            msg.PayloadLength = (ulong)message.Length;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.DataEnd;
+            reply.ControlCode = control;
+            reply.MessageParameter = messageID;
+            reply.PayloadLength = (ulong)message.Length;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
             gchw.Free();
             s.Send(packet);
@@ -144,144 +137,136 @@ namespace Vxi11Net
         }
         public int ReplyAsyncDeviceClearAcknowledge(byte feature)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncDeviceClearAcknowledge;
-            msg.ControlCode = feature;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncDeviceClearAcknowledge;
+            reply.ControlCode = feature;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
         public int ReplyDeviceClearAcknowledge(byte feature)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.DeviceClearAcknowledge;
-            msg.ControlCode = feature;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.DeviceClearAcknowledge;
+            reply.ControlCode = feature;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
         public int Interrupted(int messageID)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.Interrupted;
-            msg.ControlCode = 0;
-            msg.MessageParameter = messageID;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.Interrupted;
+            reply.ControlCode = 0;
+            reply.MessageParameter = messageID;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
         public int AsyncInterrupted(int messageID)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncInterrupted;
-            msg.ControlCode = 0;
-            msg.MessageParameter = messageID;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncInterrupted;
+            reply.ControlCode = 0;
+            reply.MessageParameter = messageID;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             s.Send(packet);
             return 0;
         }
         public int ReplyAsyncMaximumMessageSizeResponse()
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncMaximumMessageSizeResponse;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncMaximumMessageSizeResponse;
+            reply.ControlCode = 0;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             a.Send(packet);
             return 0;
         }
         public int ReplyAsyncRemoteLocalResponse()
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncRemoteLocalResponse;
-            msg.ControlCode = 0;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncRemoteLocalResponse;
+            reply.ControlCode = 0;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             a.Send(packet);
             return 0;
         }
         public int ReplyAsyncStatusResponse(byte status)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncStatusResponse;
-            msg.ControlCode = status;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncStatusResponse;
+            reply.ControlCode = status;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             a.Send(packet);
             return 0;
         }
         public int ReplyAsyncLockInfoResponse(byte control)
         {
-            Hislip.Message msg = new Hislip.Message();
-            msg.Prologue0 = 'H';
-            msg.Prologue1 = 'S';
-            msg.MessageType = Hislip.AsyncLockInfoResponse;
-            msg.ControlCode = control;
-            msg.MessageParameter = 0;
-            msg.PayloadLength = 0;
-
+            Hislip.Message reply = new Hislip.Message();
+            reply.Prologue0 = 'H';
+            reply.Prologue1 = 'S';
+            reply.MessageType = Hislip.AsyncLockInfoResponse;
+            reply.ControlCode = control;
+            reply.MessageParameter = 0;
+            reply.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
-            Marshal.StructureToPtr(msg, gchw.AddrOfPinnedObject(), false);
+            Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
             gchw.Free();
             a.Send(packet);
             return 0;
