@@ -6,7 +6,7 @@ namespace Vxi11Net
 {
     public class ClientHislip
     {
-        public int Initialize1(Socket socket, string host, int port, short version, short vendorID, string sub_address)
+        public int Initialize1(Socket socket, short clientVersion, short vendorID, string sub_address)
         {
             byte[] array = System.Text.Encoding.ASCII.GetBytes(sub_address);
             Hislip.Initialize call = new Hislip.Initialize();
@@ -14,7 +14,7 @@ namespace Vxi11Net
             call.Prologue1 = 'S';
             call.MessageType = Hislip.Initialize_;
             call.ControlCode = 0;
-            call.Version = IPAddress.HostToNetworkOrder(version);
+            call.Version = IPAddress.HostToNetworkOrder(clientVersion);
             call.VendorID = IPAddress.HostToNetworkOrder(vendorID);
             call.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
             int size = Marshal.SizeOf(typeof(Hislip.Initialize)) + array.Length;
@@ -37,14 +37,14 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return reply.SessionID;
         }
-        public int Initialization2(Socket socket, string host, int port, short version, short vendorID, string sub_address)
+        public int Initialization2(Socket socket, short sessionID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
             call.Prologue1 = 'S';
             call.MessageType = Hislip.AsyncInitialize;
             call.ControlCode = 0;
-            call.MessageParameter = 0;
+            call.MessageParameter = IPAddress.HostToNetworkOrder(sessionID);
             call.PayloadLength = 0;
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] packet = new byte[size];
