@@ -6,7 +6,7 @@ namespace Vxi11Net
 {
     public class ClientHislip
     {
-        public int Initialize1(Socket socket, short clientVersion, short vendorID, string sub_address)
+        internal static int Initialize(Socket socket, short clientVersion, short vendorID, string sub_address)
         {
             byte[] array = System.Text.Encoding.ASCII.GetBytes(sub_address);
             Hislip.Initialize call = new Hislip.Initialize();
@@ -37,7 +37,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return reply.SessionID;
         }
-        public int Initialization2(Socket socket, short sessionID)
+        internal static int AsyncInitialization(Socket socket, short sessionID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -65,7 +65,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int FatalErrorNotification(Socket socket, string message)
+        internal static int FatalErrorNotification(Socket socket, string message)
         {
             byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message call = new Hislip.Message();
@@ -84,7 +84,7 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-        public int ErrorNotification(Socket socket, string message)
+        internal static int ErrorNotification(Socket socket, string message)
         {
             byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message call = new Hislip.Message();
@@ -103,7 +103,7 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-        public int DataTransfer(Socket socket, byte controlcode, int messageID, byte[] data)
+        internal static int DataTransfer(Socket socket, byte controlcode, int messageID, byte[] data)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -121,7 +121,7 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-        public int DataEndTransfer(Socket socket, byte controlcode, int messageID, byte[] data)
+        internal static int DataEndTransfer(Socket socket, byte controlcode, int messageID, byte[] data)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -139,7 +139,7 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-        public int Lock(Socket socket, byte controlcode, int timeout, string lockstring)
+        internal static int Lock(Socket socket, byte controlcode, int timeout, string lockstring)
         {
             byte[] array = System.Text.Encoding.ASCII.GetBytes(lockstring);
             Hislip.Message call = new Hislip.Message();
@@ -168,7 +168,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int ReleaseLock(Socket socket, byte controlcode, int messageID)
+        internal static int ReleaseLock(Socket socket, byte controlcode, int messageID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -195,7 +195,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int LockInfo(Socket socket)
+        internal static int LockInfo(Socket socket)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -222,7 +222,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int Remote(Socket socket, byte controlcode, int messageID)
+        internal static int Remote(Socket socket, byte controlcode, int messageID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -249,7 +249,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int Local(Socket socket, byte controlcode, int messageID)
+        internal static int Local(Socket socket, byte controlcode, int messageID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -276,7 +276,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int DeviceClear1(Socket socket, byte feature)
+        internal static int DeviceClear(Socket socket, byte feature)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -303,7 +303,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int DeviceClear2(Socket socket, byte feature)
+        internal static int DeviceClearComplete(Socket socket, byte feature)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -330,7 +330,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int Trigger(Socket socket, byte controlcode, int messageID)
+        internal static int Trigger(Socket socket, byte controlcode, int messageID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -347,7 +347,7 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-        public int MaximumMessageSize(Socket socket, long maxmsgsize)
+        internal static int MaximumMessageSize(Socket socket, long maxmsgsize)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -374,7 +374,7 @@ namespace Vxi11Net
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
-        public int StatusQuery(Socket socket, byte controlcode, int messageID)
+        internal static int StatusQuery(Socket socket, byte controlcode, int messageID)
         {
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
@@ -407,6 +407,24 @@ namespace Vxi11Net
         
         private uint MessageID = 0xfffffefe;
 
+        internal void Create(string ipString, int port)
+        {
+            // get IP address from IPv4 address string
+            IPAddress ipAddress = IPAddress.Parse(ipString);
+            /* if get ipaddress from hostname, 　
+            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
+            int i = 0;
+            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
+            {
+                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
+                    break;
+            }
+            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
+            IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
+            Socket socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(endPoint);
+
+        }
         public void Destroy()
         {
             synchronous.Close();
@@ -443,24 +461,6 @@ namespace Vxi11Net
             socket.ReceiveTimeout = timeout;
         }
 
-        internal void Create(string ipString, int port)
-        {
-            // get IP address from IPv4 address string
-            IPAddress ipAddress = IPAddress.Parse(ipString);
-            /* if get ipaddress from hostname, 　
-            IPHostEntry ipHostInfo = Dns.GetHostEntry(host);
-            int i = 0;
-            for (i = 0;  i < ipHostInfo.AddressList.Length; i++)
-            {
-                if (ipHostInfo.AddressList[i].AddressFamily == AddressFamily.InterNetwork)
-                    break;
-            }
-            IPAddress ipAddress = ipHostInfo.AddressList[i]; */
-            IPEndPoint endPoint = new IPEndPoint(ipAddress, port);
-            Socket socket = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(endPoint);
-
-        }
     }
 
 }

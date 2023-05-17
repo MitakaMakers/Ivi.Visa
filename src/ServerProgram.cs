@@ -279,7 +279,8 @@
                 }
                 else if (code == "5")
                 {
-                    serverVxi11.ReplyDeviceRead(msg.xid, Vxi11.Reason.END, "XYZCO,246B,S000-0123-02,0");
+                    byte[] data = System.Text.Encoding.ASCII.GetBytes("XYZCO,246B,S000-0123-02,0");
+                    serverVxi11.ReplyDeviceRead(msg.xid, Vxi11.Reason.END, data);
                     Console.WriteLine("== reply to device_read ==");
                 }
                 else if (code == "6")
@@ -604,12 +605,12 @@
                 else if (code == "3")
                 {
                     Console.WriteLine("== Run HiSLIP server ==");
-                    serverHislip.RunThread("127.0.0.1", 4880, 100000);
+                    serverHislip.RunThread("127.0.0.1", 4880, 100);
                 }
                 else if (code == "4")
                 {
-                    Console.WriteLine("== Run demo server ==");
-                    //serverSocket.RunThread("127.0.0.1", 50240);
+                    Console.WriteLine("== Run Socket server ==");
+                    serverSocket.RunThread("127.0.0.1", 50240, 100);
                 }
                 else if ((code == "B") || (code == "b"))
                 {

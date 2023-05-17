@@ -97,40 +97,38 @@ namespace Vxi11Net
             socket.Send(packet);
             return 0;
         }
-        public int DataTransfer(Socket socket, byte control, int messageID, string message)
+        public int DataTransfer(Socket socket, byte control, int messageID, byte[] message)
         {
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.Data;
             reply.ControlCode = control;
             reply.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
-            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
-            int size = Marshal.SizeOf(typeof(Hislip.Message))+ array.Length;
+            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)message.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+ message.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
+            Buffer.BlockCopy(message, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), message.Length);
             gchw.Free();
             socket.Send(packet);
             return 0;
         }
-        public int DataEndTransfer(Socket socket, byte control, int messageID, string message)
+        public int DataEndTransfer(Socket socket, byte control, int messageID, byte[] message)
         {
-            byte[] array = System.Text.Encoding.ASCII.GetBytes(message);
             Hislip.Message reply = new Hislip.Message();
             reply.Prologue0 = 'H';
             reply.Prologue1 = 'S';
             reply.MessageType = Hislip.DataEnd;
             reply.ControlCode = control;
             reply.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
-            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
-            int size = Marshal.SizeOf(typeof(Hislip.Message))+ array.Length;
+            reply.PayloadLength = IPAddress.HostToNetworkOrder((long)message.Length);
+            int size = Marshal.SizeOf(typeof(Hislip.Message))+ message.Length;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-            Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
+            Buffer.BlockCopy(message, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), message.Length);
             gchw.Free();
             socket.Send(packet);
             return 0;
@@ -369,27 +367,27 @@ namespace Vxi11Net
                 else if (call.MessageType == Hislip.Data)
                 {
                     Console.WriteLine("  == Data ==");
-                    byte[] data = ReceiveData(socket, call.PayloadLength);
                     MessageID = call.MessageParameter;
                     IsRMTwasDelivered = Hislip.RMTwasNotDelivered;
+                    byte[] data = ReceiveData(socket, call.PayloadLength);
                     serverScpi.bav(data);
                     if (serverScpi.IsMav())
                     {
-                        string reply = serverScpi.GetResponse();
+                        byte[] reply = serverScpi.GetResponse();
                         DataTransfer(socket, IsRMTwasDelivered, MessageID, reply);
                     }
                 }
                 else if (call.MessageType == Hislip.DataEnd)
                 {
                     Console.WriteLine("  == DataEnd ==");
-                    byte[] data = ReceiveData(socket, call.PayloadLength);
                     MessageID = call.MessageParameter;
                     IsRMTwasDelivered = Hislip.RMTwasDelivered;
+                    byte[] data = ReceiveData(socket, call.PayloadLength);
                     serverScpi.bav(data);
                     serverScpi.RMT_sent();
                     if (serverScpi.IsMav())
                     {
-                        string reply = serverScpi.GetResponse();
+                        byte[] reply = serverScpi.GetResponse();
                         DataEndTransfer(socket, Hislip.RMTwasDelivered, MessageID, reply);
                     }
                 }

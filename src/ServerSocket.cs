@@ -1,17 +1,27 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
     public class ServerSocket
     {
-        public int Send(byte[] buffer)
+        public int SendMsg(byte[] msg)
         {
+            byte[] buffer = new byte[msg.Length+2];
+            Buffer.BlockCopy(msg, 0, buffer, 0, msg.Length);
+            buffer[msg.Length] = (byte)'\r';
+            buffer[msg.Length+1] = (byte)'\n';
             int bytes = socket.Send(buffer, 0, buffer.Length, SocketFlags.None);
             return bytes;
         }
-        public int Receive(byte[] buffer)
+        public byte[] ReceiveMsg(int size)
         {
+            if (socket.Connected == false)
+            {
+                socket = server.Accept();
+            }
+            byte[] buffer = new byte[size];
             int i = 0;
             for (i = 0; i < buffer.Length; i++)
             {
@@ -21,7 +31,9 @@ namespace Vxi11Net
                     break;
                 }
             }
-            return i;
+            byte[] recv = new byte[i];
+            Buffer.BlockCopy(buffer, 0, recv, 0, i);
+            return recv;
         }
         public void Flush()
         {
@@ -42,8 +54,49 @@ namespace Vxi11Net
             socket.ReceiveTimeout = timeout;
         }
 
+        private void CoreThread()
+        {
+            try
+            {
+                Console.WriteLine("  == Wait Message ==");
+                byte[] data = ReceiveMsg(serverScpi.GetMaxRecvSize());
+                Console.WriteLine("    received socket command.");
+                Console.WriteLine("      size    = {0}", data.Length);
+                serverScpi.bav(data);
+                serverScpi.RMT_sent();
+                if (serverScpi.IsMav())
+                {
+                    byte[] reply = serverScpi.GetResponse();
+                    SendMsg(reply);
+                }
+            }
+            catch (Exception)
+            {
+                socket.Close();
+            }
+        }
+        public void RunThread(string host, int port, int count)
+        {
+            tokenSource.TryReset();
+            Console.WriteLine("== Run Socket server(TCP, {0}, {1}) ==", host, port);
+            Create(host, port);
+            Console.WriteLine("  listen({0}:{1})...", host, port);
+            Task.Run(() =>
+            {
+
+                while ((0 < count) && (!tokenSource.Token.IsCancellationRequested))
+                {
+                    CoreThread();
+                    count--;
+                }
+            });
+            Thread.Sleep(10);
+        }
+
         private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
         private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private ServerScpi serverScpi = new ServerScpi();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
 

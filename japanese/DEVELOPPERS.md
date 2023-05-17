@@ -41,14 +41,14 @@
 説明は簡潔で1ページを2000文字以内にします。
 
 ## ToDo
+- Support RS232
+  - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/)
+  - [Null-modem emulator](https://sourceforge.net/projects/com0com/)
 - Support C library interface
   - [DllExport](https://github.com/3F/DllExport)
 - Support USBTMC
   - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
   - [emulated USB devices](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/developing-windows-drivers-for-emulated-usb-host-controllers-and-devices)
-- Support RS232
-  - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/)
-  - [Null-modem emulator](https://sourceforge.net/projects/com0com/)
 - Support Native AOT compile
   - [Natvive AOT](https://learn.microsoft.com/ja-jp/dotnet/core/deploying/native-aot/)
 - Support GPIB

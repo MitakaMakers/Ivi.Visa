@@ -97,10 +97,8 @@ namespace Vxi11Net
             args.termChar = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             return args;
         }
-        public void ReplyDeviceRead(int xid, Reason reason, string data)
+        public void ReplyDeviceRead(int xid, Reason reason, byte[] data)
         {
-            byte[] buf = System.Text.Encoding.ASCII.GetBytes(data);
-
             Vxi11.DEVICE_READ_REPLY reply = new Vxi11.DEVICE_READ_REPLY();
             reply.xid = IPAddress.HostToNetworkOrder(xid);
             reply.msg_type = IPAddress.HostToNetworkOrder(Rpc.REPLY);
@@ -110,14 +108,14 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.error = IPAddress.HostToNetworkOrder(Rpc.SUCCESS);
             reply.reason = IPAddress.HostToNetworkOrder((int)reason);
-            reply.data_len = IPAddress.HostToNetworkOrder(buf.Length);
+            reply.data_len = IPAddress.HostToNetworkOrder(data.Length);
 
-            int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)) + buf.Length;
+            int size = Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)) + data.Length;
             size = ((size / 4) + 1) * 4;
             byte[] packet = new byte[size];
             GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
             Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-            Buffer.BlockCopy(buf, 0, packet, Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)), buf.Length);
+            Buffer.BlockCopy(data, 0, packet, Marshal.SizeOf(typeof(Vxi11.DEVICE_READ_REPLY)), data.Length);
             gchw.Free();
             serverCore.Reply(packet, true, true);
         }
@@ -305,7 +303,7 @@ namespace Vxi11Net
                 {
                     Console.WriteLine("  == DEVICE_READ ==");
                     Vxi11.DEVICE_READ_PARAMS drd = ReceiveDeviceRead();
-                    string data = serverScpi.GetResponse();
+                    byte[] data = serverScpi.GetResponse();
                     ReplyDeviceRead(msg.xid, Reason.END | Reason.CHR, data);
                 }
                 else if (msg.proc == Vxi11.DEVICE_READSTB)
@@ -423,31 +421,6 @@ namespace Vxi11Net
                 serverAbort.Close();
             }
         }
-        private int lid = 123;
-        private int abortPort = 456;
-        private ServerRpcTcp serverCore = new ServerRpcTcp();
-        private ServerRpcTcp serverAbort = new ServerRpcTcp();
-        private ClientRpcTcp serverInterrupt = new ClientRpcTcp();
-        private ServerScpi serverScpi = new ServerScpi();
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-        public void Create(string host, int port)
-        {
-            serverCore.Create(host, port);
-        }
-        public void CreateAbort(string host, int port)
-        {
-            abortPort = port;
-            serverAbort.Create(host, port);
-        }
-        public void CreateInterrupt(string host, int port)
-        {
-            serverInterrupt.Create(host, port);
-        }
-        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
-        {
-            return serverCore.ReceiveMsg();
-        }
         public void RunCoreThread(string host, int port, int count)
         {
             tokenSource.TryReset();
@@ -491,6 +464,31 @@ namespace Vxi11Net
         public void Shutdown()
         {
             tokenSource.Cancel();
+        }
+        private int lid = 123;
+        private int abortPort = 456;
+        private ServerRpcTcp serverCore = new ServerRpcTcp();
+        private ServerRpcTcp serverAbort = new ServerRpcTcp();
+        private ClientRpcTcp serverInterrupt = new ClientRpcTcp();
+        private ServerScpi serverScpi = new ServerScpi();
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+
+        public void Create(string host, int port)
+        {
+            serverCore.Create(host, port);
+        }
+        public void CreateAbort(string host, int port)
+        {
+            abortPort = port;
+            serverAbort.Create(host, port);
+        }
+        public void CreateInterrupt(string host, int port)
+        {
+            serverInterrupt.Create(host, port);
+        }
+        public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
+        {
+            return serverCore.ReceiveMsg();
         }
         public void Destroy()
         {
