@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Vxi11Net
@@ -42,7 +43,7 @@ namespace Vxi11Net
             }
             socket.ReceiveTimeout = timeout;
         }
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
 

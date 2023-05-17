@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -402,8 +403,8 @@ namespace Vxi11Net
             return 0;
         }
 
-        private Socket synchronous = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        private Socket asynchronous = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket synchronous = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private Socket asynchronous = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
         private uint MessageID = 0xfffffefe;
 

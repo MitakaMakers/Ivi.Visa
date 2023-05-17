@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 
 namespace Vxi11Net
@@ -135,7 +136,7 @@ namespace Vxi11Net
             remain = 0;
         }
 
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
         private bool last_fragment = true;
         private int remain = 0;
@@ -234,7 +235,7 @@ namespace Vxi11Net
 
         private const int UDPMSGSIZE = 2000;
 
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private EndPoint endPoint = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
 
         private byte[] raw_buf = new byte[UDPMSGSIZE];

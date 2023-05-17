@@ -5,19 +5,17 @@ VXI-11.Net is a VXI-11 communication software for classroom training.
 - supports VXI-11 server and client by C#.
 - Supports HISLIP server and client.
 - Supports RawSokcet server and client.
-- Supports Windows and Linux.
+- Program run on a simple Windows and Linux.
 - Client supports some functions of VISA and TMCTL libraries.
-- Server supports some SCPI commands(DUMMY).
-- Error handling is not implemented for easy code readings.
+- Server supports some SCPI commands.
 
 ## Derivarables
-- VXI-11 server ：Server.exe
-- VXI-11 client ：Client.exe, Ivi.Visa.dll, TmctlAPINet.dll
+- VXI-11 server ：ServerCLI.exe, ServerGUI.exe
+- VXI-11 client ：ClientCLI.exe, Ivi.Visa.dll, TmctlAPINet.dll
 
 ## Requirement
-- Windows 10 or Linux.
+- Windows or Linux.
 - [.NET 6](https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0).
-- [Wireshark](https://www.wireshark.org/)
 
 ## Usage
 - Execute the Server.exe.

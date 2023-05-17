@@ -131,13 +131,13 @@ namespace TmctlAPINet
         internal int Send(string msg)
         {
             int data_len;
-            client.DeviceWrite(lid, Vxi11.Flags.none, lock_timeout, io_timeout, msg, out data_len);
+            client.DeviceWrite(lid, Vxi11.Flag.none, lock_timeout, io_timeout, msg, out data_len);
             return 0;
         }
         internal int Receive(ref StringBuilder buff, int blen, ref int rlen)
         {
             int requestSize = blen;
-            Vxi11.Flags flags = Vxi11.Flags.none;
+            Vxi11.Flag flags = Vxi11.Flag.none;
             Vxi11.TermChar termchar = Vxi11.TermChar.LF;
             int reason;
             byte[] data;
@@ -161,23 +161,23 @@ namespace TmctlAPINet
         }
         internal int SetLocal()
         {
-            client.DeviceLocal(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            client.DeviceLocal(lid, Vxi11.Flag.none, lock_timeout, io_timeout);
             return 0;
         }
         internal int SetRemote()
         {
-            client.DeviceRemote(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            client.DeviceRemote(lid, Vxi11.Flag.none, lock_timeout, io_timeout);
             return 0;
         }
 
         internal int DeviceClear()
         {
-            client.DeviceClear(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            client.DeviceClear(lid, Vxi11.Flag.none, lock_timeout, io_timeout);
             return 0;
         }
         internal int DeviceTrigger()
         {
-            client.DeviceTrigger(lid, Vxi11.Flags.none, lock_timeout, io_timeout);
+            client.DeviceTrigger(lid, Vxi11.Flag.none, lock_timeout, io_timeout);
             return 0;
         }
     }

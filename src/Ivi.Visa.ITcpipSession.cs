@@ -150,7 +150,7 @@ namespace Ivi.Visa
         }
         public int Read(string buf, int count, out int retCount)
         {
-            Vxi11.Flags flags = Vxi11.Flags.end;
+            Vxi11.Flag flags = Vxi11.Flag.end;
             Vxi11.TermChar term = Vxi11.TermChar.None;
             int reason = 0;
             byte[] data = new byte[count];
@@ -160,14 +160,14 @@ namespace Ivi.Visa
         }
         public int Write(string buf, int count, out int retCount)
         {
-            Vxi11.Flags flags = Vxi11.Flags.end;
+            Vxi11.Flag flags = Vxi11.Flag.end;
             client.DeviceWrite(this.lid, flags, this.lock_timeout, this.io_timeout, buf, out retCount);
             return 0;
         }
         public int Terminate()
         {
             client.Create(this.Address, this.abortPort);
-            Vxi11.Flags flags = Vxi11.Flags.end;
+            Vxi11.Flag flags = Vxi11.Flag.end;
             client.DeviceAbort(this.lid, flags, this.lock_timeout, this.io_timeout);
             return 0;
         }

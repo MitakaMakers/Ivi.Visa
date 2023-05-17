@@ -131,7 +131,7 @@ namespace Vxi11Net
                 }
                 else if (code == "5")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  msg? : ");
@@ -143,7 +143,7 @@ namespace Vxi11Net
                 }
                 else if (code == "6")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  requestSize? : ");
@@ -165,7 +165,7 @@ namespace Vxi11Net
                 }
                 else if (code == "8")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     char stb;
@@ -175,7 +175,7 @@ namespace Vxi11Net
                 }
                 else if (code == "9")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceTrigger(lid, flags, lock_timeout, io_timeout);
@@ -184,7 +184,7 @@ namespace Vxi11Net
                 }
                 else if (code == "10")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceClear(lid, flags, lock_timeout, io_timeout);
@@ -193,7 +193,7 @@ namespace Vxi11Net
                 }
                 else if (code == "11")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceRemote(lid, flags, lock_timeout, io_timeout);
@@ -202,7 +202,7 @@ namespace Vxi11Net
                 }
                 else if (code == "12")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceLocal(lid, flags, lock_timeout, io_timeout);
@@ -211,7 +211,7 @@ namespace Vxi11Net
                 }
                 else if (code == "13")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  lid? : ");
                     int lid2 = Convert.ToInt32(Console.ReadLine());
                     clientVxi11.DeviceLock(lid2, flags, lock_timeout);
@@ -238,7 +238,7 @@ namespace Vxi11Net
                 }
                 else if (code == "16")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  io_timeout? : ");
                     int io_timeout = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  cmd? : ");
@@ -279,7 +279,7 @@ namespace Vxi11Net
                 }
                 else if (code == "19")
                 {
-                    Vxi11.Flags flags = Vxi11.Flags.none;
+                    Vxi11.Flag flags = Vxi11.Flag.none;
                     Console.Write("  lid? : ");
                     int lid2 = Convert.ToInt32(Console.ReadLine());
                     Console.Write("  io_timeout? : ");

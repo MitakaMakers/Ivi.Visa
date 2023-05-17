@@ -25,15 +25,16 @@
   - https://zenn.dev/shimat/articles/03ad92427cbed6
 
 ## Source code Quality
-- クラスと関数と変数の命名について 各種規格が定義している用語を尊重します。
-- その他のソースコードの記法について C# コーディングガイドを尊重します。
+- 命名規則は、各種通信仕様が定義している用語を優先します。
+- その他のソースコードの記法について C# コーディングガイドを採用します。
   - [Documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/xmldoc/)
   - [C# Language Specification annex on documentation comments](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments)
+- 初学者がソースコードを理解しやすいよう、オブジェクト指向ではなく手続き指向で表記します。
+- Error handling is not implemented for easy code readings.
 - １関数あたりのサイクロマティック複雑度10未満を目指します。
   - https://devblogs.microsoft.com/dotnet/automate-code-metrics-and-class-diagrams-with-github-actions/
 - １ファイルの行数は2000行未満を目指します。逆に50行未満の短すぎるファイルは統合します。
-- 初学者がソースコードを理解しやすいよう、オブジェクト指向ではなく手続き指向で表記します。
-- C# 固有のや珍しい表記法は使いません（C99 / Java 2 程度を想定）
+- C# 固有の珍しい表記法は使いません（C# 2.0 / C99 / Java 2 程度を想定）
 - コールバック処理・非同期処理は使いません。
 - コードの行数を短くして簡潔に記述するより、多少冗長でも関数の呼び出し回数が少なくなる記法を優先します。
 
@@ -44,8 +45,6 @@
 - Support RS232
   - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/)
   - [Null-modem emulator](https://sourceforge.net/projects/com0com/)
-- Support C library interface
-  - [DllExport](https://github.com/3F/DllExport)
 - Support USBTMC
   - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
   - [emulated USB devices](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/developing-windows-drivers-for-emulated-usb-host-controllers-and-devices)

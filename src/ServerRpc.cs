@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
@@ -173,8 +174,8 @@ namespace Vxi11Net
             remain = 0;
         }
 
-        private Socket server = new Socket(SocketType.Stream, ProtocolType.Tcp);
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
         IPEndPoint endPoint = new IPEndPoint(IPAddress.IPv6Any, 0);
 
@@ -196,7 +197,7 @@ namespace Vxi11Net
             endPoint = new IPEndPoint(ipAddress, port);
             server = new Socket(endPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             server.Bind(endPoint);
-            server.Listen();
+            server.Listen(3);
         }
         public void Close()
         {
@@ -296,7 +297,7 @@ namespace Vxi11Net
             readsize = 0;
         }
 
-        private Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         private EndPoint endPoint = (EndPoint)new IPEndPoint(IPAddress.IPv6Any, 0);
 
         private const int UDPMSGSIZE = 2000;

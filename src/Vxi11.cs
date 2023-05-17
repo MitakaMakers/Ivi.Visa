@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
 namespace Vxi11Net
 {
@@ -31,7 +32,7 @@ namespace Vxi11Net
         public const int DEVICE_CORE = 395183;
 
         [Flags]
-        public enum Flags
+        public enum Flag
         {
             termchrset = 0x80,
             end = 0x08,

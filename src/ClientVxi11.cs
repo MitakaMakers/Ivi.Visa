@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Vxi11Net
@@ -53,7 +54,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_write
-        internal static int DeviceWrite(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, byte[] data, out int data_len)
+        internal static int DeviceWrite(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout, byte[] data, out int data_len)
         {
             Vxi11.DEVICE_WRITE_CALL arg = new Vxi11.DEVICE_WRITE_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -97,7 +98,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_read
-        internal static int DeviceRead(ClientRpcTcp rpc, int xid, int lid, int requestSize, Vxi11.Flags flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out byte[] data)
+        internal static int DeviceRead(ClientRpcTcp rpc, int xid, int lid, int requestSize, Vxi11.Flag flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out byte[] data)
         {
             Vxi11.DEVICE_READ_CALL arg = new Vxi11.DEVICE_READ_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -137,13 +138,13 @@ namespace Vxi11Net
             reply.data_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 32));
 
             reason = reply.reason;
-            data = new Byte[reply.data_len];
+            data = new byte[reply.data_len];
             rpc.GetReply(data, false);
             rpc.ClearReply();
             return reply.error;
         }
         // call device_readstb
-        internal static int DeviceReadstb(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, out char stb)
+        internal static int DeviceReadstb(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout, out char stb)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -183,7 +184,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_trigger
-        internal static int DeviceTrigger(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        internal static int DeviceTrigger(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -221,7 +222,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_clear
-        internal static int DeviceClear(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        internal static int DeviceClear(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -259,7 +260,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_remote
-        internal static int DeviceRemote(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        internal static int DeviceRemote(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -297,7 +298,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_local
-        internal static int DeviceLocal(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        internal static int DeviceLocal(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -335,7 +336,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_lock
-        internal static int DeviceLock(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout)
+        internal static int DeviceLock(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout)
         {
             Vxi11.DEVICE_LOCK_CALL arg = new Vxi11.DEVICE_LOCK_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -520,7 +521,7 @@ namespace Vxi11Net
             return reply.error;
         }
         // call device_docmd
-        internal static void DeviceDocmd(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
+        internal static void DeviceDocmd(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
         {
             Vxi11.DEVICE_DOCMD_CALL arg = new Vxi11.DEVICE_DOCMD_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -563,7 +564,7 @@ namespace Vxi11Net
             reply.accept_stat = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 20));
             reply.error = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 24));
             reply.data_out_len = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 28));
-            data_out = new Byte[reply.data_out_len];
+            data_out = new byte[reply.data_out_len];
             rpc.GetReply(data_out, false);
             rpc.ClearReply();
         }
@@ -605,7 +606,7 @@ namespace Vxi11Net
     }
     internal class AbortChannel
     {
-        internal static int DeviceAbort(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        internal static int DeviceAbort(ClientRpcTcp rpc, int xid, int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             Vxi11.DEVICE_GENERIC_CALL arg = new Vxi11.DEVICE_GENERIC_CALL();
             arg.xid = IPAddress.HostToNetworkOrder(xid);
@@ -657,57 +658,57 @@ namespace Vxi11Net
             return status;
         }
         // call device_write
-        public int DeviceWrite(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, string data, out int data_len)
+        public int DeviceWrite(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout, string data, out int data_len)
         {
             byte[] buff = System.Text.Encoding.ASCII.GetBytes(data);
             int status = CoreChannel.DeviceWrite(clientCore, xid, lid, flags, lock_timeout, io_timeout, buff, out data_len);
             return status;
         }
         // call device_read
-        public int DeviceRead(int lid, int requestSize, Vxi11.Flags flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out string data)
+        public int DeviceRead(int lid, int requestSize, Vxi11.Flag flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out string data)
         {
             byte[] buf;
             int status = DeviceRead(lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out buf);
             data = System.Text.Encoding.ASCII.GetString(buf);
             return status;
         }
-        public int DeviceRead(int lid, int requestSize, Vxi11.Flags flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out byte[] data)
+        public int DeviceRead(int lid, int requestSize, Vxi11.Flag flags, int lock_timeout, int io_timeout, Vxi11.TermChar term, out int reason, out byte[] data)
         {
             int status = CoreChannel.DeviceRead(clientCore, xid++, lid, requestSize, flags, lock_timeout, io_timeout, term, out reason, out data);
             return status;
         }
         // call device_readstb
-        public int DeviceReadstb(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, out char stb)
+        public int DeviceReadstb(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout, out char stb)
         {
             int status = CoreChannel.DeviceReadstb(clientCore, xid++, lid, flags, lock_timeout, io_timeout, out stb);
             return status;
         }
         // call device_trigger
-        public int DeviceTrigger(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        public int DeviceTrigger(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             int status = CoreChannel.DeviceTrigger(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_clear
-        public int DeviceClear(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        public int DeviceClear(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             int status = CoreChannel.DeviceClear(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_remote
-        public int DeviceRemote(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        public int DeviceRemote(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             int status = CoreChannel.DeviceRemote(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_local
-        public int DeviceLocal(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        public int DeviceLocal(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             int status = CoreChannel.DeviceLocal(clientCore, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
         }
         // call device_lock
-        public int DeviceLock(int lid, Vxi11.Flags flags, int lock_timeout)
+        public int DeviceLock(int lid, Vxi11.Flag flags, int lock_timeout)
         {
             int status = CoreChannel.DeviceLock(clientCore, xid++, lid, flags, lock_timeout);
             return status;
@@ -738,7 +739,7 @@ namespace Vxi11Net
             return status;
         }
         // call device_docmd
-        public void DeviceDocmd(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
+        public void DeviceDocmd(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout, int cmd, int network_order, int datasize, byte[] data_in, out byte[] data_out)
         {
             CoreChannel.DeviceDocmd(clientCore, xid++, lid, flags, lock_timeout, io_timeout, cmd, network_order, datasize, data_in, out data_out);
         }
@@ -749,7 +750,7 @@ namespace Vxi11Net
             return status;
         }
         // call device_abort
-        public int DeviceAbort(int lid, Vxi11.Flags flags, int lock_timeout, int io_timeout)
+        public int DeviceAbort(int lid, Vxi11.Flag flags, int lock_timeout, int io_timeout)
         {
             int status = AbortChannel.DeviceAbort(clientAbort, xid++, lid, flags, lock_timeout, io_timeout);
             return status;
