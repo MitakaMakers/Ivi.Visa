@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Ivi.Visa
 {
@@ -20,6 +22,7 @@ namespace Ivi.Visa
         {
             throw new NotImplementedException();
         }
+#nullable enable
         public override Boolean Equals(object? o)
         {
             throw new NotImplementedException();
@@ -28,6 +31,7 @@ namespace Ivi.Visa
         {
             throw new NotImplementedException();
         }
+#nullable disable
         public override int GetHashCode() { return 0; }
     }
     public sealed class VisaImplementation : IEquatable<VisaImplementation>
@@ -48,6 +52,7 @@ namespace Ivi.Visa
         {
             throw new NotImplementedException();
         }
+#nullable enable
         public override Boolean Equals(object? o)
         {
             throw new NotImplementedException();
@@ -56,6 +61,7 @@ namespace Ivi.Visa
         {
             throw new NotImplementedException();
         }
+#nullable disable
         public override int GetHashCode() { return 0; }
     }
     public sealed class ConflictManager : IDisposable
@@ -129,7 +135,9 @@ namespace Ivi.Visa
         public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists) { }
         public static Boolean operator ==(ParseResult parse1, ParseResult parse2) { return true; }
         public static Boolean operator !=(ParseResult parse1, ParseResult parse2) { return true; }
+#nullable enable
         public override bool Equals(object? o) { return true; }
+#nullable disable
         public override int GetHashCode() { return 0; }
     }
     public static class GlobalResourceManager

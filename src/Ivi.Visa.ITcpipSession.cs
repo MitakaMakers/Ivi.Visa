@@ -1,7 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 using System.Text;
 using Vxi11Net;
 
+#nullable enable
+#nullable disable
 namespace Ivi.Visa
 {
     public interface ITcpipSession : IMessageBasedSession
@@ -127,10 +130,12 @@ namespace Ivi.Visa
         private int lid;
         private int abortPort;
         private int maxRecvSize;
+#nullable enable
         public static void ServiceRequestHandler(object? sender, VisaEventArgs args)
         {
             return;
         }
+#nullable disable
         public Vxi11Session(string address, string deviceName)
         {
             ClientPortmapTcp clientPmap = new ClientPortmapTcp();

@@ -1,4 +1,6 @@
-﻿namespace Ivi.Visa
+﻿using System;
+
+namespace Ivi.Visa
 {
     public class UsbInterruptEventArgs : VisaEventArgs
     {

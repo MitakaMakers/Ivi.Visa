@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-using System.Runtime.Serialization;
-using System.Text;
+﻿using System;
 using Vxi11Net;
 
 namespace Ivi.Visa
@@ -103,10 +101,14 @@ namespace Ivi.Visa
         public IMessageBasedFormattedIO FormattedIO { get; }
         public IMessageBasedRawIO RawIO { get; }
         private ClientSocket client = new ClientSocket();
+#nullable enable
+
         public static void ServiceRequestHandler(object? sender, VisaEventArgs args)
         {
             return;
         }
+#nullable disable
+
         public TcpipSocketSession(string address, string port)
         {
             Address = address;

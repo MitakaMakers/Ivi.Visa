@@ -1,4 +1,5 @@
-﻿using Ivi.Visa;
+﻿using System;
+using Ivi.Visa;
 using System.Diagnostics;
 using System.Text;
 using TmctlAPINet;
