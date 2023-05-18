@@ -5,14 +5,15 @@ VXI-11.Net is a VXI-11 communication software for classroom training.
 - supports VXI-11 server and client by C#.
 - Supports HISLIP server and client.
 - Supports RawSokcet server and client.
+- Supports rs232 server and client.
 - Program run on a simple Windows and Linux.
 - Client supports some functions of VISA and TMCTL libraries.
 - Server supports some SCPI commands.
-- tmctl native C library
+- native C library:visa32.dll, tmctl.dll
 
 ## Derivarables
 - VXI-11 server ：Server.exe, 
-- VXI-11 client ：Client.exe, Ivi.Visa.dll, TmctlAPINet.dll, tmctl.dll, tmctl64.dll
+- VXI-11 client ：Client.exe, Ivi.Visa.dll, TmctlAPINet.dll, visa32.dll, tmctl.dll, tmctl64.dll
 
 ## Runtime enviroment
 - Windows or Linux.
@@ -21,9 +22,9 @@ VXI-11.Net is a VXI-11 communication software for classroom training.
 ## Build enviroment
 - Visual Studio 2022 Community
 - Server.exe, Client.exe, Ivi.Visa.dll, TmctlAPINet.dll
-  - .NET 6:(https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0).
-- tmctl.dll, tmctl64.dll
-  -  .NET 2
+  - .[NET 6 SDK 6.0.408](https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0).
+- visa32.dll(32bit), visa32.dll(64bit), tmctl.dll, tmctl64.dll
+  - .NET Framework 2.0
   - [DllExport](https://github.com/3F/DllExport)
 
 ## Usage
