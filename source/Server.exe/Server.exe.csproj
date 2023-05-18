@@ -11,17 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="ClientRpc.cs" />
-    <Compile Include="Hislip.cs" />
-    <Compile Include="Portmap.cs" />
-    <Compile Include="Rpc.cs" />
-    <Compile Include="ServerHislip.cs" />
-    <Compile Include="ServerPortmap.cs" />
+    <Compile Include="..\ClientRpc.cs" />
+    <Compile Include="..\Hislip.cs" />
+    <Compile Include="..\Portmap.cs" />
+    <Compile Include="..\Rpc.cs" />
+    <Compile Include="..\ServerHislip.cs" />
+    <Compile Include="..\ServerPortmap.cs" />
     <Compile Include="ServerProgram.cs" />
-    <Compile Include="ServerRpc.cs" />
-    <Compile Include="ServerScpi.cs" />
-    <Compile Include="ServerSocket.cs" />
-    <Compile Include="ServerVxi11.cs" />
-    <Compile Include="Vxi11.cs" />
+    <Compile Include="..\ServerRpc.cs" />
+    <Compile Include="..\ServerScpi.cs" />
+    <Compile Include="..\ServerSocket.cs" />
+    <Compile Include="..\ServerVxi11.cs" />
+    <Compile Include="..\Vxi11.cs" />
   </ItemGroup>
 </Project>

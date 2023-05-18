@@ -23,30 +23,30 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="..\..\src\ClientHislip.cs" />
-    <Compile Include="..\..\src\ClientPortmap.cs" />
-    <Compile Include="..\..\src\ClientRpc.cs" />
-    <Compile Include="..\..\src\ClientSocket.cs" />
-    <Compile Include="..\..\src\ClientVxi11.cs" />
-    <Compile Include="..\..\src\Hislip.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IGpibSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IMessageBasedFormattedIO.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IMessageBasedRawIO.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IMessageBasedSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IPxiSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IRegisterBasedSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IResourceManager.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.ISerialSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.ITcpipSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.ITcpipSocketSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IUsbSesssion.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IVisaSession.cs" />
-    <Compile Include="..\..\src\Ivi.Visa.IVxiSession.cs" />
-    <Compile Include="..\..\src\Portmap.cs" />
-    <Compile Include="..\..\src\Rpc.cs" />
-    <Compile Include="..\..\src\ServerRpc.cs" />
-    <Compile Include="..\..\src\Vxi11.cs" />
+    <Compile Include="..\ClientHislip.cs" />
+    <Compile Include="..\ClientPortmap.cs" />
+    <Compile Include="..\ClientRpc.cs" />
+    <Compile Include="..\ClientSocket.cs" />
+    <Compile Include="..\ClientVxi11.cs" />
+    <Compile Include="..\Hislip.cs" />
+    <Compile Include="..\Ivi.Visa.cs" />
+    <Compile Include="..\Ivi.Visa.IGpibSession.cs" />
+    <Compile Include="..\Ivi.Visa.IMessageBasedFormattedIO.cs" />
+    <Compile Include="..\Ivi.Visa.IMessageBasedRawIO.cs" />
+    <Compile Include="..\Ivi.Visa.IMessageBasedSession.cs" />
+    <Compile Include="..\Ivi.Visa.IPxiSession.cs" />
+    <Compile Include="..\Ivi.Visa.IRegisterBasedSession.cs" />
+    <Compile Include="..\Ivi.Visa.IResourceManager.cs" />
+    <Compile Include="..\Ivi.Visa.ISerialSession.cs" />
+    <Compile Include="..\Ivi.Visa.ITcpipSession.cs" />
+    <Compile Include="..\Ivi.Visa.ITcpipSocketSession.cs" />
+    <Compile Include="..\Ivi.Visa.IUsbSesssion.cs" />
+    <Compile Include="..\Ivi.Visa.IVisaSession.cs" />
+    <Compile Include="..\Ivi.Visa.IVxiSession.cs" />
+    <Compile Include="..\Portmap.cs" />
+    <Compile Include="..\Rpc.cs" />
+    <Compile Include="..\ServerRpc.cs" />
+    <Compile Include="..\Vxi11.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DllExport">
