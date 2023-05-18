@@ -5,7 +5,6 @@ VXI-11.Net is a VXI-11 communication software for classroom training.
 - supports VXI-11 server and client by C#.
 - Supports HISLIP server and client.
 - Supports RawSokcet server and client.
-- Supports rs232 server and client.
 - Program run on a simple Windows and Linux.
 - Client supports some functions of VISA and TMCTL libraries.
 - Server supports some SCPI commands.
