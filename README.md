@@ -1,24 +1,35 @@
-# VXI-11.Net
-VXI-11.Net is a VXI-11 communication software for classroom training.
+# Mmm.Ivi.Visa and Mmm.TmctlAPINet
+This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCTL. This software is developed for research and classroom training. Currentlly, supports only VXI-11, HiSLIP, RawSocket, GPIB(prorogic) ASRL and Usbtmc. 
 
-## Feature goal
-- supports VXI-11 server and client by C#.
-- Supports HISLIP server and client.
-- Supports RawSokcet server and client.
-- Program run on a simple Windows and Linux.
-- Client supports some functions of VISA and TMCTL libraries.
-- Server supports some SCPI commands.
-- support C ABI library : visa32.dll, tmctl.dll
+## Feature of Mmm.Ivi.Visa
+- [X] VXI-11 server and client.
+- [X] HiSLIP server and client.
+- [x] RawSokcet server and client.
+- [ ] Usbtmc host
+- [ ] Serial
+- [ ] GP-IB
+- [x] Program run on a basic Windows and Linux.
+- [ ] Mmm.Ivi.Visa supports functions of VISA.Net.
+- [ ] Mmm.TmctlAPINet supports functions of TMCTL.
+- [ ] Server supports SCPI commands.
+- [x] support C ABI library such as visa32.dll, tmctl.dll.
+- [ ] PXI, PXI-GPIB
+- [ ] VXI
+
+## Feature of Mmm.TmctlAPINet
 
 ## Derivarables
-- VXI-11 server program : Server.exe
-- VXI-11 client program : Client.exe
 - .Net library : Ivi.Visa.dll, TmctlAPINet.dll
 - C ABI library : visa32.dll, tmctl.dll, tmctl64.dll
+- API Caputure：IOTrace.exe
+- VXI-11 server test program : Server.exe
+- VXI-11 client test program : Client.exe
 
 ## Runtime enviroment
-- Windows or Linux.
+- Windows and Linux(WSL2)
 - [.NET 6](https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0).
+- GPIB Prologic GPIB
+- LIBUSBNet
 
 ## Build enviroment
 - Server.exe, Client.exe, Ivi.Visa.dll, TmctlAPINet.dll
