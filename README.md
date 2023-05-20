@@ -20,10 +20,10 @@ This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCT
 
 ## Derivarables
 - .Net library : Ivi.Visa.dll, TmctlAPINet.dll
-- C ABI library : visa32.dll, tmctl.dll, tmctl64.dll
-- API Caputure：IOTrace.exe
 - VXI-11 server test program : Server.exe
 - VXI-11 client test program : Client.exe
+- Windows C library : visa32.dll, tmctl.dll, tmctl64.dll
+- API Caputure：IOTrace.exe
 
 ## Runtime enviroment
 - Windows and Linux(WSL2)
