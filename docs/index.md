@@ -1,5 +1,4 @@
 # for users information
-- [History of test automation](https://mitakamakers.github.io/Ivi.Visa/about/)
 - Mm.Ivi.Visa
   - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/Ivi.Visa/)
 - Mm.visa32
@@ -8,11 +7,11 @@
   - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/TmctlAPINet/)
 - Mm.tmctl
   - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/tmctl/)
-- Mm.Ivi.Scope
-- Mm.Ivi.Dmm
-- Mm.Ivi.Fgen
-- Mm.Ivi.DCPwr
-- Mm.Ivi.ACPwer
+- Mm.Ivi.Scope Class
+- Mm.Ivi.Dmm Class
+- Mm.Ivi.Fgen Class
+- Mm.Ivi.DCPwr Class
+- Mm.Ivi.ACPwer Class
 - Mm.Ivi.Swtch Class
 - Mm.Ivi.PwrMeter Class
 - Mm.Ivi.SpecAn Class
@@ -24,13 +23,15 @@
 
 # for developers information
 - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
-- VXI-11 Protocol
-- RPC Protocol
-- HiSLIP Protocol
-- USBTMC Protocol
-- ausbtmc.sys
+- [History of test automation](https://mitakamakers.github.io/Ivi.Visa/about/)
 - IEC/IEEE 60488.1-2003
 - IEC/IEEE 60488.2-2003
-- SCPI
+- VXI-11 Protocol
+- RPC Protocol
+- USBTMC Protocol
+- ausbtmc.sys
+- HiSLIP Protocol
 - Ivi.Visa library
 - tmctl library
+- SCPI-99 command
+- SCPI class
