@@ -43,7 +43,7 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
-- Memo of jigtools
+- Tips of jigtools
   - Visual Studio 2022
   - .Net
   - Github
