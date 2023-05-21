@@ -23,26 +23,30 @@
 
 # for developers information
 - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
-- [History of test automation](https://mitakamakers.github.io/Ivi.Visa/about/)
+- History of test automation
 - Design documents
   - Architecture
   - Source file layout
   - Class diagram
   - Sequence diagram
   - Test
+  - Document
 - Overview of Specifications
   - IEC/IEEE 60488.1-2003
   - IEC/IEEE 60488.2-2003
-  - VXI-11 Protocol
+  - [VXI-11 Protocol](https://qiita.com/MitakaMakers/items/ee837fd1b8f43e464856)
   - RPC and Portmap Protocol
+  - HiSLIP Protocol
   - USBTMC Protocol
   - ausbtmc.sys
-  - HiSLIP Protocol
   - Ivi.Visa library
   - tmctl library
   - SCPI-99 command
   - SCPI class
-- Memo of tools
+- Memo of jigtools
   - Visual Studio 2022
   - .Net
   - Github
+  - Wireshark
+  - API monitor
+  - USB tree view
