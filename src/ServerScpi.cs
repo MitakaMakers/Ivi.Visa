@@ -6,12 +6,9 @@ namespace Vxi11Net
 {
     internal class ServerScpi
     {
-        private const int MaxRecvSize = 1024;
         private byte[] InputBuffer = new byte[MaxRecvSize];
-        private int recvsize = 0;
-        private byte[] OutputQue = new byte[0];
-        private bool isEnd = false;
-        private string ParseInput = "";
+        private byte[] OutputQueue = new byte[0];
+
         private Dictionary<string, string> command = new Dictionary<string, string>()
         {
             { "\\*AAD", "" },
@@ -56,6 +53,11 @@ namespace Vxi11Net
             { "\\*TST\\?", "0" },
             { "\\*WAI", "" },
         };
+        private const int MaxRecvSize = 1024;
+        private int recvsize = 0;
+        private bool isEnd = false;
+        private string ParseInput = "";
+
         public ServerScpi() { }
         public int GetMaxRecvSize()
         {
@@ -63,7 +65,7 @@ namespace Vxi11Net
         }
         public byte[] GetResponse()
         {
-            byte[] resp = OutputQue; 
+            byte[] resp = OutputQueue; 
             return resp;
         }
         public void Abort()
@@ -76,7 +78,7 @@ namespace Vxi11Net
                 var match = System.Text.RegularExpressions.Regex.Match(ParseInput, pair.Key);
                 if (match.Success)
                 {
-                    OutputQue = System.Text.Encoding.ASCII.GetBytes(pair.Value);
+                    OutputQueue = System.Text.Encoding.ASCII.GetBytes(pair.Value);
                     isEnd = true;
                     break;
                 }
@@ -90,7 +92,7 @@ namespace Vxi11Net
         }
         public bool IsMav()
         {
-            if (0 < OutputQue.Length)
+            if (0 < OutputQueue.Length)
             {
                 return true;
             }
@@ -102,10 +104,10 @@ namespace Vxi11Net
         }
         public byte[] GetMessage()
         {
-            byte[] reply = OutputQue;
+            byte[] reply = OutputQueue;
             InputBuffer = new byte[0];
             ParseInput = "";
-            OutputQue = new byte[0];
+            OutputQueue = new byte[0];
             return reply;
         }
         public void dcas()
