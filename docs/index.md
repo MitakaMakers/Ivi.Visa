@@ -42,7 +42,7 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
-- Memo and information of tools
+- Memo of tools
   - Visual Studio 2022
   - .Net
   - Github
