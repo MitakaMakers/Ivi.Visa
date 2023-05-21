@@ -29,8 +29,7 @@
   - Source file layout
   - Class diagram
   - Sequence diagram
-
-‐ Overview of Specifications
+- Overview of Specifications
   - IEC/IEEE 60488.1-2003
   - IEC/IEEE 60488.2-2003
   - VXI-11 Protocol
