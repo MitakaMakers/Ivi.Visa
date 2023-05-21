@@ -1,12 +1,36 @@
 # for users information
+- [History of test automation](https://mitakamakers.github.io/Ivi.Visa/about/)
 - Mm.Ivi.Visa
- - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/Ivi.Visa/)
+  - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/Ivi.Visa/)
 - Mm.visa32
- - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/visa32/)
+  - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/visa32/)
 - Mm.TmctlAPINet
   - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/TmctlAPINet/)
 - Mm.tmctl
- - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/tmctl/)
+  - [implemented functions](https://mitakamakers.github.io/Ivi.Visa/tmctl/)
+- Mm.Ivi.Scope
+- Mm.Ivi.Dmm
+- Mm.Ivi.Fgen
+- Mm.Ivi.DCPwr
+- Mm.Ivi.ACPwer
+- Mm.Ivi.Swtch Class
+- Mm.Ivi.PwrMeter Class
+- Mm.Ivi.SpecAn Class
+- Mm.Ivi.RFSigGen Class
+- Mm.Ivi.Counter Class
+- Mm.Ivi.Downconverter Class
+- Mm.Ivi.Upconverter Class
+- Mm.Ivi.Digitizer Class
 
 # for developers information
-- [Development memo by japanese](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
+- [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
+- VXI-11 Protocol
+- RPC Protocol
+- HiSLIP Protocol
+- USBTMC Protocol
+- ausbtmc.sys
+- IEC/IEEE 60488.1-2003
+- IEC/IEEE 60488.2-2003
+- SCPI
+- Ivi.Visa library
+- tmctl library
