@@ -24,14 +24,24 @@
 # for developers information
 - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
 - [History of test automation](https://mitakamakers.github.io/Ivi.Visa/about/)
-- IEC/IEEE 60488.1-2003
-- IEC/IEEE 60488.2-2003
-- VXI-11 Protocol
-- RPC Protocol
-- USBTMC Protocol
-- ausbtmc.sys
-- HiSLIP Protocol
-- Ivi.Visa library
-- tmctl library
-- SCPI-99 command
-- SCPI class
+- Design information
+  - Architecture
+  - Source file layout
+  - Class diagram
+  - Sequence diagram
+‐ Overview of Specifications
+  - IEC/IEEE 60488.1-2003
+  - IEC/IEEE 60488.2-2003
+  - VXI-11 Protocol
+  - RPC and Portmap Protocol
+  - USBTMC Protocol
+  - ausbtmc.sys
+  - HiSLIP Protocol
+  - Ivi.Visa library
+  - tmctl library
+  - SCPI-99 command
+  - SCPI class
+- Overview of enviroments
+  - Visual Studio 2022
+  - .Net
+  - Github
