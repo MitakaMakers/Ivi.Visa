@@ -29,6 +29,7 @@
   - Source file layout
   - Class diagram
   - Sequence diagram
+
 ‐ Overview of Specifications
   - IEC/IEEE 60488.1-2003
   - IEC/IEEE 60488.2-2003
@@ -41,6 +42,7 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
+
 - Overview of enviroments
   - Visual Studio 2022
   - .Net
