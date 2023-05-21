@@ -24,7 +24,7 @@
 # for developers information
 - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
 - [History of test automation](https://mitakamakers.github.io/Ivi.Visa/about/)
-- Design information
+- Design documents
   - Architecture
   - Source file layout
   - Class diagram
@@ -42,8 +42,7 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
-
-- Overview of enviroments
+- Memo and information of tools
   - Visual Studio 2022
   - .Net
   - Github
