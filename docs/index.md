@@ -32,7 +32,7 @@
   - Document
   - IOMoitor
 - Overview of Specifications in Japanese language
-  - History of test automation
+  - Guidance: History of test automation
   - IEC/IEEE 60488.1-2003
   - IEC/IEEE 60488.2-2003
   - RPC and Portmap Protocol
