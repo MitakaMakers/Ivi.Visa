@@ -31,7 +31,7 @@
   - Test
   - Document
   - IOMoitor
-- Overview of Specifications for Japanese
+- Overview of Specifications in Japanese language
   - History of test automation
   - IEC/IEEE 60488.1-2003
   - IEC/IEEE 60488.2-2003
@@ -44,7 +44,7 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
-- Tips of jigtools for Japanese
+- Tips of jigtools in Japanese language
   - Visual Studio 2022
   - .Net
   - Github
