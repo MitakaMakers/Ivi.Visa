@@ -12,11 +12,16 @@ This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCT
 - [ ] Mmm.Ivi.Visa supports functions of VISA.Net.
 - [ ] Mmm.TmctlAPINet supports functions of TMCTL.
 - [ ] Server supports SCPI commands.
-- [x] support C ABI library such as visa32.dll, tmctl.dll.
+- [x] support windos C ABI library such as visa32.dll.
 - [ ] PXI, PXI-GPIB
 - [ ] VXI
 
 ## Feature of Mmm.TmctlAPINet
+- [X] VXI-11 server and client.
+- [X] HiSLIP server and client.
+- [x] RawSokcet server and client.
+- [x] Program run on a basic Windows and Linux.
+- [x] support windows C ABI library (tmctl.dll).
 
 ## Derivarables
 - .Net library : Ivi.Visa.dll, TmctlAPINet.dll
