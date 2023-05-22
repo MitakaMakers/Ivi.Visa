@@ -52,3 +52,4 @@
   - API monitor
   - USB tree view
   - RFC 5424 The Syslog Protocol
+  - DLLExport
