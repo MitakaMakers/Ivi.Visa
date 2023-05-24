@@ -4,19 +4,21 @@
 マイクロソフト社製の無償ツールを標準開発環境とします。
 - OS：Windows 11
 - コンパイラ：Net 6 SDK(C#7)
-  - xunit
+  - テストライブラリ:xunit
   - coverlet
 - テキストエディタ：Visual Studio Code
   - Japanese Language Pack for Visual Studio Code
   - Markdown Preview Mermaid Support
   - Mermaid MArkdown Syntax Highlighting
+  - 　コードエディタおよび
+  - 　文法チェックやフォーマッタなどの拡張機能、
 - デバッガ：C# extension for Visual Studio Code
-- API 設計文書生成ツール：doxygen
-- UML 設計図生成ツール：Mermeid
-- 構成管理ツール：Git for Windows
+- 設計文書作成ツール：doxygen
+- 設計図作成ツール：Mermeid
+- ソースコード管理ツール：Git for Windows
   - TortoiseGit
 - リポジトリ：GitHub
-- CI/CD：GitHub Actions
+- 自動テスト環境：GitHub Actions
 
 ## Test Quality
 - Github Actions を使って、Win, Linux, ホスト上でビルドを確認します
