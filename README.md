@@ -1,34 +1,33 @@
 # Ivi.Visa and TmctlAPINet
 This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCTL. This software is developed for research and classroom training. Currentlly, supports only VXI-11, HiSLIP, RawSocket. 
 
-## Feature of Mm.Ivi.Visa
-- [X] VXI-11 server and client.
-- [X] HiSLIP server and client.
-- [x] RawSokcet server and client.
-- [ ] Usbtmc host
-- [ ] Serial
-- [ ] GP-IB
+## General fatures
 - [x] Program run on a basic Windows and Linux.
+- [x] support windows C ABI library.
+
+## Feature of Mm.Ivi.Visa
 - [ ] Mmm.Ivi.Visa supports functions of VISA.Net.
-- [ ] Mmm.TmctlAPINet supports functions of TMCTL.
-- [ ] Server supports SCPI commands.
-- [x] support windos C ABI library such as visa32.dll.
-- [ ] PXI, PXI-GPIB
-- [ ] VXI
+- [x] supports visa32.dll.
+- [X] VXI-11 client.
+- [X] HiSLIP client.
+- [x] RawSokcet client.
 
 ## Feature of Mm.TmctlAPINet
-- [X] VXI-11 server and client.
-- [X] HiSLIP server and client.
-- [x] RawSokcet server and client.
-- [x] Program run on a basic Windows and Linux.
-- [x] support windows C ABI library (tmctl.dll).
+- [ ] Mmm.TmctlAPINet supports functions of TmctlAPINet.
+- [x] supports tmctl.dll.
+- [X] VXI-11 client.
+- [X] HiSLIP client.
+- [x] RawSokcet client.
+
+## Other fatures
+- [ ] API Capture untility: IOTrace.exe
 
 ## Derivarables
 - .Net library : Ivi.Visa.dll, TmctlAPINet.dll
 - VXI-11 server test program : Server.exe
 - VXI-11 client test program : Client.exe
 - Windows C library : visa32.dll, tmctl.dll, tmctl64.dll
-- API Caputure：IOTrace.exe
+- API Caputure tool：IOTrace.exe
 
 ## Runtime enviroment
 - Windows and Linux(WSL2)
