@@ -1,12 +1,15 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <PropertyGroup>
-    <DllExportIdent>A078C4B6-F1DE-4310-B5DB-CA1BD730189F</DllExportIdent>
+    <RootNamespace>Mm</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup>
+    <DllExportIdent>EB02A3E6-C372-44F1-B3F9-CD15E134337A</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
-    <DllExportNamespace>visa32</DllExportNamespace>
+    <DllExportNamespace>Mm</DllExportNamespace>
     <DllExportDDNSCecil>true</DllExportDDNSCecil>
     <DllExportSkipOnAnyCpu>false</DllExportSkipOnAnyCpu>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -20,9 +23,10 @@
     <DllExportPatches>0</DllExportPatches>
     <DllExportPreProcType>0</DllExportPreProcType>
     <DllExportPostProcType>0</DllExportPostProcType>
+    <AssemblyName>visa32</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="..\visa32.cs" />
     <Compile Include="..\ClientHislip.cs" />
     <Compile Include="..\ClientPortmap.cs" />
     <Compile Include="..\ClientRpc.cs" />
@@ -49,11 +53,7 @@
     <Compile Include="..\Vxi11.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DllExport">
-      <Version>1.7.4</Version>
-      <Visible>false</Visible>
-      <Wz>1</Wz>
-    </PackageReference>
+    <PackageReference Include="DllExport" Version="1.7.4" />
   </ItemGroup>
   <ImportGroup Label=".NET DllExport">
     <Import Project="$(SolutionDir)packages\DllExport.1.7.4\tools\net.r_eg.DllExport.targets" Condition="Exists($([MSBuild]::Escape('$(SolutionDir)packages\DllExport.1.7.4\tools\net.r_eg.DllExport.targets')))" Label="8337224c9ad9e356" />

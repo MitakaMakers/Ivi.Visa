@@ -7,7 +7,7 @@
     <ProjectGuid>{B8AA1447-AD6C-4441-9365-AD2A8521B1C9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>tmctl64</RootNamespace>
+    <RootNamespace>Mm</RootNamespace>
     <AssemblyName>tmctl64</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -34,9 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <DllExportIdent>CF89BA98-D2AF-4374-8ADF-A8BFE200FE46</DllExportIdent>
+    <DllExportIdent>8FFF7D54-5622-4533-B462-AB82F0B79509</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
-    <DllExportNamespace>tmctl64</DllExportNamespace>
+    <DllExportNamespace>Mm</DllExportNamespace>
     <DllExportDDNSCecil>true</DllExportDDNSCecil>
     <PlatformTarget>x64</PlatformTarget>
     <DllExportOrdinalsBase>1</DllExportOrdinalsBase>
@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="..\tmctl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\ClientHislip.cs" />
     <Compile Include="..\ClientPortmap.cs" />

@@ -8,6 +8,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>Server</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

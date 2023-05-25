@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AssemblyName>Ivi.Visa</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
