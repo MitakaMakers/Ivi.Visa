@@ -47,7 +47,7 @@
 - Tips of jigtools in Japanese language
   - Visual Studio 2022
   - .Net
-  - Github
+  - Version Control of ExcalVBA in Github
   - Wireshark
   - API monitor
   - USB tree view
