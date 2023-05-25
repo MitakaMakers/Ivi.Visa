@@ -4,7 +4,6 @@
 |----|----|----|----|
 |int TmcInitialize(int wire, char* adr, int* id)|Y|Y|Y|
 |int TmcFinish( int id )|Y|Y|Y|
-|int TmcSearchDevices( int wire, DEVICELIST* list, int max, int* num, char* option)|Y|Y|Y|
 |int TmcSetTimeout( int id, int tmo )|Y|Y|Y|
 |int TmcSetTerm( int id, int eos, int eot )|Y|Y|Y|
 |int TmcSend( int id, char* msg )|Y|Y|Y|
@@ -14,6 +13,5 @@
 |int TmcReceiveBlockData( int id, char* buff, int blen, int* rlen, int* end )|Y|Y|Y|
 |int TmcCheckEnd( int id )|Y|Y|Y|
 |int TmcGetLastError( int id )|Y|Y|Y|
-|int TmcSetRen( int id, int flag )|Y|Y|Y|
-|int TmcDeviceClear( int id )|Y|Y|Y|
-|int TmcDeviceTrigger( int id )|Y|Y|Y|
+|int TmcSetRen( int id, int flag )|Y|N|Y|
+|int TmcDeviceClear( int id )|Y|N|Y|
