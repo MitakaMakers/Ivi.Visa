@@ -6,8 +6,8 @@ This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCT
 - [x] support windows C ABI library.
 
 ## Feature of Mm.Ivi.Visa
-- [ ] Mmm.Ivi.Visa supports functions of VISA.Net.
-- [x] supports visa32.dll.
+- [x] Mmm.Ivi.Visa supports functions of VISA.Net.
+- [ ] supports visa32.dll.
 - [X] VXI-11 client.
 - [X] HiSLIP client.
 - [x] RawSokcet client.
@@ -20,6 +20,7 @@ This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCT
 - [x] RawSokcet client.
 
 ## Other fatures
+- [x] Protocol server program: Server.exe
 - [ ] API Capture untility: IOTrace.exe
 
 ## Derivarables
@@ -32,8 +33,6 @@ This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCT
 ## Runtime enviroment
 - Windows and Linux(WSL2)
 - [.NET 6](https://dotnet.microsoft.com/ja-jp/download/dotnet/6.0).
-- GPIB Prologic GPIB
-- LIBUSBNet
 
 ## Build enviroment
 - Server.exe, Client.exe, Ivi.Visa.dll, TmctlAPINet.dll

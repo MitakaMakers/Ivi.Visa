@@ -1,4 +1,15 @@
-# Mm.TmctlAPINet implemented functions
+# Mm.TmctlAPINet
+## About
+- This software is open source C# library to communicate test and measurement instruments.
+- This software supports some communication protocols: VXI-11, HiSLIP and RawSokcet.
+- This software runs on .Net 6
+- This software supports TmctlAPINet API
+
+## Package files
+- TmctlAPINet.dll (Any CPU)
+
+## API
+### Functions
 
 |C# Functions|VXI-11|SOCKET|HiSLIP|
 |----|----|----|----|

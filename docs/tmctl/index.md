@@ -1,4 +1,16 @@
-# Mm.tmctl implemented functions
+# Mm.TMCTL
+## About
+- This software is open source C# library to communicate test and measurement instruments.
+- This software supports some communication protocols: VXI-11, HiSLIP and RawSokcet.
+- This software runs on .Net Framework 2.0. Windows XP or later support .Net Framework 2.0.
+- This software supports Yokogawa's TMCTL C ABI , So C/C++/ExcelVBA progam can use this library
+
+## Package files
+- tmctl.dll (for 32bit application)
+- tmctl32.dll (for 64bit application)
+
+## API
+### Functions
 
 |C Functions|VXI-11|SOCKET|HiSLIP|
 |----|----|----|----|
@@ -15,3 +27,16 @@
 |int TmcGetLastError( int id )|Y|Y|Y|
 |int TmcSetRen( int id, int flag )|Y|N|Y|
 |int TmcDeviceClear( int id )|Y|N|Y|
+
+### Error code
+(T.B.D)
+### Sample code
+(T.B.D)
+## Source code
+(T.B.D)
+## Debug
+(T.B.D)
+## Design
+(T.B.D)
+### Class diagram
+(T.B.D)|
