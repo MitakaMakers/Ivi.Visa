@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\..\source\ServerPortmap.cs" />
-    <Compile Include="..\..\source\ServerScpi.cs" />
-    <Compile Include="..\..\source\ServerVxi11.cs" />
+    <Compile Include="..\..\src\ServerPortmap.cs" />
+    <Compile Include="..\..\src\ServerScpi.cs" />
+    <Compile Include="..\..\src\ServerVxi11.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\TmctlAPINet.dll\TmctlAPINet.dll.csproj" />
+    <ProjectReference Include="..\..\src\TmctlAPINet.dll\TmctlAPINet.dll.csproj" />
   </ItemGroup>
 
 </Project>

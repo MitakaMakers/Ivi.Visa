@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.exe", "source\Client.exe\Client.exe.csproj", "{7394ADDA-8923-4D65-AE1A-F0A682999EA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Client.exe", "src\Client.exe\Client.exe.csproj", "{7394ADDA-8923-4D65-AE1A-F0A682999EA6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa.dll", "source\Ivi.Visa.dll\Ivi.Visa.dll.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivi.Visa.dll", "src\Ivi.Visa.dll\Ivi.Visa.dll.csproj", "{BC56A198-977C-4D89-A843-25EA522FE250}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.exe", "source\Server.exe\Server.exe.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Server.exe", "src\Server.exe\Server.exe.csproj", "{F400B1B4-D2D5-4FE7-A4DC-CDA872371B26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmctl.dll", "source\tmctl.dll\tmctl.dll.csproj", "{985B27FE-523D-4E7C-8A84-804CE197191C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmctl.dll", "src\tmctl.dll\tmctl.dll.csproj", "{985B27FE-523D-4E7C-8A84-804CE197191C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmctl64.dll", "source\tmctl64.dll\tmctl64.dll.csproj", "{B8AA1447-AD6C-4441-9365-AD2A8521B1C9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tmctl64.dll", "src\tmctl64.dll\tmctl64.dll.csproj", "{B8AA1447-AD6C-4441-9365-AD2A8521B1C9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TmctlAPINet.dll", "source\TmctlAPINet.dll\TmctlAPINet.dll.csproj", "{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TmctlAPINet.dll", "src\TmctlAPINet.dll\TmctlAPINet.dll.csproj", "{5400B1B4-D2D5-4FE7-A4DC-CDA872371B20}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "visa32.dll", "source\visa32.dll\visa32.dll.csproj", "{662CA766-B52A-4E04-85C4-789016F3A588}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "visa32.dll", "src\visa32.dll\visa32.dll.csproj", "{662CA766-B52A-4E04-85C4-789016F3A588}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TmctlAPINet.Tests", "test\TmctlAPINet.Tests\TmctlAPINet.Tests.csproj", "{A4A6F9FA-0BB1-4C03-A0A9-4F55CAB500C0}"
 	ProjectSection(ProjectDependencies) = postProject
