@@ -7,6 +7,9 @@
     <RootNamespace>Mm</RootNamespace>
   </PropertyGroup>
   <PropertyGroup>
+    <AssemblyName>visa32</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
     <DllExportIdent>EB02A3E6-C372-44F1-B3F9-CD15E134337A</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
     <DllExportNamespace>Mm</DllExportNamespace>
@@ -23,7 +26,6 @@
     <DllExportPatches>0</DllExportPatches>
     <DllExportPreProcType>0</DllExportPreProcType>
     <DllExportPostProcType>0</DllExportPostProcType>
-    <AssemblyName>visa32</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\visa32.cs" />
