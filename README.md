@@ -43,8 +43,8 @@ This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCT
     - C# 8.0
   - [DllExport](https://github.com/3F/DllExport)
 - tmctl.dll, tmctl64.dll
-  - .NET Framework 2.0
-    - C# 2.0
+  - .NET Framework 3.0
+    - C# 3.0
   - [DllExport](https://github.com/3F/DllExport)
 - [Visual Studio 2022 Community](https://visualstudio.microsoft.com/ja/vs/community/)
 

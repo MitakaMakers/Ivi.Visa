@@ -1,9 +1,9 @@
-# Mm.visa32
+# Mm's visa32
 ## About
-- Mm.visa32 is open source C# library to communicate test and measurement instruments.
-- Mm.visa32 supports several communication protocols: VXI-11, HiSLIP and RawSokcet.
-- Mm.visa32 runs on .Net Core 3 on Windows C ABI.
-- Mm.visa32 supports several visa32 API
+- Mm's visa32 is open source C# library to communicate test and measurement instruments.
+- Mm's visa32 supports several communication protocols: VXI-11, HiSLIP and RawSokcet.
+- Mm's visa32 runs on .Net Core 3 on Windows C ABI.
+- Mm's visa32 supports several visa32 API
 
 ## Package files
 - visa32.dll (for 64bit application)
