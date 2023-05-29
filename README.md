@@ -1,23 +1,19 @@
 # Ivi.Visa and TmctlAPINet
-This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCTL. This software is developed for research and classroom training. Currentlly, supports only VXI-11, HiSLIP, RawSocket. 
+This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCTL. This software is developed for research and classroom training.
 
 ## General fatures
-- [x] Program run on a basic Windows and Linux.
-- [x] support windows C ABI library.
+- [X] VXI-11 client & server.
+- [X] HiSLIP client & server.
+- [x] RawSokcet client & server.
+- [x] Program run on a Windows and Linux.
 
 ## Feature of Mm.Ivi.Visa
 - [x] Mmm.Ivi.Visa supports functions of VISA.Net.
-- [ ] supports visa32.dll.
-- [X] VXI-11 client.
-- [X] HiSLIP client.
-- [x] RawSokcet client.
+- [ ] visa32.dll (windows only).
 
 ## Feature of Mm.TmctlAPINet
 - [ ] Mmm.TmctlAPINet supports functions of TmctlAPINet.
-- [x] supports tmctl.dll.
-- [X] VXI-11 client.
-- [X] HiSLIP client.
-- [x] RawSokcet client.
+- [x] tmctl.dll (windows only).
 
 ## Other fatures
 - [x] Protocol server program: Server.exe
