@@ -1,6 +1,6 @@
 # Ivi.Visa and TmctlAPINet
 This is an Open source C# libraries compatible with VISA.NET and Yokogawa's TMCTL.
-This software is developed for research and classroom training.
+This software is developed for training and research.
 
 ## General fatures
 - [X] VXI-11 client & server.
