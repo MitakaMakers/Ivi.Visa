@@ -33,13 +33,13 @@
   - SCPI class
   - Mm.Ivi.Visa
 - software design 
+  - VisaTestPanel.exe
+  - IOMoitor.exe
   - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
   - Architecture
   - Source file layout
   - Class diagram
   - Sequence diagram
-  - VisaTestPanel.exe
-  - IOMoitor.exe
 - programinng workflow
   - Visual Studio 2022
   - .Net
