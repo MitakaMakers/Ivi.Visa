@@ -47,7 +47,6 @@
 ## ToDo
 - Support RS232
   - [System.IO.Ports](https://www.nuget.org/packages/System.IO.Ports/)
-  - [Null-modem emulator](https://sourceforge.net/projects/com0com/)
 - Support USBTMC
   - [LibUsbDotNet](https://www.nuget.org/packages/LibUsbDotNet/3.0.63-alpha)
   - [emulated USB devices](https://learn.microsoft.com/en-us/windows-hardware/drivers/usbcon/developing-windows-drivers-for-emulated-usb-host-controllers-and-devices)
