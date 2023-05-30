@@ -32,13 +32,15 @@
   - SCPI-99 command
   - SCPI class
   - Mm.Ivi.Visa
+- software design 
   - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
   - Architecture
   - Source file layout
   - Class diagram
   - Sequence diagram
-  - IOMoitor
-- programinng process
+  - VisaTestPanel.exe
+  - IOMoitor.exe
+- programinng workflow
   - Visual Studio 2022
   - .Net
   - Test
@@ -51,4 +53,3 @@
 - [USB Device Tree Viewer](https://www.uwe-sieber.de/usbtreeview_e.html)
 - [DLLExport](https://github.com/3F/DllExport)
 - RFC 5424 The Syslog Protocol
-
