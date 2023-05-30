@@ -9,12 +9,12 @@ This software is developed for training and research.
 - [x] Program run on a Windows and Linux.
 
 ## Feature of Mm.Ivi.Visa
-- [x] Mmm.Ivi.Visa supports functions of VISA.Net.
+- [ ] Mmm.Ivi.Visa supports functions of VISA.Net.
 - [ ] visa32.dll (windows only).
 
 ## Feature of Mm.TmctlAPINet
 - [ ] Mmm.TmctlAPINet supports functions of TmctlAPINet.
-- [x] tmctl.dll (windows only).
+- [ ] tmctl.dll (windows only).
 
 ## Other fatures
 - [x] Protocol server program: Server.exe
