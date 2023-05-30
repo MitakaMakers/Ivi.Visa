@@ -1,4 +1,4 @@
-# for users information
+# library document
 - [Mm.Ivi.Visa](https://mitakamakers.github.io/Ivi.Visa/Ivi.Visa/)
 - [Mm.visa32](https://mitakamakers.github.io/Ivi.Visa/visa32/)
 - [Mm.TmctlAPINet](https://mitakamakers.github.io/Ivi.Visa/TmctlAPINet/)
@@ -17,17 +17,8 @@
 - Mm.Ivi.Upconverter Class
 - Mm.Ivi.Digitizer Class
 
-# for developers information
-- [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
-- Design documents
-  - Architecture
-  - Source file layout
-  - Class diagram
-  - Sequence diagram
-  - Test
-  - Document
-  - IOMoitor
-- Overview of Specifications in Japanese language
+# training document in Japanese language
+- Overview of Specifications
   - History of test automation
   - IEC/IEEE 60488.1-2003
   - IEC/IEEE 60488.2-2003
@@ -40,12 +31,24 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
-- Tips of jigtools in Japanese language
+  - RFC 5424 The Syslog Protocol
+- Mm.Ivi.Visa
+  - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
+  - Architecture
+  - Source file layout
+  - Class diagram
+  - Sequence diagram
+  - IOMoitor
+- enviroment
   - Visual Studio 2022
   - .Net
-  - Version Control of ExcalVBA in Github
-  - Wireshark
-  - API monitor
-  - USB tree view
-  - RFC 5424 The Syslog Protocol
-  - DLLExport
+  - Test
+  - Document
+
+# Tips of jigtools in Japanese language
+- Version Control of ExcalVBA in Github
+- [Wireshark](https://www.wireshark.org/download.html)
+- [API monitor](http://www.rohitab.com/apimonitor)
+- [USB Device Tree Viewer](https://www.uwe-sieber.de/usbtreeview_e.html)
+- [DLLExport](https://github.com/3F/DllExport)
+- 
