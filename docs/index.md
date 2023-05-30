@@ -39,7 +39,7 @@
   - Class diagram
   - Sequence diagram
   - IOMoitor
-- enviroment
+- programinng process
   - Visual Studio 2022
   - .Net
   - Test
