@@ -1,8 +1,8 @@
 # for users information
-- [Mm's Ivi.Visa](https://mitakamakers.github.io/Ivi.Visa/Ivi.Visa/)
-- [Mm's visa32](https://mitakamakers.github.io/Ivi.Visa/visa32/)
-- [Mm's TmctlAPINet](https://mitakamakers.github.io/Ivi.Visa/TmctlAPINet/)
-- [Mm's tmctl](https://mitakamakers.github.io/Ivi.Visa/tmctl/)
+- [Mm.Ivi.Visa](https://mitakamakers.github.io/Ivi.Visa/Ivi.Visa/)
+- [Mm.visa32](https://mitakamakers.github.io/Ivi.Visa/visa32/)
+- [Mm.TmctlAPINet](https://mitakamakers.github.io/Ivi.Visa/TmctlAPINet/)
+- [Mm.tmctl](https://mitakamakers.github.io/Ivi.Visa/tmctl/)
 - Mm.Ivi.Scope Class
 - Mm.Ivi.Dmm Class
 - Mm.Ivi.Fgen Class
