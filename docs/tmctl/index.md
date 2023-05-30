@@ -1,9 +1,9 @@
-# Mm's tmctl.dll
+# Mm.tmctl.dll
 ## About
-- Mm's tmctl.dll is open source C# library to communicate test and measurement instruments.
-- Mm's tmctl.dll supports several communication protocols: VXI-11, HiSLIP and RawSokcet.
-- Mm's tmctl.dll runs on .Net Framework 3.5. Windows XP or later support .Net Framework 2.0.
-- Mm's tmctl.dll supports Yokogawa's TMCTL C ABI , So C/C++/ExcelVBA progam can use this library
+- Mm.tmctl.dll is open source C# library to communicate test and measurement instruments.
+- Mm.tmctl.dll supports several communication protocols: VXI-11, HiSLIP and RawSokcet.
+- Mm.tmctl.dll runs on .Net Framework 3.5. Windows XP or later support .Net Framework 2.0.
+- Mm.tmctl.dll supports Yokogawa's TMCTL C ABI , So C/C++/ExcelVBA progam can use this library
 
 ## Package files
 - tmctl.dll (for 32bit application)
