@@ -1,9 +1,9 @@
-# Mm's Ivi.Visa
+# Mm.Ivi.Visa
 ## About
-- Mm's Ivi.Visa is open source C# library to communicate test and measurement instruments.
-- Mm's Ivi.Visa supports several communication protocols: VXI-11, HiSLIP and RawSokcet.
-- Mm's Ivi.Visa runs on .Net 6
-- Mm's Ivi.Visa supports Ivi.Visa API
+- Mm.Ivi.Visa is open source C# library to communicate test and measurement instruments.
+- Mm.Ivi.Visa supports several communication protocols: VXI-11, HiSLIP and RawSokcet.
+- Mm.Ivi.Visa runs on .Net 6
+- Mm.Ivi.Visa supports Ivi.Visa API
 
 ## Package files
 - Ivi.Visa.dll (Any CPU)
