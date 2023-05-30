@@ -31,8 +31,7 @@
   - tmctl library
   - SCPI-99 command
   - SCPI class
-  - RFC 5424 The Syslog Protocol
-- Mm.Ivi.Visa
+  - Mm.Ivi.Visa
   - [build enviroment](https://mitakamakers.github.io/Ivi.Visa/ja/DEVELOPPERS.html)
   - Architecture
   - Source file layout
@@ -51,4 +50,5 @@
 - [API monitor](http://www.rohitab.com/apimonitor)
 - [USB Device Tree Viewer](https://www.uwe-sieber.de/usbtreeview_e.html)
 - [DLLExport](https://github.com/3F/DllExport)
-- 
+- RFC 5424 The Syslog Protocol
+
