@@ -67,4 +67,4 @@ This software is developed for training and research.
 Twitter:[@mitakalab](https://twitter.com/mitakalab)
 
 # License
-GPL-2
+NU Affero General Public License v3.0
