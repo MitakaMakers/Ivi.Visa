@@ -34,7 +34,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |ITcpipSession|The INSTR session type for LAN devices.|
 |ITcpipSocketSession|The SOCKET session type for TCPIP devices.|
 |IUsbSesssion|The INSTR session type for USBTMC devices.|
-|IVisaSession|The interface from which every VISA.NET session must derive.|
+|[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
 |IVxiSession|The INSTR session type for VXI devices.|
 
 ## Enums
