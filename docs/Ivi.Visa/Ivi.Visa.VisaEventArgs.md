@@ -13,7 +13,7 @@ Inheritance:System.Object -> System.EventArgs -> Ivi.Visa.VisaEventArgs
 
 |Method Name|
 |---|
-|[VisaEventArgs(EventType eventType)](VisaEventArgsEventType-eventType-Constructor|
+|[VisaEventArgs(EventType eventType)](VisaEventArgsEventType-eventType-Constructor)|
 |[VisaEventArgs(Int32 customType)](VisaEventArgsInt32-customType-Constructor)|
 
 ## Properties
