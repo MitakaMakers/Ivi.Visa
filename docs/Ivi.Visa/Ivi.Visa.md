@@ -48,7 +48,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |ByteOrder|The ByteOrder enumeration indicates the byte order used in various VXI operations.|
 |DataWidth|The DataWidth enumeration indicates the data width for register-based data transfer operations.|
 |EventQueueStatus|The EventQueueStatus enumeration indicates the current state of the event queue.|
-|[EventType](Ivi.visa.EventType)|A reference to the result of an asynchronous I/O operation.|
+|[EventType](Ivi.visa.EventType.md)|A reference to the result of an asynchronous I/O operation.|
 |FlushBehavior|
 |GpibAddressedState|The GpibAddressedState enumeration indicates whether the GPIB interface is currently addressed to talk or listen, or is not addressed.|
 |GpibInstrumentRemoteLocalMode|The GpibInstrumentRemoteLocalMode enumeration indicates the action to be taken by the SendRemoteLocalCommand of a GPIB INSTR session.|
@@ -62,7 +62,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |PxiMemoryType|The PxiMemoryType enumeration indicates the memory type (memory mapped or I/O mapped) used by the device in the specified base address register (BAR).|
 |ReadStatus|The ReadStatus enumeration indicates the success status of a raw I/O read operation.|
 |RemoteLocalMode|The RemoteLocalMode enumeration indicates the action to be taken by the SendRemoteLocalCommand of a GPIB, TCPIP, or USB INSTR session.|
-|[ResourceLockState](Ivi.visa.ResourceLockState)|The RemoteLocalMode enumeration indicates the state of the VISA lock on the resource associated with this session.|
+|[ResourceLockState](Ivi.visa.ResourceLockState.md)|The RemoteLocalMode enumeration indicates the state of the VISA lock on the resource associated with this session.|
 |ResourceOpenStatus|The ResourceOpenStatus enumeration indicates the success status of an open operation.|
 |SerialFlowControlModes|The SerialFlowControlModes enumeration indicates the type of flow control used by the Serial connection.|
 |SerialParity|The SerialParity enumeration indicates whether parity checking is being used by the serial connection.|
