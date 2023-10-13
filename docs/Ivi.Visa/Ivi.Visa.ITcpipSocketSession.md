@@ -7,7 +7,7 @@ English | 日本語
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance System.IDisposable -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md) -> [Ivi.Visa.ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)
+Inheritance:[System.IDisposable](https://learn.microsoft.com/ja-jp/dotnet/api/system.idisposable) -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md) -> [Ivi.Visa.ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)
 
 ## Properties
 
@@ -15,7 +15,7 @@ Inheritance System.IDisposable -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.
 |---|
 |[Address](#Address-Property)|
 |[HostName](#HostName-Property)|
-|[KeepAlive](# KeepAlive-Property)|
+|[KeepAlive](#KeepAlive-Property)|
 |[NoDelay](#NoDelay-Property)|
 |[Port](#Port-Property)|
 

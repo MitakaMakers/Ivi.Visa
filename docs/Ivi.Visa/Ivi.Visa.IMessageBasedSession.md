@@ -7,7 +7,7 @@ English | 日本語
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance System.IDisposable -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)
+Inheritance:[System.IDisposable](https://learn.microsoft.com/ja-jp/dotnet/api/system.idisposable) -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)
 
 ## Properties
 
@@ -34,10 +34,6 @@ Inheritance System.IDisposable -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.
 |[Clear()](#Clear-Method)|
 |[ReadStatusByte()](#ReadStatusByte-Method)|
 
-## ServiceRequest Event
-```C#
-event EventHandler<VisaEventArgs> ServiceRequest;
-```
 ## FormattedIO Property
 ```C#
 IMessageBasedFormattedIO FormattedIO { get; }
@@ -61,6 +57,10 @@ Byte TerminationCharacter { get; set; }
 ## TerminationCharacterEnabled Property
 ```C#
 Boolean TerminationCharacterEnabled { get; set; }
+```
+## ServiceRequest Event
+```C#
+event EventHandler<VisaEventArgs> ServiceRequest;
 ```
 ## AssertTrigger() Method
 ```C#
