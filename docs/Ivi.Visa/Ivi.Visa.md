@@ -21,13 +21,14 @@
 ## Interfaces
 |Name|Description|
 |---|---|
+|[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
 |IGpibSession|The INSTR session type for GPIB devices.|
 |IMessageBasedFormattedIO|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |IMessageBasedRawIO|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |IMessageBasedSession|The interface from which every VISA.NET message-based session must derive.|
 |IPxiSession|The INSTR session type for PXI devices.|
 |IRegisterBasedSession|The base session type for register-based devices.|
-|IResourceManager|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
+|[IResourceManager](Ivi.Visa.IResourceManager.md)|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
 |ISerialSession|The INSTR session type for serial (RS-232) devices.|
 |ITcpipSession|The INSTR session type for LAN devices.|
 |ITcpipSocketSession|The SOCKET session type for TCPIP devices.|
