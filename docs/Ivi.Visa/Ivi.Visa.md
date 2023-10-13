@@ -24,6 +24,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |Name|Description|
 |---|---|
 |[IGpibSession](Ivi.Visa.IGpibSession.md)|The INSTR session type for GPIB devices.|
+|[IMemoryMap](Ivi.Visa.IMemoryMap.md)||
 |IMessageBasedFormattedIO|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|The interface from which every VISA.NET message-based session must derive.|
