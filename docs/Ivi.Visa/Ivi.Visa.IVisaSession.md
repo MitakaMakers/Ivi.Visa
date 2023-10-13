@@ -5,9 +5,9 @@ English | [日本語](Ivi.Visa.IVisaSession.ja.md)
 # IVisaSession Interface
 
 ## Definition
-Namespace:Ivi.Visa<BR>
+Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance System.IDisposable -> Ivi.Visa.IVisaSession
+Inheritance System.IDisposable -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md)
 
 ## Properties
 

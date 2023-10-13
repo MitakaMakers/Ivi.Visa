@@ -5,7 +5,7 @@ English | 日本語
 # GlobalResourceManager Class
 
 ## Definition
-Namespace:Ivi.Visa<BR>
+Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll
 
 ## Properties
