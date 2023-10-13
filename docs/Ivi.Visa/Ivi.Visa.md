@@ -4,9 +4,9 @@
 
 ## In this article
 
-- [Classes](#Classes)
-- [Interfaces](#Interfaces)
-- [Enums](#Enums)
+- [Classes](#classes)
+- [Interfaces](#interfaces)
+- [Enums](#enums)
 
 ## Classes
 |Name|Description|
@@ -35,6 +35,7 @@
 |IUsbSesssion|The INSTR session type for USBTMC devices.|
 |IVisaSession|The interface from which every VISA.NET session must derive.|
 |IVxiSession|The INSTR session type for VXI devices.|
+|[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
 
 ## Enums
 |Name|Description|

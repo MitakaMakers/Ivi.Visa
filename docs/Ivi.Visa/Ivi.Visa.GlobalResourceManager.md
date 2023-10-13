@@ -29,48 +29,47 @@ Assembly:Ivi.Visa.dll
 |[Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds)](#OpenString-resourceName-AccessModes-accessMode-Int32-timeoutMilliseconds-Method)|
 |[Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)](#OpenString-resourceName-AccessModes-accessModes-Int32-timeoutMilliseconds-out-ResourceOpenStatus-openStatus-Method)|
 
-
 ## ManufacturerName Property
 ```C#
-String ManufacturerName { get; }
+public String ManufacturerName { get; }
 ```
 ## ManufacturerId Property
 ```C#
-Int16 ManufacturerId { get; }
+public Int16 ManufacturerId { get; }
 ```
 ## ImplementationVersion Property
 ```C#
-Version ImplementationVersion { get; }
+public Version ImplementationVersion { get; }
 ```
 ## SpecificationVersion Property
 ```C#
-Version SpecificationVersion { get; }
+public Version SpecificationVersion { get; }
 ```
 ## Find() Method
 ```C#
-IEnumerable<String> Find()
+public IEnumerable<String> Find();
 ```
 ## Find(String pattern) Method
 ```C#
-IEnumerable<String> Find(String pattern);
+public IEnumerable<String> Find(String pattern);
 ```
 ## Parse(String resourceName) Method
 ```C#
-ParseResult Parse(String resourceName);
+public ParseResult Parse(String resourceName);
 ```
 ## TryParse(String resourceName, out ParseResult result) Method
 ```C#
-Boolean TryParse(String resourceName, out ParseResult result)
+public Boolean TryParse(String resourceName, out ParseResult result);
 ```
 ## Open(String resourceName) Method
 ```C#
-IVisaSession Open(String resourceName);
+public IVisaSession Open(String resourceName);
 ```
 ## Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds) Method
 ```C#
-IVisaSession Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds);
+public IVisaSession Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds);
 ```
 ## Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus) Method
 ```C#
-IVisaSession Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus);
+public IVisaSession Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus);
 ```
