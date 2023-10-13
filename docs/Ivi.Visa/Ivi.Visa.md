@@ -14,7 +14,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
 |[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
 |NativeErrorCode|A class that contains the standard error status codes.|
-|NativeVisaException|An error related to the underlying VISA native C implementation has occurred.|
+|[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
 |[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
 |[TypeFormatterException](Ivi.Visa.TypeFormatterException.md)|A Type Formatter error has occurred.|
 |[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
