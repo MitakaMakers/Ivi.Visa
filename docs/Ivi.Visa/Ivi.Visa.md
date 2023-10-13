@@ -60,13 +60,13 @@ English | [日本語](Ivi.Visa.ja.md)
 |[LineState](Ivi.visa.LineState.md)|The LineState enumeration indicates whether the line is asserted or not, or if the state is unknown.|
 |[NativeVisaAttribute](Ivi.visa.NativeVisaAttribute.md)|The NativeVisaAttribute enumeration corresponds to the defined values for the VISA attributes.|
 |[PxiMemoryType](Ivi.visa.PxiMemoryType.md)|The PxiMemoryType enumeration indicates the memory type (memory mapped or I/O mapped) used by the device in the specified base address register (BAR).|
-|[ReadStatus](Ivi.visa.ReadStatus.md)|The ReadStatus enumeration indicates the success status of a raw I/O read operation.|
+|ReadStatus|The ReadStatus enumeration indicates the success status of a raw I/O read operation.|
 |[RemoteLocalMode](Ivi.visa.RemoteLocalMode.md)|The RemoteLocalMode enumeration indicates the action to be taken by the SendRemoteLocalCommand of a GPIB, TCPIP, or USB INSTR session.|
 |[ResourceLockState](Ivi.visa.ResourceLockState.md)|The RemoteLocalMode enumeration indicates the state of the VISA lock on the resource associated with this session.|
 |[ResourceOpenStatus](Ivi.visa.ResourceOpenStatus.md)|The ResourceOpenStatus enumeration indicates the success status of an open operation.|
-|[SerialFlowControlModes](Ivi.visa.SerialFlowControlModes.md)|The SerialFlowControlModes enumeration indicates the type of flow control used by the Serial connection.|
+|SerialFlowControlModes|The SerialFlowControlModes enumeration indicates the type of flow control used by the Serial connection.|
 |[SerialParity](Ivi.visa.SerialParity.md)|The SerialParity enumeration indicates whether parity checking is being used by the serial connection.|
-|[SerialStopBitsMode](Ivi.visa.SerialStopBitsMode.md)|The SerialStopBitsMode enumeration indicates the number of stop bits used to indicate the end of a Serial frame.|
+|SerialStopBitsMode|The SerialStopBitsMode enumeration indicates the number of stop bits used to indicate the end of a Serial frame.|
 |[SerialTerminationMethod](Ivi.visa.SerialTerminationMethod.md)|The SerialTermination enumeration indicates the method used to terminate Serial read and write operations.|
 |StatusByteFlags|The StatusByteFlags enumeration indicates individual bits of the IEEE 488.2 Status Byte.|
 |TriggerLine|The TriggerLine enumeration indicates a VXI or PXI trigger line.|

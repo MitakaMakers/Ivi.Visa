@@ -15,4 +15,4 @@ Attribute:[Flags](https://learn.microsoft.com/en-us/dotnet/api/system.flagsattri
 |---|---|
 |Read|1|
 |Write|2|
-|ReadWrite|Read | Write|
+|ReadWrite|Read\|Write|
