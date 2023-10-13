@@ -66,13 +66,13 @@ English | [日本語](Ivi.Visa.ja.md)
 |[ResourceOpenStatus](Ivi.visa.ResourceOpenStatus.md)|The ResourceOpenStatus enumeration indicates the success status of an open operation.|
 |SerialFlowControlModes|The SerialFlowControlModes enumeration indicates the type of flow control used by the Serial connection.|
 |[SerialParity](Ivi.visa.SerialParity.md)|The SerialParity enumeration indicates whether parity checking is being used by the serial connection.|
-|SerialStopBitsMode|The SerialStopBitsMode enumeration indicates the number of stop bits used to indicate the end of a Serial frame.|
+|[SerialStopBitsMode](Ivi.visa.SerialStopBitsMode.md)|The SerialStopBitsMode enumeration indicates the number of stop bits used to indicate the end of a Serial frame.|
 |[SerialTerminationMethod](Ivi.visa.SerialTerminationMethod.md)|The SerialTermination enumeration indicates the method used to terminate Serial read and write operations.|
-|StatusByteFlags|The StatusByteFlags enumeration indicates individual bits of the IEEE 488.2 Status Byte.|
-|TriggerLine|The TriggerLine enumeration indicates a VXI or PXI trigger line.|
-|TriggerLines|The TriggerLines enumeration indicates one or more VXI trigger lines.|
+|[StatusByteFlags](Ivi.visa.StatusByteFlags.md)|The StatusByteFlags enumeration indicates individual bits of the IEEE 488.2 Status Byte.|
+|[TriggerLine](Ivi.visa.TriggerLine.md)|The TriggerLine enumeration indicates a VXI or PXI trigger line.|
+|[TriggerLines](Ivi.visa.TriggerLines.md)|The TriggerLines enumeration indicates one or more VXI trigger lines.|
 |VxiAccessPrivilege|The VxiAccessPriviledge enumeration indicates the address modifier to be used in high-level access operations when writing to the destination.|
-|VxiCommandMode|The VxiCommandMode enumeration indicates whether to VISA should issue a command and/or retrieve a response.|
-|VxiDeviceClass|The VxiDeviceClass enumeration indicates the VXI-defined device class to which a particular resource belongs.|
-|VxiTriggerProtocol|The VxiTriggerProtocol enumeration indicates the trigger protocol to be used when a VXI trigger is asserted.|
+|[VxiCommandMode](Ivi.visa.VxiCommandMode.md)|The VxiCommandMode enumeration indicates whether to VISA should issue a command and/or retrieve a response.|
+|[VxiDeviceClass](Ivi.visa.VxiDeviceClass.md)|The VxiDeviceClass enumeration indicates the VXI-defined device class to which a particular resource belongs.|
+|[VxiTriggerProtocol](Ivi.visa.VxiTriggerProtocol.md)|The VxiTriggerProtocol enumeration indicates the trigger protocol to be used when a VXI trigger is asserted.|
 |VxiUtilitySignal|The VxiUtilitySignal enumeration indicates the utility bus signal to assert.|
