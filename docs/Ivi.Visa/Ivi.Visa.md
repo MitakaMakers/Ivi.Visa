@@ -60,19 +60,19 @@ English | [日本語](Ivi.Visa.ja.md)
 |[LineState](Ivi.Visa.LineState.md)|The LineState enumeration indicates whether the line is asserted or not, or if the state is unknown.|
 |[NativeVisaAttribute](Ivi.Visa.NativeVisaAttribute.md)|The NativeVisaAttribute enumeration corresponds to the defined values for the VISA attributes.|
 |[PxiMemoryType](Ivi.Visa.PxiMemoryType.md)|The PxiMemoryType enumeration indicates the memory type (memory mapped or I/O mapped) used by the device in the specified base address register (BAR).|
-|ReadStatus|The ReadStatus enumeration indicates the success status of a raw I/O read operation.|
+|[ReadStatus](Ivi.Visa.ReadStatus.md)|The ReadStatus enumeration indicates the success status of a raw I/O read operation.|
 |[RemoteLocalMode](Ivi.Visa.RemoteLocalMode.md)|The RemoteLocalMode enumeration indicates the action to be taken by the SendRemoteLocalCommand of a GPIB, TCPIP, or USB INSTR session.|
 |[ResourceLockState](Ivi.Visa.ResourceLockState.md)|The RemoteLocalMode enumeration indicates the state of the VISA lock on the resource associated with this session.|
 |[ResourceOpenStatus](Ivi.Visa.ResourceOpenStatus.md)|The ResourceOpenStatus enumeration indicates the success status of an open operation.|
-|SerialFlowControlModes|The SerialFlowControlModes enumeration indicates the type of flow control used by the Serial connection.|
+|[SerialFlowControlModes](Ivi.Visa.SerialFlowControlModes.md)|The SerialFlowControlModes enumeration indicates the type of flow control used by the Serial connection.|
 |[SerialParity](Ivi.Visa.SerialParity.md)|The SerialParity enumeration indicates whether parity checking is being used by the serial connection.|
 |[SerialStopBitsMode](Ivi.Visa.SerialStopBitsMode.md)|The SerialStopBitsMode enumeration indicates the number of stop bits used to indicate the end of a Serial frame.|
 |[SerialTerminationMethod](Ivi.Visa.SerialTerminationMethod.md)|The SerialTermination enumeration indicates the method used to terminate Serial read and write operations.|
 |[StatusByteFlags](Ivi.Visa.StatusByteFlags.md)|The StatusByteFlags enumeration indicates individual bits of the IEEE 488.2 Status Byte.|
 |[TriggerLine](Ivi.Visa.TriggerLine.md)|The TriggerLine enumeration indicates a VXI or PXI trigger line.|
 |[TriggerLines](Ivi.Visa.TriggerLines.md)|The TriggerLines enumeration indicates one or more VXI trigger lines.|
-|VxiAccessPrivilege|The VxiAccessPriviledge enumeration indicates the address modifier to be used in high-level access operations when writing to the destination.|
+|[VxiAccessPrivilege](Ivi.Visa.VxiAccessPrivilege.md)|The VxiAccessPriviledge enumeration indicates the address modifier to be used in high-level access operations when writing to the destination.|
 |[VxiCommandMode](Ivi.Visa.VxiCommandMode.md)|The VxiCommandMode enumeration indicates whether to VISA should issue a command and/or retrieve a response.|
 |[VxiDeviceClass](Ivi.Visa.VxiDeviceClass.md)|The VxiDeviceClass enumeration indicates the VXI-defined device class to which a particular resource belongs.|
 |[VxiTriggerProtocol](Ivi.Visa.VxiTriggerProtocol.md)|The VxiTriggerProtocol enumeration indicates the trigger protocol to be used when a VXI trigger is asserted.|
-|VxiUtilitySignal|The VxiUtilitySignal enumeration indicates the utility bus signal to assert.|
+|[VxiUtilitySignal](Ivi.Visa.VxiUtilitySignal.md)|The VxiUtilitySignal enumeration indicates the utility bus signal to assert.|
