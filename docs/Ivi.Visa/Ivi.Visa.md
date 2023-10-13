@@ -33,7 +33,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |[ISerialSession](Ivi.Visa.ISerialSession.md)|The INSTR session type for serial (RS-232) devices.|
 |[ITcpipSession](Ivi.Visa.ITcpipSession.md)|The INSTR session type for LAN devices.|
 |[ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)|The SOCKET session type for TCPIP devices.|
-|[IUsbSesssion](Ivi.Visa.IUsbSesssion.md)|The INSTR session type for USBTMC devices.|
+|[IUsbSession](Ivi.Visa.IUsbSession.md)|The INSTR session type for USBTMC devices.|
 |[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
 |IVxiSession|The INSTR session type for VXI devices.|
 

@@ -31,9 +31,10 @@ Inheritance:[System.IDisposable](https://learn.microsoft.com/en-us/dotnet/api/sy
 
 |Method Name|
 |---|
-|[AssertTrigger()](#AssertTrigger-Method)|
-|[Clear()](#Clear-Method)|
-|[ReadStatusByte()](#ReadStatusByte-Method)|
+|[ControlIn(Int16 requestType, Int16 request, Int16 value, Int16 index, Int16 length)](#ControlInInt16-requestType-Int16-request-Int16-value-Int16-index-Int16-length-Method)|
+|[ControlOut(Int16 requestType, Int16 request, Int16 value, Int16 index)](#ControlOutInt16-requestType-Int16-request-Int16-value-Int16-index-Method)|
+|[ControlOut(Int16 requestType, Int16 request, Int16 value, Int16 index, Byte[] data)](#ControlOutInt16-requestType-Int16-request-Int16-value-Int16-index-Byte-data-Method)|
+|[SendRemoteLocalCommand(RemoteLocalMode mode)](#SendRemoteLocalCommandRemoteLocalMode-mode-Method)|
 
 ## Is4882Compliant Property
 ```C#
