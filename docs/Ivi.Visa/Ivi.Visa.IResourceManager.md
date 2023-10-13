@@ -7,6 +7,7 @@ English | [日本語](Ivi.Visa.IResourceManager.ja.md)
 ## Definition
 Namespace:Ivi.Visa<BR>
 Assembly:Ivi.Visa.dll
+Inheritance:System.IDisposable -> Ivi.Visa.IResouceManager
 
 ## Properties
 

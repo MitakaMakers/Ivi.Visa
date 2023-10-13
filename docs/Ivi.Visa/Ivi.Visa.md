@@ -17,7 +17,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |NativeVisaException|An error related to the underlying VISA native C implementation has occurred.|
 |[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
 |TypeFormatterException|A Type Formatter error has occurred.|
-|VisaEventArgs|The VisaEventArgs class communicates information about the event being fired.|
+|[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
 |VisaException|A VISA.NET error has occurred.|
 
 ## Interfaces
