@@ -1,3 +1,5 @@
+[English](Ivi.Visa.md) | [日本語](Ivi.Visa.ja.md)
+
 # Ivi.Visa 名前空間
 
 ## この記事の内容

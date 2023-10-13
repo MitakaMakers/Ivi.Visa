@@ -1,4 +1,6 @@
-[Ivi.visa]()
+[English](Ivi.Visa.IResourceManager.md) | [日本語](Ivi.Visa.IResourceManager.ja.md)
+
+[Ivi.visa](Ivi.Visa.md)
 
 # IResouceManager Interface
 
