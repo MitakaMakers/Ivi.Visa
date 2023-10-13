@@ -104,7 +104,7 @@ Inheritance:Ivi.Visa.NativeErrorCode
 
 |Method Name|
 |---|
-|[string GetMacroNameFromStatusCode(int status)](#GetMacroNameFromStatusCodeint-status)|
+|[string GetMacroNameFromStatusCode(int status)](#GetMacroNameFromStatusCodeint-status-Method)|
 
 ## SystemError Property
 ```C#
