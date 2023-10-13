@@ -1,0 +1,57 @@
+English | 日本語
+
+[Ivi.visa](Ivi.Visa.md)
+
+# ITcpipSocketSession Interface
+
+## Definition
+Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Assembly:Ivi.Visa.dll<BR>
+Inheritance System.IDisposable -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md) -> [Ivi.Visa.ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)
+
+## Properties
+
+|Property Name|
+|---|
+|[Address](#Address-Property)|
+|[HostName](#HostName-Property)|
+|[KeepAlive](# KeepAlive-Property)|
+|[NoDelay](#NoDelay-Property)|
+|[Port](#Port-Property)|
+
+## Methods
+
+|Method Name|
+|---|
+|[Flush(IOBuffers buffers, Boolean discard)](#FlushIOBuffers-buffers-Boolean-discard-Method)|
+|[SetBufferSize(IOBuffers buffers, Int32 size)](#SetBufferSizeIOBuffers-buffers-Int32-size-Method)|
+
+## Address Property
+```C#
+String Address { get; }
+```
+## HostName Property
+```C#
+String HostName { get; }
+```
+## KeepAlive Property
+```C#
+Boolean KeepAlive { get; set; }
+```
+## NoDelay Property
+```C#
+Boolean NoDelay { get; set; }
+```
+## Port Property
+```C#
+Int16 Port { get; }
+```
+
+## Flush(IOBuffers buffers, Boolean discard) Method
+```C#
+void Flush(IOBuffers buffers, Boolean discard);
+```
+## SetBufferSize(IOBuffers buffers, Int32 size) Method
+```C#
+Boolean SetBufferSize(IOBuffers buffers, Int32 size);
+```
