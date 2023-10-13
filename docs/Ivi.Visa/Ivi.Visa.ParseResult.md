@@ -5,14 +5,14 @@ English | 日本語
 # ParseResult Class
 
 ## Definition
-Namespace:Ivi.Visa<BR>
+Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll
 
 ## Constructors
 
 |Method Name|
 |---|
-|[ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists)](#parseresultstring-originalresourcename-hardwareinterfacetype-interfacetype-int16-interfacenumber-string-resourceclass-string-expandedunaliasedname-string-aliasifexists-constructor)|
+|[public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists)](#parseresultstring-originalresourcename-hardwareinterfacetype-interfacetype-int16-interfacenumber-string-resourceclass-string-expandedunaliasedname-string-aliasifexists-constructor)|
 
 ## Properties
 
