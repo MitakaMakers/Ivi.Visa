@@ -16,7 +16,7 @@ Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.
 |[IOTimeoutException(Int64 actualCount, Byte[] actualData)](#IOTimeoutExceptionInt64-actualCount-Byte-actualData-Constructor)|
 |[IOTimeoutException(Int64 actualCount, Byte[] actualData, String message)](#IOTimeoutExceptionInt64-actualCount-Byte-actualData-String-message-Constructor)|
 |[IOTimeoutException(Int64 actualCount, Byte[] actualData, String message, System.Exception innerException)](#IOTimeoutExceptionInt64-actualCount-Byte-actualData-String-message-SystemException-innerException-Constructor)|
-|[IOTimeoutException(SerializationInfo info, StreamingContext context)](#IOTimeoutExceptionSerializationInfo-info-treamingContext-context-Constructor)|
+|[IOTimeoutException(SerializationInfo info, StreamingContext context)](#IOTimeoutExceptionSerializationInfo-info-StreamingContext-context-Constructor)|
 
 ## Properties
 
