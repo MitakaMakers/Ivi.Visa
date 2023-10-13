@@ -11,9 +11,11 @@
 ## Classes
 |Name|Description|
 |---|---|
+|[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
 |IOTimeoutException|A VISA.NET I/O timeout has occured.|
 |NativeErrorCode|A class that contains the standard error status codes.|
 |NativeVisaException|An error related to the underlying VISA native C implementation has occurred.|
+|[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
 |TypeFormatterException|A Type Formatter error has occurred.|
 |VisaEventArgs|The VisaEventArgs class communicates information about the event being fired.|
 |VisaException|A VISA.NET error has occurred.|
@@ -21,7 +23,6 @@
 ## Interfaces
 |Name|Description|
 |---|---|
-|[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
 |IGpibSession|The INSTR session type for GPIB devices.|
 |IMessageBasedFormattedIO|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |IMessageBasedRawIO|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
@@ -35,7 +36,6 @@
 |IUsbSesssion|The INSTR session type for USBTMC devices.|
 |IVisaSession|The interface from which every VISA.NET session must derive.|
 |IVxiSession|The INSTR session type for VXI devices.|
-|[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
 
 ## Enums
 |Name|Description|

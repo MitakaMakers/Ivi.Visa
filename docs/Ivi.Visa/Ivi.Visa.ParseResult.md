@@ -12,8 +12,8 @@ Assembly:Ivi.Visa.dll
 
 |Method Name|
 |---|
-|[public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists)](public ParseResult
-|
+|[public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists)](#parseresultstring-originalresourcename-hardwareinterfacetype-interfacetype-int16-interfacenumber-string-resourceclass-string-expandedunaliasedname-string-aliasifexists-constructor)|
+
 ## Properties
 
 |Property Name|
