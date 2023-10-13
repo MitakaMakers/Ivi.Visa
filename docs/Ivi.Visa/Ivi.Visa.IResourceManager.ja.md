@@ -5,7 +5,7 @@
 # IResouceManager インターフェイス
 
 ## 定義
-名前空間:Ivi.Visa<BR>
+Namespace:[Ivi.Visa](Ivi.Visa.ja.md)<BR>
 アセンブリ:Ivi.Visa.dll
 
 ## プロパティ

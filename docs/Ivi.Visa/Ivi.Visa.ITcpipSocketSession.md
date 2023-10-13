@@ -1,13 +1,11 @@
 English | 日本語
 
-[Ivi.visa](Ivi.Visa.md)
-
 # ITcpipSocketSession Interface
 
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:[System.IDisposable](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable) -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md) -> [Ivi.Visa.ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)
+Inheritance:[System.IDisposable](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable) -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md) -> **Ivi.Visa.ITcpipSocketSession**
 
 ## Properties
 

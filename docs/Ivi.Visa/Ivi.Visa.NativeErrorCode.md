@@ -1,13 +1,10 @@
 English | 日本語
 
-[Ivi.visa](Ivi.Visa.md)
-
 # NativeErrorCode Class
 
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:Ivi.Visa.NativeErrorCode
 
 ## Fields
 

@@ -1,19 +1,17 @@
 English | 日本語
 
-[Ivi.visa](Ivi.Visa.md)
-
 # TypeFormatterException Class
 
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> [Ivi.Visa.VisaException](Ivi.Visa.VisaException.md) -> Ivi.Visa.TypeFormatterException
+Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> [Ivi.Visa.VisaException](Ivi.Visa.VisaException.md) -> **Ivi.Visa.TypeFormatterException**
 
 ## Constructors
 
 |Method Name|
 |---|
-|[TypeFormatterException()](#TypeFormatterException)
+|[TypeFormatterException()](#TypeFormatterException-Constructor)
 |[TypeFormatterException(System.Exception innerException)](#TypeFormatterExceptionSystemException-innerException-Constructor)|
 |[TypeFormatterException(Type type)](#TypeFormatterExceptionType-type-Constructor)|
 |[TypeFormatterException(Type type, System.Exception innerException)](#TypeFormatterExceptionType-type-SystemException-innerException-Constructor)|

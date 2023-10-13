@@ -1,13 +1,11 @@
 English | 日本語
 
-[Ivi.visa](Ivi.Visa.md)
-
 # VisaException Class
 
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> Ivi.Visa.VisaException
+Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> **Ivi.Visa.VisaException**
 
 ## Constructors
 

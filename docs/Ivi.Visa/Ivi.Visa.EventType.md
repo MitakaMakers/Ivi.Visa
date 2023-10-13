@@ -1,7 +1,5 @@
 English | 日本語
 
-[Ivi.visa](Ivi.Visa.md)
-
 # EventType Enum
 
 ## Definition
