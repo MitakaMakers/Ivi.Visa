@@ -6,7 +6,7 @@ English | 日本語
 
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
-Assembly:Ivi.Visa.dll
+Assembly:Ivi.Visa.dll<BR>
 Attribute:[Flags](https://learn.microsoft.com/en-us/dotnet/api/system.flagsattribute)
 
 ## Fields

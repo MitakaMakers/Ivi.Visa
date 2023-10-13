@@ -6,8 +6,8 @@ English | 日本語
 
 ## Definition
 Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
-Assembly:Ivi.Visa.dll
-Inheritance:[short](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types)
+Assembly:Ivi.Visa.dll<BR>
+Inheritance:[short](https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/integral-numeric-types)<BR>
 Attribute:[Flags](https://learn.microsoft.com/en-us/dotnet/api/system.flagsattribute)
 
 ## Fields

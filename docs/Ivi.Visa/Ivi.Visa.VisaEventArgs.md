@@ -5,9 +5,9 @@ English | 日本語
 # VisaEventArgs Class
 
 ## Definition
-Namespace:Ivi.Visa<BR>
+Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:System.Object -> System.EventArgs -> Ivi.Visa.VisaEventArgs
+Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.EventArgs](https://learn.microsoft.com/en-us/dotnet/api/system.eventargs) -> Ivi.Visa.VisaEventArgs
 
 ## Constructors
 
