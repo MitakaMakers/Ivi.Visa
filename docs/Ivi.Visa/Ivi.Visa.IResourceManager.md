@@ -6,8 +6,6 @@
 Namespace:Ivi.Visa<BR>
 Assembly:Ivi.Visa.dll
 
-## Examples
-
 ## Properties
 
 |Property Name|
@@ -27,6 +25,7 @@ Assembly:Ivi.Visa.dll
 |[Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds)](#OpenString-resourceName-AccessModes-accessMode-Int32-timeoutMilliseconds-Method)|
 |[Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)](#OpenString-resourceName-AccessModes-accessModes-Int32-timeoutMilliseconds-out-ResourceOpenStatus-openStatus-Method)|
 
+
 ## ManufacturerName Property
 ```C#
 String ManufacturerName { get; }
@@ -43,23 +42,23 @@ Version ImplementationVersion { get; }
 ```C#
 Version SpecificationVersion { get; }
 ```
-### Find(String pattern) Method
+## Find(String pattern) Method
 ```C#
 IEnumerable<String> Find(String pattern);
 ```
-### Parse(String resourceName) Method
+## Parse(String resourceName) Method
 ```C#
 ParseResult Parse(String resourceName);
 ```
-### Open(String resourceName) Method
+## Open(String resourceName) Method
 ```C#
 IVisaSession Open(String resourceName);
 ```
-### Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds) Method
+## Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds) Method
 ```C#
 IVisaSession Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds);
 ```
-### Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus) Method
+## Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus) Method
 ```C#
 IVisaSession Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus);
 ```

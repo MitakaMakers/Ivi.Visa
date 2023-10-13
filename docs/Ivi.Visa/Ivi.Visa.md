@@ -2,9 +2,9 @@
 
 ## In this article
 
-- Classes
-- Interfaces
-- Enums
+- [Classes](#Classes)
+- [Interfaces](#Interfaces)
+- [Enums](#Enums)
 
 ## Classes
 |Name|Description|
@@ -25,12 +25,12 @@
 |IMessageBasedSession|The interface from which every VISA.NET message-based session must derive.|
 |IPxiSession|The INSTR session type for PXI devices.|
 |IRegisterBasedSession|The base session type for register-based devices.|
-|IResourceManager|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource,|
+|IResourceManager|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
 |ISerialSession|The INSTR session type for serial (RS-232) devices.|
 |ITcpipSession|The INSTR session type for LAN devices.|
 |ITcpipSocketSession|The SOCKET session type for TCPIP devices.|
 |IUsbSesssion|The INSTR session type for USBTMC devices.|
-|IVisaSession|The interface from which every VISA.NET session must derive.  For the interfaces defined in this specification.|
+|IVisaSession|The interface from which every VISA.NET session must derive.|
 |IVxiSession|The INSTR session type for VXI devices.|
 
 ## Enums
