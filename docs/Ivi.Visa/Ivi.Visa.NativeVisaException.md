@@ -22,7 +22,7 @@ Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.
 
 |Property Name|
 |---|
-|[ErrorCode]|(#ErrorCode-Property)|
+|[ErrorCode](#ErrorCode-Property)|
 
 ## TypeFormatterException() Constructor
 ```C#
@@ -59,4 +59,8 @@ public TypeFormatterException(Object obj, System.Exception innerException)
 ## TypeFormatterException(SerializationInfo info, StreamingContext context) Constructor
 ```C#
 protected TypeFormatterException(SerializationInfo info, StreamingContext context)
+```
+## ErrorCode Property
+```C#
+public int ErrorCode { get; protected set; }
 ```
