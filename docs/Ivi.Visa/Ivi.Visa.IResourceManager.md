@@ -1,6 +1,6 @@
 [Ivi.visa]()
 
-## IResouceManager Interface
+# IResouceManager Interface
 
 ## Definition
 Namespace:Ivi.Visa<BR>
@@ -12,20 +12,30 @@ Assembly:Ivi.Visa.dll
 
 |Property Name|
 |---|
-|[ManufacturerName](#ManufacturerName_Property)|
-|[ManufacturerID](#ManufacturerId_Property)|
-|[ImplementationVersion](#ImplementationVersion_Property)|
-|[SpecificationVersion](#SpecificationVersion_Property)|
+|[ManufacturerName](#ManufacturerName-Property)|
+|[ManufacturerID](#ManufacturerId-Property)|
+|[ImplementationVersion](#ImplementationVersion-Property)|
+|[SpecificationVersion](#SpecificationVersion-Property)|
 
-## ManufacturerName_Property
+## Methods
+
+|Method Name|
+|---|
+|[Find(String pattern)](#FindString-pattern-Method)|
+|[Parse(String resourceName)](#ParseString_resourceName_Method)|
+|[Open(String resourceName)](#OpenString_resourceName_Method)|
+|[Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds)](#OpenString_resourceName,_AccessModes_accessMode,_Int32_timeoutMilliseconds_Method)|
+|[Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)](#OpenString_resourceName,_AccessModes_accessModes,_Int32_timeoutMilliseconds,_out_ResourceOpenStatus_openStatus_Method)|
+
+## ManufacturerName Property
 ```C#
 String ManufacturerName { get; }
 ```
-## ManufacturerId_Property
+## ManufacturerId Property
 ```C#
 Int16 ManufacturerId { get; }
 ```
-## ImplementationVersion_Property
+## ImplementationVersion Property
 ```C#
 Version ImplementationVersion { get; }
 ```
@@ -33,33 +43,23 @@ Version ImplementationVersion { get; }
 ```C#
 Version SpecificationVersion { get; }
 ```
-## Methods
-
-|Method Name|
-|---|
-|[Find(String pattern)](#Find(String_pattern)_Method)|
-|[Parse(String resourceName)](#Parse(String_resourceName)_Method)|
-|[Open(String resourceName)](#Open(String_resourceName)_Method)|
-|[Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds)](#Open(String_resourceName,_AccessModes_accessMode,_Int32_timeoutMilliseconds)_Method)|
-|[Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)](#Open(String_resourceName,_AccessModes_accessModes,_Int32_timeoutMilliseconds,_out_ResourceOpenStatus_openStatus)_Method)|
-
-### Find(String_pattern)_Method
+### Find(String pattern) Method
 ```C#
 IEnumerable<String> Find(String pattern);
 ```
-### Parse(String_resourceName)_Method
+### Parse(String resourceName) Method
 ```C#
 ParseResult Parse(String resourceName);
 ```
-### Open(String_resourceName)_Method
+### Open(String resourceName) Method
 ```C#
 IVisaSession Open(String resourceName);
 ```
-### Open(String_resourceName,_AccessModes_accessMode,_Int32_timeoutMilliseconds)_Method
+### Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds) Method
 ```C#
 IVisaSession Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds);
 ```
-### Open(String_resourceName,_AccessModes_accessModes,_Int32_timeoutMilliseconds,_out_ResourceOpenStatus_openStatus)_Method
+### Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus) Method
 ```C#
 IVisaSession Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus);
 ```
