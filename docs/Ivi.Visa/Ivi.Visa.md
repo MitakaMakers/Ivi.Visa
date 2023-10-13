@@ -40,11 +40,11 @@ English | [日本語](Ivi.Visa.ja.md)
 ## Enums
 |Name|Description|
 |---|---|
-|AccessMode|An enumeration of the different mechanisms that control access to a resource.|
-|AddressSpace|The AddressSpace enumeration indicates the bus address space used by VXI or PXI devices.|
+|[AccessMode](Ivi.visa.AccessMode.md)|An enumeration of the different mechanisms that control access to a resource.|
+|[AddressSpace](Ivi.visa.AddressSpace.md)|The AddressSpace enumeration indicates the bus address space used by VXI or PXI devices.|
 |ApiType|
-|AtnMode|The AtnMode enumeration indicates how to modify the state of the GPIB ATN (ATtentioN) interface line.|
-|BinaryEncoding|The BinaryEncoding enumeration indicates, for formatted I/O operations.|
+|[AtnMode](Ivi.visa.AtnMode.md)|The AtnMode enumeration indicates how to modify the state of the GPIB ATN (ATtentioN) interface line.|
+|[BinaryEncoding](Ivi.visa.BinaryEncoding.md)|The BinaryEncoding enumeration indicates, for formatted I/O operations.|
 |ByteOrder|The ByteOrder enumeration indicates the byte order used in various VXI operations.|
 |DataWidth|The DataWidth enumeration indicates the data width for register-based data transfer operations.|
 |EventQueueStatus|The EventQueueStatus enumeration indicates the current state of the event queue.|
