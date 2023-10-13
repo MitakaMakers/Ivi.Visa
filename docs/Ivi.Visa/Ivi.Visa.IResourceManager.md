@@ -13,7 +13,7 @@ Assembly:Ivi.Visa.dll
 |Property Name|
 |---|
 |[ManufacturerName](#ManufacturerName-Property)|
-|[ManufacturerID](#ManufacturerId-Property)|
+|[ManufacturerId](#ManufacturerId-Property)|
 |[ImplementationVersion](#ImplementationVersion-Property)|
 |[SpecificationVersion](#SpecificationVersion-Property)|
 
@@ -22,10 +22,10 @@ Assembly:Ivi.Visa.dll
 |Method Name|
 |---|
 |[Find(String pattern)](#FindString-pattern-Method)|
-|[Parse(String resourceName)](#ParseString_resourceName_Method)|
-|[Open(String resourceName)](#OpenString_resourceName_Method)|
-|[Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds)](#OpenString_resourceName,_AccessModes_accessMode,_Int32_timeoutMilliseconds_Method)|
-|[Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)](#OpenString_resourceName,_AccessModes_accessModes,_Int32_timeoutMilliseconds,_out_ResourceOpenStatus_openStatus_Method)|
+|[Parse(String resourceName)](#ParseString-resourceName-Method)|
+|[Open(String resourceName)](#OpenString-resourceName-Method)|
+|[Open(String resourceName, AccessModes accessMode, Int32 timeoutMilliseconds)](#OpenString-resourceName-AccessModes-accessMode-Int32-timeoutMilliseconds-Method)|
+|[Open(String resourceName, AccessModes accessModes, Int32 timeoutMilliseconds, out ResourceOpenStatus openStatus)](#OpenString-resourceName-AccessModes-accessModes-Int32-timeoutMilliseconds-out-ResourceOpenStatus-openStatus-Method)|
 
 ## ManufacturerName Property
 ```C#
