@@ -1,4 +1,4 @@
-[English](Ivi.Visa.ParseResult.md) | 日本語
+English | 日本語
 
 [Ivi.visa](Ivi.Visa.md)
 
@@ -25,7 +25,7 @@ Assembly:Ivi.Visa.dll
 |[OriginalResourceName](#OriginalResourceName-Property)|
 |[ResourceClass](#ResourceClass-Property)|
 
-# ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists) Constructor
+## ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists) Constructor
 ```C#
 public ParseResult(String originalResourceName, HardwareInterfaceType interfaceType, Int16 interfaceNumber, String resourceClass, String expandedUnaliasedName, String aliasIfExists)
 ```

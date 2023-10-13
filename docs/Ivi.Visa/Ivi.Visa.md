@@ -1,4 +1,4 @@
-[English](Ivi.Visa.md) | [日本語](Ivi.Visa.ja.md)
+English | [日本語](Ivi.Visa.ja.md)
 
 # Ivi.Visa namescape
 

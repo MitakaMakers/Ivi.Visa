@@ -1,4 +1,4 @@
-[English](Ivi.Visa.GlobalResourceManager.md) | 日本語
+English | 日本語
 
 [Ivi.visa](Ivi.Visa.md)
 
