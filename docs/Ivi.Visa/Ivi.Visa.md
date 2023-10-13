@@ -30,10 +30,10 @@ English | [日本語](Ivi.Visa.ja.md)
 |IPxiSession|The INSTR session type for PXI devices.|
 |IRegisterBasedSession|The base session type for register-based devices.|
 |[IResourceManager](Ivi.Visa.IResourceManager.md)|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
-|ISerialSession|The INSTR session type for serial (RS-232) devices.|
+|[ISerialSession](Ivi.Visa.ISerialSession.md)|The INSTR session type for serial (RS-232) devices.|
 |[ITcpipSession](Ivi.Visa.ITcpipSession.md)|The INSTR session type for LAN devices.|
 |[ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)|The SOCKET session type for TCPIP devices.|
-|IUsbSesssion|The INSTR session type for USBTMC devices.|
+|[IUsbSesssion](Ivi.Visa.IUsbSesssion.md)|The INSTR session type for USBTMC devices.|
 |[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
 |IVxiSession|The INSTR session type for VXI devices.|
 
