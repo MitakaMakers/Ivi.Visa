@@ -9,7 +9,7 @@ Assembly:TmctlAPINet.dll
 ## Properties
 
 |Property Name|
-|---|---|
+|---|
 |[clientRpcTcp](#clientRpcTcp-Property)|
 |[xid](#xid-Property)|
 

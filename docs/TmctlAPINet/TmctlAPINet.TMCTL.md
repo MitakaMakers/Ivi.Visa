@@ -1,4 +1,16 @@
-Ud_CTL_GPIB|1
+English | [日本語](Ivi.Visa.IVisaSession.ja.md)
+
+# TMCTL Class
+
+## Definition
+Namespace:[TmctlAPINet](TmctlAPINet.md)<BR>
+Assembly:TmctlAPINet.dll
+
+## Properties
+
+|Property Name|Value|
+|---|---|
+|public const int TM_CTL_GPIB|1|
 |public const int TM_CTL_RS232|2|
 |public const int TM_CTL_USB|3|
 |public const int TM_CTL_ETHER|4|

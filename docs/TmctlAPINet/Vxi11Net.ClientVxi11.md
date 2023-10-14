@@ -9,7 +9,7 @@ Assembly:TmctlAPINet.dll
 ## Properties
 
 |Property Name|
-|---|---|
+|---|
 |[clientCore](#clientCore-Property)|
 |[clientAbort](#clientAbort-Property)|
 |[serverInterrupt](#serverInterrupt-Property)|

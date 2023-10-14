@@ -9,7 +9,7 @@ Assembly:TmctlAPINet.dll
 ## Properties
 
 |Property Name|
-|---|---|
+|---|
 |[client](#client-Property)|
 |[lid](#lid-Property)|
 |[corePort](#corePort-Property)|

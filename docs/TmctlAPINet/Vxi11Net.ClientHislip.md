@@ -9,7 +9,7 @@ Assembly:TmctlAPINet.dll
 ## Properties
 
 |Property Name|
-|---|---|
+|---|
 |[synchronous](#synchronous-Property)|
 |[asynchronous](#asynchronous-Property)|
 |[MessageID](#MessageID-Property)|
