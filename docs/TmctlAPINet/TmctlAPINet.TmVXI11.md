@@ -1,5 +1,3 @@
-English | [日本語](Ivi.Visa.IVisaSession.ja.md)
-
 # TmVXI11 Class
 
 ## Definition

@@ -1,5 +1,3 @@
-English | [日本語](Ivi.Visa.IVisaSession.ja.md)
-
 # ClientRpcTcp Class
 
 ## Definition

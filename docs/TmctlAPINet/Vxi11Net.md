@@ -1,5 +1,3 @@
-English | [日本語](Mm.ja.md)
-
 # Vxi11Net namescape
 
 ## In this article

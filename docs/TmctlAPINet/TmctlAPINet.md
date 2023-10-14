@@ -1,5 +1,3 @@
-English | [日本語](Mm.ja.md)
-
 # TmctlAPINet namescape
 
 ## In this article
