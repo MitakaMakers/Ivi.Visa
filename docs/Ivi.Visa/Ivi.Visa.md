@@ -45,18 +45,15 @@ English | [日本語](Ivi.Visa.ja.md)
 |---|---|
 |[AccessMode](Ivi.Visa.AccessMode.md)|An enumeration of the different mechanisms that control access to a resource.|
 |[AddressSpace](Ivi.Visa.AddressSpace.md)|The AddressSpace enumeration indicates the bus address space used by VXI or PXI devices.|
-|ApiType|
 |[AtnMode](Ivi.Visa.AtnMode.md)|The AtnMode enumeration indicates how to modify the state of the GPIB ATN (ATtentioN) interface line.|
 |[BinaryEncoding](Ivi.Visa.BinaryEncoding.md)|The BinaryEncoding enumeration indicates, for formatted I/O operations.|
 |[ByteOrder](Ivi.Visa.ByteOrder.md)|The ByteOrder enumeration indicates the byte order used in various VXI operations.|
 |[DataWidth](Ivi.Visa.DataWidth.md)|The DataWidth enumeration indicates the data width for register-based data transfer operations.|
 |[EventQueueStatus](Ivi.Visa.EventQueueStatus.md)|The EventQueueStatus enumeration indicates the current state of the event queue.|
 |[EventType](Ivi.Visa.EventType.md)|A reference to the result of an asynchronous I/O operation.|
-|FlushBehavior|
 |[GpibAddressedState](Ivi.Visa.GpibAddressedState.md)|The GpibAddressedState enumeration indicates whether the GPIB interface is currently addressed to talk or listen, or is not addressed.|
 |[GpibInstrumentRemoteLocalMode](Ivi.Visa.GpibInstrumentRemoteLocalMode.md)|The GpibInstrumentRemoteLocalMode enumeration indicates the action to be taken by the SendRemoteLocalCommand of a GPIB INSTR session.|
 |[GpibInterfaceRemoteLocalMode](Ivi.Visa.GpibInterfaceRemoteLocalMode.md)|The GpibInterfaceRemoteLocalMode enumeration indicates the action to be taken by the SendRemoteLocalCommand of a GPIB INTFC session.|
-|HandlerType|
 |[HardwareInterfaceType](Ivi.Visa.HardwareInterfaceType.md)|The HardwareInterfaceType enumeration indicates the hardware interface type of the current session.|
 |[IOBuffers](Ivi.Visa.IOBuffers.md)|The IOBuffers enumeration indicates buffer(s) in the low-level I/O interface.|
 |[IOProtocol](Ivi.Visa.IOProtocol.md)|The IOProtocol enumeration indicates which protocol to use on a particular session.|
