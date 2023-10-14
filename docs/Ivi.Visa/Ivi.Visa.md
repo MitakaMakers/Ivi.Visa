@@ -28,7 +28,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |[IMessageBasedFormattedIO](Ivi.Visa.IMessageBasedFormattedIO.md)|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|The interface from which every VISA.NET message-based session must derive.|
-|IPxiSession|The INSTR session type for PXI devices.|
+|[IPxiSession](Ivi.Visa.IPxiSession.md)|The INSTR session type for PXI devices.|
 |[IRegisterBasedSession](Ivi.Visa.IRegisterBasedSession.md)|The base session type for register-based devices.|
 |[IResourceManager](Ivi.Visa.IResourceManager.md)|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
 |[ISerialSession](Ivi.Visa.ISerialSession.md)|The INSTR session type for serial (RS-232) devices.|
