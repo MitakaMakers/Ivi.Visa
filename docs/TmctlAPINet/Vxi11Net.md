@@ -18,6 +18,7 @@ English | [日本語](Mm.ja.md)
 |[ClientRpcUdp](Vxi11Net.ClientRpcUdp.md)||
 |[ClientSocket](Vxi11Net.ClientSocket.md)||
 |[ClientVxi11](Vxi11Net.ClientVxi11.md)||
+|[ServerHislip](Vxi11Net.ServerHislip.md)||
 |[ServerSocket](Vxi11Net.ServerSocket.md)||
 
 ## Interfaces
