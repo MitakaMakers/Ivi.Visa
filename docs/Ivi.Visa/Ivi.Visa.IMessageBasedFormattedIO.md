@@ -21,9 +21,9 @@ Assembly:Ivi.Visa.dll<BR>
 |---|
 |[DiscardBuffers()](#DiscardBuffers-Method)|
 |[FlushWrite(Boolean sendEnd)](#FlushWriteBoolean-sendEnd-Method)|
-|[Printf(String data)](#PrintfString data-Method)|
+|[Printf(String data)](#PrintfString-data-Method)|
 |[Printf(String format, params object[] args)](#PrintfString-format-params-object-args-Method)|
-|[PrintfAndFlush(String data)](#PrintfAndFlushString data-Method)|
+|[PrintfAndFlush(String data)](#PrintfAndFlushString-data-Method)|
 |[PrintfAndFlush(String format, params object[] args)](#PrintfAndFlushString-format-params-object-args-Method)|
 |[PrintfArray(String format, Byte* pArray, params Int64[] inputs)](#PrintfArrayString-format-Byte-pArray-params-Int64-inputs-Method)|
 |[PrintfArray(String format, SByte* pArray, params Int64[] inputs)](#PrintfArrayString-format-SByte-pArray-params-Int64-inputs-Method)|
@@ -52,7 +52,7 @@ Assembly:Ivi.Visa.dll<BR>
 |[Scanf<T1, T2, T3, T4, T5>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5)](#ScanfT1-T2-T3-T4-T5String-format-out-T1-output1-out-T2-output2-out-T3-output3-out-T4-output4-out-T5-output5-Method)|
 |[Scanf<T1, T2, T3, T4, T5, T6>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5, out T6 output6)](#ScanfT1-T2-T3-T4-T5-T6String-format-out-T1-output1-out-T2-output2-out-T3-output3-out-T4-output4-out-T5-output5-out-T6-output6-Method)|
 |[Scanf<T1, T2, T3, T4, T5, T6, T7>(String format, out T1 output1, out T2 output2, out T3 output3, out T4 output4, out T5 output5, out T6 output6, out T7 output7)](#ScanfT1-T2-T3-T4-T5-T6-T7String-format-out-T1-output1-out-T2-output2-out-T3-output3-out-T4-output4-out-T5-output5-out-T6-output6-out-T7-output7-Method)|
-|[Scanf<T>(String format, Int32[] inputs, out T output)](#ScanfTString-format, Int32-inputs, out-T-output-Method)|
+|[Scanf<T>(String format, Int32[] inputs, out T output)](#ScanfTString-format-Int32-inputs-out-T-output-Method)|
 |[Scanf<T1, T2>(String format, Int32[] inputs, out T1 output1, out T2 output2)](#ScanfT1-T2String-format-Int32-inputs-out-T1-output1-out-T2-output2-Method)|
 |[Scanf<T1, T2, T3>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3)](#ScanfT1-T2-T3String-format-Int32-inputs-out-T1-output1-out-T2-output2-out-T3-output3-Method)|
 |[Scanf<T1, T2, T3, T4>(String format, Int32[] inputs, out T1 output1, out T2 output2, out T3 output3, out T4 output4)](#ScanfT1-T2-T3-T4String-format-Int32-inputs-out-T1-output1-out-T2-output2-out-T3-output3-out-T4-output4-Method)|
@@ -272,7 +272,7 @@ Assembly:Ivi.Visa.dll<BR>
 |[ReadLineBinaryBlockOfDouble(Boolean seekToBlock)](#ReadLineBinaryBlockOfDoubleBoolean-seekToBlock-Method)|
 |[ReadLineBinaryBlockOfDouble(Double[] data, Int64 index, Int64 count)](#ReadLineBinaryBlockOfDoubleDouble-data-Int64-index-Int64-count-Method)|
 |[ReadLineBinaryBlockOfDouble(Double[] data, Int64 index, Int64 count, Boolean seekToBlock)](#ReadLineBinaryBlockOfDoubleDouble-data-Int64-index-Int64-count-Boolean-seekToBlock-Method)|
-|[ReadWhileMatch(String characters)](#ReadWhileMatchString characters-Method)|
+|[ReadWhileMatch(String characters)](#ReadWhileMatchString-characters-Method)|
 |[ReadUntilMatch(Char ch)](#ReadUntilMatchChar-ch-Method)|
 |[ReadUntilMatch(String characters, Boolean discardMatch)](#ReadUntilMatchString-characters-Boolean-discardMatch-Method)|
 |[ReadUntilEnd()](#ReadUntilEnd-Method)|
