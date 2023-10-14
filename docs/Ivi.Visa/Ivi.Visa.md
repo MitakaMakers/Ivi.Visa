@@ -38,7 +38,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |[IUsbSession](Ivi.Visa.IUsbSession.md)|The INSTR session type for USBTMC devices.|
 |[IVisaAsyncResult](Ivi.Visa.IVisaAsyncResult.md)||
 |[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
-|IVxiSession|The INSTR session type for VXI devices.|
+|[IVxiSession](Ivi.Visa.IVxiSession.md)|The INSTR session type for VXI devices.|
 
 ## Enums
 |Name|Description|
