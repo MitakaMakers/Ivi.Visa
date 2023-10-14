@@ -16,7 +16,9 @@ English | [日本語](Mm.ja.md)
 |[ClientPortmapUdp](Vxi11Net.ClientPortmapUdp.md)||
 |[ClientRpcTcp](Vxi11Net.ClientRpcTcp.md)||
 |[ClientRpcUdp](Vxi11Net.ClientRpcUdp.md)||
+|[ClientSocket](Vxi11Net.ClientSocket.md)||
 |[ClientVxi11](Vxi11Net.ClientVxi11.md)||
+|[ServerSocket](Vxi11Net.ServerSocket.md)||
 
 ## Interfaces
 |Name|Description|
