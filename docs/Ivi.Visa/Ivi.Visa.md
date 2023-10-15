@@ -12,20 +12,19 @@ English | [日本語](Ivi.Visa.ja.md)
 |Name|Description|
 |---|---|
 |[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
-|GpibControllerInChargeEventArgs||
+|[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)||
 |[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
 |[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
 |[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
 |[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
-|PxiInterruptEventArgs||
+|[PxiInterruptEventArgs](Ivi.Visa.PxiInterruptEventArgs.md)||
 |[TypeFormatterException](Ivi.Visa.TypeFormatterException.md)|A Type Formatter error has occurred.|
-|UsbInterruptEventArgs||
+|[UsbInterruptEventArgs](Ivi.Visa.UsbInterruptEventArgs.md)||
 |[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
 |[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
-|VxiSignalProcessorEventArgs||
-|VxiTriggerEventArgs||
-|VxiInterruptEventArgs||
-
+|[VxiSignalProcessorEventArgs](Ivi.Visa.VxiSignalProcessorEventArgs.md)||
+|[VxiTriggerEventArgs](Ivi.Visa.VxiTriggerEventArgs.md)||
+|[VxiInterruptEventArgs](Ivi.Visa.VxiInterruptEventArgs.md)||
 
 ## Interfaces
 |Name|Description|
@@ -36,7 +35,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |[IMessageBasedFormattedIO](Ivi.Visa.IMessageBasedFormattedIO.md)|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|The interface from which every VISA.NET message-based session must derive.|
-|INativeVisaEventArgs||
+|[INativeVisaEventArgs](Ivi.Visa.INativeVisaEventArgs.md)||
 |IPxiBackplaneSession||
 |IPxiMemorySession||
 |[IPxiSession](Ivi.Visa.IPxiSession.md)|The INSTR session type for PXI devices.|
