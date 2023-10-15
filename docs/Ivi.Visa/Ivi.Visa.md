@@ -51,7 +51,7 @@ English | [日本語](Ivi.Visa.ja.md)
 |[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
 |[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
 
-## EventArgs
+## Events
 |Name|Description|
 |---|---|
 |[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)||
