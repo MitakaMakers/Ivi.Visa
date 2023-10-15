@@ -12,22 +12,33 @@ English | [日本語](Ivi.Visa.ja.md)
 |Name|Description|
 |---|---|
 |[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
+|GpibControllerInChargeEventArgs||
 |[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
 |[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
 |[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
 |[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
+|PxiInterruptEventArgs||
 |[TypeFormatterException](Ivi.Visa.TypeFormatterException.md)|A Type Formatter error has occurred.|
+|UsbInterruptEventArgs||
 |[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
 |[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
+|VxiSignalProcessorEventArgs||
+|VxiTriggerEventArgs||
+|VxiInterruptEventArgs||
+
 
 ## Interfaces
 |Name|Description|
 |---|---|
+|IGpibInterfaceSession||
 |[IGpibSession](Ivi.Visa.IGpibSession.md)|The INSTR session type for GPIB devices.|
 |[IMemoryMap](Ivi.Visa.IMemoryMap.md)||
 |[IMessageBasedFormattedIO](Ivi.Visa.IMessageBasedFormattedIO.md)|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|The interface from which every VISA.NET message-based session must derive.|
+|INativeVisaEventArgs||
+|IPxiBackplaneSession||
+|IPxiMemorySession||
 |[IPxiSession](Ivi.Visa.IPxiSession.md)|The INSTR session type for PXI devices.|
 |[IRegisterBasedSession](Ivi.Visa.IRegisterBasedSession.md)|The base session type for register-based devices.|
 |[IResourceManager](Ivi.Visa.IResourceManager.md)|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
@@ -38,6 +49,8 @@ English | [日本語](Ivi.Visa.ja.md)
 |[IUsbSession](Ivi.Visa.IUsbSession.md)|The INSTR session type for USBTMC devices.|
 |[IVisaAsyncResult](Ivi.Visa.IVisaAsyncResult.md)||
 |[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
+|IVxiBackplaneSession||
+|IVxiMemorySession||
 |[IVxiSession](Ivi.Visa.IVxiSession.md)|The INSTR session type for VXI devices.|
 
 ## Enums
