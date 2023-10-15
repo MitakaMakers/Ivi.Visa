@@ -12,45 +12,55 @@ English | [日本語](Ivi.Visa.ja.md)
 |Name|Description|
 |---|---|
 |[GlobalResourceManager](Ivi.Visa.GlobalResourceManager.md)|The GlobalResourceManager class provides methods that instantiate a VISA.NET session|
-|[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)||
-|[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
-|[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
-|[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
 |[ParseResult](Ivi.Visa.ParseResult.md)|The ParseResult class provides the parsing information returned by the Parse methods in the IResourceManager interface and the GlobalResourceManager class.|
-|[PxiInterruptEventArgs](Ivi.Visa.PxiInterruptEventArgs.md)||
-|[TypeFormatterException](Ivi.Visa.TypeFormatterException.md)|A Type Formatter error has occurred.|
-|[UsbInterruptEventArgs](Ivi.Visa.UsbInterruptEventArgs.md)||
-|[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
-|[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
-|[VxiSignalProcessorEventArgs](Ivi.Visa.VxiSignalProcessorEventArgs.md)||
-|[VxiTriggerEventArgs](Ivi.Visa.VxiTriggerEventArgs.md)||
-|[VxiInterruptEventArgs](Ivi.Visa.VxiInterruptEventArgs.md)||
 
 ## Interfaces
 |Name|Description|
 |---|---|
-|IGpibInterfaceSession||
+|[IGpibInterfaceSession](Ivi.Visa.IGpibInterfaceSession.md)||
 |[IGpibSession](Ivi.Visa.IGpibSession.md)|The INSTR session type for GPIB devices.|
 |[IMemoryMap](Ivi.Visa.IMemoryMap.md)||
 |[IMessageBasedFormattedIO](Ivi.Visa.IMessageBasedFormattedIO.md)|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|The interface from which every VISA.NET message-based session must derive.|
 |[INativeVisaEventArgs](Ivi.Visa.INativeVisaEventArgs.md)||
-|IPxiBackplaneSession||
-|IPxiMemorySession||
+|[INativeVisaSession](Ivi.Visa.INativeVisaSession.md)||
+|[IPxiBackplaneSession](Ivi.Visa.IPxiBackplaneSession.md)||
+|[IPxiMemorySession](Ivi.Visa.IPxiMemorySession.md)||
 |[IPxiSession](Ivi.Visa.IPxiSession.md)|The INSTR session type for PXI devices.|
 |[IRegisterBasedSession](Ivi.Visa.IRegisterBasedSession.md)|The base session type for register-based devices.|
 |[IResourceManager](Ivi.Visa.IResourceManager.md)|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
 |[ISerialSession](Ivi.Visa.ISerialSession.md)|The INSTR session type for serial (RS-232) devices.|
 |[ITcpipSession](Ivi.Visa.ITcpipSession.md)|The INSTR session type for LAN devices.|
+|[ITcpipSession2](Ivi.Visa.ITcpipSession2.md)||
 |[ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)|The SOCKET session type for TCPIP devices.|
+|[ITcpipSocketSession2](Ivi.Visa.ITcpipSocketSession2.md)||
 |[ITypeFormatter](Ivi.Visa.ITypeFormatter.md)||
 |[IUsbSession](Ivi.Visa.IUsbSession.md)|The INSTR session type for USBTMC devices.|
 |[IVisaAsyncResult](Ivi.Visa.IVisaAsyncResult.md)||
 |[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
-|IVxiBackplaneSession||
-|IVxiMemorySession||
+|[IVxiBackplaneSession](Ivi.Visa.IVxiBackplaneSession.md)||
+|[IVxiMemorySession](Ivi.Visa.IVxiMemorySession.md)||
 |[IVxiSession](Ivi.Visa.IVxiSession.md)|The INSTR session type for VXI devices.|
+
+## Exceptions
+|Name|Description|
+|---|---|
+|[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
+|[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
+|[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
+|[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
+
+## EventArgs
+|Name|Description|
+|---|---|
+|[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)||
+|[PxiInterruptEventArgs](Ivi.Visa.PxiInterruptEventArgs.md)||
+|[UsbInterruptEventArgs](Ivi.Visa.UsbInterruptEventArgs.md)||
+|[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
+|[VxiSignalProcessorEventArgs](Ivi.Visa.VxiSignalProcessorEventArgs.md)||
+|[VxiTriggerEventArgs](Ivi.Visa.VxiTriggerEventArgs.md)||
+|[VxiInterruptEventArgs](Ivi.Visa.VxiInterruptEventArgs.md)||
 
 ## Enums
 |Name|Description|
