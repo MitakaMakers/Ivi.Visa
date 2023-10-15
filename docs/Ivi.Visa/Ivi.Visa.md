@@ -8,8 +8,7 @@ English | [日本語](Ivi.Visa.ja.md)
 - [Interfaces](#interfaces)
 - [Events](#events)
 - [Enums](#enums)
-- [Exeptions](#Exeptions)
-
+- [Exceptions](#Exceptions)
 ## Classes
 |Name|Description|
 |---|---|
