@@ -6,7 +6,9 @@ English | [日本語](Ivi.Visa.ja.md)
 
 - [Classes](#classes)
 - [Interfaces](#interfaces)
+- [Events](#events)
 - [Enums](#enums)
+- [Exeptions](#Exeptions)
 
 ## Classes
 |Name|Description|
@@ -42,14 +44,6 @@ English | [日本語](Ivi.Visa.ja.md)
 |[IVxiBackplaneSession](Ivi.Visa.IVxiBackplaneSession.md)||
 |[IVxiMemorySession](Ivi.Visa.IVxiMemorySession.md)||
 |[IVxiSession](Ivi.Visa.IVxiSession.md)|The INSTR session type for VXI devices.|
-
-## Exceptions
-|Name|Description|
-|---|---|
-|[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
-|[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
-|[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
-|[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
 
 ## Events
 |Name|Description|
@@ -98,3 +92,11 @@ English | [日本語](Ivi.Visa.ja.md)
 |[VxiDeviceClass](Ivi.Visa.VxiDeviceClass.md)|The VxiDeviceClass enumeration indicates the VXI-defined device class to which a particular resource belongs.|
 |[VxiTriggerProtocol](Ivi.Visa.VxiTriggerProtocol.md)|The VxiTriggerProtocol enumeration indicates the trigger protocol to be used when a VXI trigger is asserted.|
 |[VxiUtilitySignal](Ivi.Visa.VxiUtilitySignal.md)|The VxiUtilitySignal enumeration indicates the utility bus signal to assert.|
+
+## Exceptions
+|Name|Description|
+|---|---|
+|[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
+|[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
+|[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
+|[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
