@@ -18,42 +18,42 @@ English | [日本語](Ivi.Visa.ja.md)
 ## Interfaces
 |Name|Description|
 |---|---|
-|[IGpibInterfaceSession](Ivi.Visa.IGpibInterfaceSession.md)||
+|[IGpibInterfaceSession](Ivi.Visa.IGpibInterfaceSession.md)|The INTFC session type for GPIB buses.|
 |[IGpibSession](Ivi.Visa.IGpibSession.md)|The INSTR session type for GPIB devices.|
-|[IMemoryMap](Ivi.Visa.IMemoryMap.md)||
+|[IMemoryMap](Ivi.Visa.IMemoryMap.md)|Provides memory mapping services for register-based devices.|
 |[IMessageBasedFormattedIO](Ivi.Visa.IMessageBasedFormattedIO.md)|MessageBasedFormattedIO allows calling programs to use a variety of common data types.|
 |[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIO allows calling programs to send string or byte array data to the instrument without any formatting or parsing.|
 |[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|The interface from which every VISA.NET message-based session must derive.|
-|[INativeVisaEventArgs](Ivi.Visa.INativeVisaEventArgs.md)||
-|[INativeVisaSession](Ivi.Visa.INativeVisaSession.md)||
-|[IPxiBackplaneSession](Ivi.Visa.IPxiBackplaneSession.md)||
-|[IPxiMemorySession](Ivi.Visa.IPxiMemorySession.md)||
+|[INativeVisaEventArgs](Ivi.Visa.INativeVisaEventArgs.md)|The VisaEventArgs class communicates the event being fired.|
+|[INativeVisaSession](Ivi.Visa.INativeVisaSession.md)|This section summarizes INativeVisaSession, which allows access to vendor specific C attributes and events.|
+|[IPxiBackplaneSession](Ivi.Visa.IPxiBackplaneSession.md)|The BACKPLANE session type for PXI backplanes.|
+|[IPxiMemorySession](Ivi.Visa.IPxiMemorySession.md)|The MEMACC session type for PXI devices.|
 |[IPxiSession](Ivi.Visa.IPxiSession.md)|The INSTR session type for PXI devices.|
 |[IRegisterBasedSession](Ivi.Visa.IRegisterBasedSession.md)|The base session type for register-based devices.|
 |[IResourceManager](Ivi.Visa.IResourceManager.md)|The IResourceManager interface provides methods that instantiate a VISA.NET session for the specified resource.|
 |[ISerialSession](Ivi.Visa.ISerialSession.md)|The INSTR session type for serial (RS-232) devices.|
 |[ITcpipSession](Ivi.Visa.ITcpipSession.md)|The INSTR session type for LAN devices.|
-|[ITcpipSession2](Ivi.Visa.ITcpipSession2.md)||
+|[ITcpipSession2](Ivi.Visa.ITcpipSession2.md)|The INSTR session type for LAN devices.|
 |[ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)|The SOCKET session type for TCPIP devices.|
-|[ITcpipSocketSession2](Ivi.Visa.ITcpipSocketSession2.md)||
-|[ITypeFormatter](Ivi.Visa.ITypeFormatter.md)||
+|[ITcpipSocketSession2](Ivi.Visa.ITcpipSocketSession2.md)|The SOCKET session type for TCPIP devices.  This derives from and supercedes ITcpipSocketSession.|
+|[ITypeFormatter](Ivi.Visa.ITypeFormatter.md)|The ITypeFormatter interface provides methods that perform custom conversions of supported .NET types to and from a string.|
 |[IUsbSession](Ivi.Visa.IUsbSession.md)|The INSTR session type for USBTMC devices.|
-|[IVisaAsyncResult](Ivi.Visa.IVisaAsyncResult.md)||
+|[IVisaAsyncResult](Ivi.Visa.IVisaAsyncResult.md)|A reference to the result of an asynchronous I/O operation.|
 |[IVisaSession](Ivi.Visa.IVisaSession.md)|The interface from which every VISA.NET session must derive.|
-|[IVxiBackplaneSession](Ivi.Visa.IVxiBackplaneSession.md)||
-|[IVxiMemorySession](Ivi.Visa.IVxiMemorySession.md)||
+|[IVxiBackplaneSession](Ivi.Visa.IVxiBackplaneSession.md)|The BACKPLANE session type for VXI backplanes.|
+|[IVxiMemorySession](Ivi.Visa.IVxiMemorySession.md)|The MEMACC session type for VXI devices.|
 |[IVxiSession](Ivi.Visa.IVxiSession.md)|The INSTR session type for VXI devices.|
 
 ## Events
 |Name|Description|
 |---|---|
-|[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)||
-|[PxiInterruptEventArgs](Ivi.Visa.PxiInterruptEventArgs.md)||
-|[UsbInterruptEventArgs](Ivi.Visa.UsbInterruptEventArgs.md)||
+|[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)|Provides additional data about a GPIB controller in charge (CIC) event.|
+|[PxiInterruptEventArgs](Ivi.Visa.PxiInterruptEventArgs.md)|Provides additional data about a VXI interrupt event.|
+|[UsbInterruptEventArgs](Ivi.Visa.UsbInterruptEventArgs.md)|Provides additional data about a USB interrupt event.|
 |[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|The VisaEventArgs class communicates information about the event being fired.|
-|[VxiSignalProcessorEventArgs](Ivi.Visa.VxiSignalProcessorEventArgs.md)||
-|[VxiTriggerEventArgs](Ivi.Visa.VxiTriggerEventArgs.md)||
-|[VxiInterruptEventArgs](Ivi.Visa.VxiInterruptEventArgs.md)||
+|[VxiSignalProcessorEventArgs](Ivi.Visa.VxiSignalProcessorEventArgs.md)|Provides additional data about a VXIbus signal or VXIbus interrupt event.|
+|[VxiTriggerEventArgs](Ivi.Visa.VxiTriggerEventArgs.md)|Provides additional data about a VXI trigger event.|
+|[VxiInterruptEventArgs](Ivi.Visa.VxiInterruptEventArgs.md)|Provides additional data about a VXI interrupt event.|
 
 ## Enums
 |Name|Description|
