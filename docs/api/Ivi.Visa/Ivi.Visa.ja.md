@@ -11,43 +11,52 @@
 - [例外](#例外)
 
 ## クラス
+
 |名前|説明|
 |---|---|
-|[IGpibInterfaceSession](Ivi.Visa.IGpibInterfaceSession.md)|GPIBバス用のINTFCセッションタイプ。
-|[IGpibSession](Ivi.Visa.IGpibSession.md)|GPIBデバイス用のINSTRセッションタイプ。|[IMemoryMap](Ivi.Visa.IMemoryMap.md)|レジスタベースデバイス用のメモリマッピングサービスを提供します。
-|[IMessageBasedFormattedIO](Ivi.Visa.IMessageBasedFormattedIO.md)|MessageBasedFormattedIOは、呼び出しプログラムが様々な一般的なデータタイプを使用できるようにします。
-|[IMessageBasedRawIO](Ivi.Visa.IMessageBasedRawIO.md)|IMessageBasedRawIOを使用すると、呼び出し元のプログラムは、フォーマットやパースなしに、文字列やバイト配列のデータを測定器に送信することができます。
-|[IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md)|全てのVISA.NETメッセージベースセッションが派生しなければならないインターフェース。
-|[INativeVisaEventArgs](Ivi.Visa.INativeVisaEventArgs.md)|VisaEventArgsクラスは発生するイベントを伝達する。
-|[INativeVisaSession](Ivi.Visa.INativeVisaSession.md)|ベンダー固有のC属性やイベントにアクセスできるINativeVisaSessionについてまとめています。
-|[IPxiBackplaneSession](Ivi.Visa.IPxiBackplaneSession.md)|PXIバックプレーン用のBACKPLANEセッションタイプ。
-|[IPxiMemorySession](Ivi.Visa.IPxiMemorySession.md)|PXIデバイスのMEMACCセッションタイプ。
-|[IPxiSession](Ivi.Visa.IPxiSession.md)|PXIデバイス用のINSTRセッションタイプ。
-|[IRegisterBasedSession](Ivi.Visa.IRegisterBasedSession.md)|レジスタベースデバイス用のベースセッションタイプ。
-|[IResourceManager](Ivi.Visa.IResourceManager.md)|IResourceManagerインターフェイスは指定されたリソースのVISA.NETセッションをインスタンス化するメソッドを提供する。
-|[ISerialSession](Ivi.Visa.ISerialSession.md)|シリアル(RS-232)デバイス用のINSTRセッション・タイプ。
-|[ITcpipSession](Ivi.Visa.ITcpipSession.md)|LANデバイス用のINSTRセッションタイプ。
-|[ITcpipSession2](Ivi.Visa.ITcpipSession2.md)|LANデバイスのINSTRセッションタイプ。
-|[ITcpipSocketSession](Ivi.Visa.ITcpipSocketSession.md)|TCPIPデバイス用のSOCKETセッションタイプ。
-|[ITcpipSocketSession2](Ivi.Visa.ITcpipSocketSession2.md)|TCPIPデバイス用のSOCKETセッションタイプ。 ITcpipSocketSession.|から派生し、ITcpipSocketSession.|に優先する。
-|[ITypeFormatter](Ivi.Visa.ITypeFormatter.md)|ITypeFormatterインターフェイスは、サポートされている.NET型の文字列へのカスタム変換を行うメソッドを提供します。
-|[IUsbSession](Ivi.Visa.IUsbSession.md)|USBTMCデバイス用のINSTRセッションタイプ。
-|[IVisaAsyncResult](Ivi.Visa.IVisaAsyncResult.md)|非同期I/O操作の結果への参照。
-|[IVisaSession](Ivi.Visa.IVisaSession.md)|全てのVISA.NETセッションが派生しなければならないインターフェース。
-|[IVxiBackplaneSession](Ivi.Visa.IVxiBackplaneSession.md)|VXIバックプレーン用のBACKPLANEセッション・タイプ。
-|[IVxiMemorySession](Ivi.Visa.IVxiMemorySession.md)|VXIデバイスのMEMACCセッションタイプ。
-|[IVxiSession](Ivi.Visa.IVxiSession.md)|VXIデバイスのINSTRセッションタイプ。
+|GlobalResourceManager|GlobalResourceManager クラスは VISA.NET セッションをインスタンス化するメソッドを提供します。|
+|ParseResult|ParseResult クラスは IResourceManager インターフェイスと GlobalResourceManager クラスの Parse メソッドによって返される解析情報を提供します。|
+
+## インターフェイス
+
+|名前|説明|
+|---|---|
+|IGpibInterfaceSession|GPIBバス用のINTFCセッションタイプ。
+|IGpibSession|GPIBデバイス用のINSTRセッションタイプ。|
+|IMemoryMap|レジスタベースデバイス用のメモリマッピングサービスを提供します。
+|IMessageBasedFormattedIO|MessageBasedFormattedIOは、呼び出しプログラムが様々な一般的なデータタイプを使用できるようにします。
+|IMessageBasedRawIO|IMessageBasedRawIOを使用すると、呼び出し元のプログラムは、フォーマットやパースなしに、文字列やバイト配列のデータを測定器に送信することができます。
+|IMessageBasedSession|全てのVISA.NETメッセージベースセッションが派生しなければならないインターフェース。
+|INativeVisaEventArgs|VisaEventArgsクラスは発生するイベントを伝達する。
+|INativeVisaSession|ベンダー固有のC属性やイベントにアクセスできるINativeVisaSessionについてまとめています。
+|IPxiBackplaneSession|PXIバックプレーン用のBACKPLANEセッションタイプ。
+|IPxiMemorySession|PXIデバイスのMEMACCセッションタイプ。
+|IPxiSession|PXIデバイス用のINSTRセッションタイプ。
+|IRegisterBasedSession|レジスタベースデバイス用のベースセッションタイプ。
+|IResourceManager|IResourceManagerインターフェイスは指定されたリソースのVISA.NETセッションをインスタンス化するメソッドを提供する。
+|ISerialSession|シリアル(RS-232)デバイス用のINSTRセッション・タイプ。
+|ITcpipSession|LANデバイス用のINSTRセッションタイプ。
+|ITcpipSession2|LANデバイスのINSTRセッションタイプ。
+|ITcpipSocketSession|TCPIPデバイス用のSOCKETセッションタイプ。
+|ITcpipSocketSession2|TCPIPデバイス用のSOCKETセッションタイプ。 ITcpipSocketSession.|から派生し、ITcpipSocketSession.|に優先する。
+|ITypeFormatter|ITypeFormatterインターフェイスは、サポートされている.NET型の文字列へのカスタム変換を行うメソッドを提供します。
+|IUsbSession|USBTMCデバイス用のINSTRセッションタイプ。
+|IVisaAsyncResult|非同期I/O操作の結果への参照。
+|IVisaSession|全てのVISA.NETセッションが派生しなければならないインターフェース。
+|IVxiBackplaneSession|VXIバックプレーン用のBACKPLANEセッション・タイプ。
+|IVxiMemorySession|VXIデバイスのMEMACCセッションタイプ。
+|IVxiSession|VXIデバイスのINSTRセッションタイプ。
 
 ## イベント
 |名前|説明|
 |---|---|
-|[GpibControllerInChargeEventArgs](Ivi.Visa.GpibControllerInChargeEventArgs.md)|充電中のGPIBコントローラ(CIC)イベントに関する追加データを提供します。
-|[PxiInterruptEventArgs](Ivi.Visa.PxiInterruptEventArgs.md)|VXI割り込みイベントに関する追加データを提供します。
-|[UsbInterruptEventArgs](Ivi.Visa.UsbInterruptEventArgs.md)|USB割り込みイベントに関する追加データを提供します。
-|[VisaEventArgs](Ivi.Visa.VisaEventArgs.md)|VisaEventArgsクラスは、発生したイベントに関する情報を伝達します。
-|[VxiSignalProcessorEventArgs](Ivi.Visa.VxiSignalProcessorEventArgs.md)|VXIbusシグナルまたはVXIbus割り込みイベントに関する追加データを提供します。
-|[VxiTriggerEventArgs](Ivi.Visa.VxiTriggerEventArgs.md)|VXIトリガイベントに関する追加データを提供します。
-|[VxiInterruptEventArgs](Ivi.Visa.VxiInterruptEventArgs.md)|VXI割り込みイベントに関する追加データを提供します。
+|GpibControllerInChargeEventArgs|充電中のGPIBコントローラ(CIC)イベントに関する追加データを提供します。
+|PxiInterruptEventArgs|VXI割り込みイベントに関する追加データを提供します。
+|UsbInterruptEventArgs|USB割り込みイベントに関する追加データを提供します。
+|VisaEventArgs|VisaEventArgsクラスは、発生したイベントに関する情報を伝達します。
+|VxiSignalProcessorEventArgs|VXIbusシグナルまたはVXIbus割り込みイベントに関する追加データを提供します。
+|VxiTriggerEventArgs|VXIトリガイベントに関する追加データを提供します。
+|VxiInterruptEventArgs|VXI割り込みイベントに関する追加データを提供します。
 
 ## 列挙型
 |名前|説明|
