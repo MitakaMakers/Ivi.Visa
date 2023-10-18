@@ -9,6 +9,7 @@ English | [日本語](Ivi.Visa.ja.md)
 - [Events](#events)
 - [Enums](#enums)
 - [Exceptions](#Exceptions)
+
 ## Classes
 |Name|Description|
 |---|---|
@@ -98,4 +99,5 @@ English | [日本語](Ivi.Visa.ja.md)
 |[IOTimeoutException](Ivi.Visa.IOTimeoutException.md)|A VISA.NET I/O timeout has occured.|
 |[NativeErrorCode](Ivi.Visa.NativeErrorCode.md)|A class that contains the standard error status codes.|
 |[NativeVisaException](Ivi.Visa.NativeVisaException.md)|An error related to the underlying VISA native C implementation has occurred.|
+|[TypeFormatterException](Ivi.Visa.TypeFormatterException.md)|A Type Formatter error has occurred.|
 |[VisaException](Ivi.Visa.VisaException.md)|A VISA.NET error has occurred.|
