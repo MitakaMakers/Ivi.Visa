@@ -3,7 +3,7 @@ English | 日本語
 # IVxiSession Interface
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
 Inheritance:[System.IDisposable](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable) -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IRegisterBasedSession](Ivi.Visa.IRegisterBasedSession.md) -> **Ivi.Visa.IVxiSession**<BR>
 Inheritance:[System.IDisposable](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable) -> [Ivi.Visa.IVisaSession](Ivi.Visa.IVisaSession.md) -> [Ivi.Visa.IMessageBasedSession](Ivi.Visa.IMessageBasedSession.md) -> **Ivi.Visa.IVxiSession**

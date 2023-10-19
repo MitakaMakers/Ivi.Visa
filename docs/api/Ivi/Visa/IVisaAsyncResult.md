@@ -3,7 +3,7 @@ English | 日本語
 # IVisaAsyncResult Interface
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
 Inheritance:[System.IAsyncResult](https://learn.microsoft.com/en-us/dotnet/api/system.iasyncresult) -> **Ivi.Visa.IVisaAsyncResult**
 

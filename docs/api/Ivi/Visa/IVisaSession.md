@@ -3,7 +3,7 @@ English | [日本語](Ivi.Visa.IVisaSession.ja.md)
 # IVisaSession Interface
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
 Inheritance:[System.IDisposable](https://learn.microsoft.com/en-us/dotnet/api/system.idisposable) -> **Ivi.Visa.IVisaSession**
 

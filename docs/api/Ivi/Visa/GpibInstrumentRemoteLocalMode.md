@@ -1,11 +1,11 @@
 English | 日本語
 
-[Ivi.visa](Ivi.Visa.md)
+[Ivi.visa](../Visa.md)
 
 # GpibInstrumentRemoteLocalMode Enum
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll
 
 ## Fields

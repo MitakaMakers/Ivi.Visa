@@ -3,7 +3,7 @@ English | 日本語
 # EventQueueStatus Enum
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll
 
 ## Fields

@@ -3,7 +3,7 @@ English | 日本語
 # IOBuffers Enum
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll
 Attribute:[Flags](https://learn.microsoft.com/en-us/dotnet/api/system.flagsattribute)
 

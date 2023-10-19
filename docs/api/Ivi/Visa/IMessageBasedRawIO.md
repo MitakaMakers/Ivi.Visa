@@ -3,7 +3,7 @@ English | [日本語](Ivi.Visa.IResourceManager.ja.md)
 # IMessageBasedRawIO Interface
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
 
 ## Methods

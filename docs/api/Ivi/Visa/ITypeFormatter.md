@@ -3,7 +3,7 @@ English | 日本語
 # ITypeFormatter Interface
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
 
 ## Methods

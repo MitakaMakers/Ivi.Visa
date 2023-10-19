@@ -3,7 +3,7 @@ English | 日本語
 # IOTimeoutException Class
 
 ## Definition
-Namespace:[Ivi.Visa](Ivi.Visa.md)<BR>
+Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
 Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> [Ivi.Visa.VisaException](Ivi.Visa.VisaException.md) -> **Ivi.Visa.IOTimeoutException**
 
