@@ -5,6 +5,13 @@ English | 日本語
 ## Definition
 Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
+
+A Type Formatter error has occurred.  This could be an error either in converting the type value to a string, or in converting a string to the corresponding type value.
+
+```C#
+public class TypeFormatterException : System.Exception
+```
+
 Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> [Ivi.Visa.VisaException](VisaException.md) -> **Ivi.Visa.TypeFormatterException**
 
 ## Constructors

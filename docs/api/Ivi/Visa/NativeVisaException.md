@@ -5,7 +5,14 @@ English | 日本語
 ## Definition
 Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> [Ivi.Visa.VisaException](VisaException.md) -> **Ivi.Visa.NativeVisaException**
+
+An error related to the underlying VISA native C implementation has occurred.  The status code indicates the type of error that occurred.
+
+```C#
+public class NativeVisaException : Ivi.Visa.VisaException
+```
+
+Inheritance: [System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.Exception](https://learn.microsoft.com/en-us/dotnet/api/system.exception) -> [Ivi.Visa.VisaException](VisaException.md) -> **Ivi.Visa.NativeVisaException**
 
 ## Constructors
 
@@ -22,41 +29,21 @@ Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.
 |---|
 |[ErrorCode](#ErrorCode-Property)|
 
-## TypeFormatterException() Constructor
+## public NativeVisaException(int errorCode) Constructor
 ```C#
-public TypeFormatterException()
+public NativeVisaException(int errorCode)
 ```
-## TypeFormatterException(System.Exception innerException) Constructor
+## public NativeVisaException(int errorCode, String message) Constructor
 ```C#
-public TypeFormatterException(System.Exception innerException)
+public NativeVisaException(int errorCode, String message)
 ```
-## TypeFormatterException(Type type) Constructor
+## public NativeVisaException(int errorCode, String message, System.Exception innerException) Constructor
 ```C#
-public TypeFormatterException(Type type)
+public NativeVisaException(int errorCode, String message, System.Exception innerException)
 ```
-## TypeFormatterException(Type type, System.Exception innerException) Constructor
+## protected NativeVisaException(SerializationInfo info, StreamingContext context) Constructor
 ```C#
-public TypeFormatterException(Type type, System.Exception innerException)
-```
-## TypeFormatterException(Type type, String instrumentResponse) Constructor
-```C#
-public TypeFormatterException(Type type, String instrumentResponse)
-```
-## TypeFormatterException(Type type, String instrumentResponse, System.Exception innerException) Constructor
-```C#
-public TypeFormatterException(Type type, String instrumentResponse, System.Exception innerException)
-```
-## TypeFormatterException(Object obj) Constructor
-```C#
-public TypeFormatterException(Object obj)
-```
-## TypeFormatterException(Object obj, System.Exception innerException) Constructor
-```C#
-public TypeFormatterException(Object obj, System.Exception innerException)
-```
-## TypeFormatterException(SerializationInfo info, StreamingContext context) Constructor
-```C#
-protected TypeFormatterException(SerializationInfo info, StreamingContext context)
+protected NativeVisaException(SerializationInfo info, StreamingContext context)
 ```
 ## ErrorCode Property
 ```C#
