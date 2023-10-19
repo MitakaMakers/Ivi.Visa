@@ -1,6 +1,6 @@
 English | 日本語
 
-# ActualData Property
+# IOTimeoutException.ActualData Property
 
 ## Definition
 Namespace:[Ivi.Visa](../Visa.md)<BR>

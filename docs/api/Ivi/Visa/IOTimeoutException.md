@@ -18,18 +18,19 @@ Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.
 
 |Method Name|
 |---|
-|[IOTimeoutException(Int64 actualCount, Byte[] actualData)](#IOTimeoutExceptionInt64-actualCount-Byte-actualData-Constructor)|
-|[IOTimeoutException(Int64 actualCount, Byte[] actualData, String message)](#IOTimeoutExceptionInt64-actualCount-Byte-actualData-String-message-Constructor)|
-|[IOTimeoutException(Int64 actualCount, Byte[] actualData, String message, System.Exception innerException)](#IOTimeoutExceptionInt64-actualCount-Byte-actualData-String-message-SystemException-innerException-Constructor)|
-|[IOTimeoutException(SerializationInfo info, StreamingContext context)](#IOTimeoutExceptionSerializationInfo-info-StreamingContext-context-Constructor)|
+|[IOTimeoutException(Int64 actualCount, Byte[] actualData)](IOTimeoutException.-ctor.md#IOTimeoutExceptionInt64-actualCount-Byte-actualData-Constructor)|
+|[IOTimeoutException(Int64 actualCount, Byte[] actualData, String message)](IOTimeoutException.-ctor.md#IOTimeoutExceptionInt64-actualCount-Byte-actualData-String-message-Constructor)|
+|[IOTimeoutException(Int64 actualCount, Byte[] actualData, String message, System.Exception innerException)](IOTimeoutException.-ctor.md#IOTimeoutExceptionInt64-actualCount-Byte-actualData-String-message-SystemException-innerException-Constructor)|
+|[IOTimeoutException(SerializationInfo info, StreamingContext context)](IOTimeoutException.-ctor.md#IOTimeoutExceptionSerializationInfo-info-StreamingContext-context-Constructor)|
 
 ## Properties
 
 |Property Name|
 |---|
-|[Int64 ActualCount](#ActualCount-Property)|
-|[Byte[] ActualData](#ActualData-Property)|
+|[Int64 ActualCount](IOTimeoutException.ActualCount.md#ActualCount-Property)|
+|[Byte[] ActualData](IOTimeoutException.ActualData.md#ActualData-Property)|
 
+<!--
 ## IOTimeoutException(Int64 actualCount, Byte[] actualData) Constructor
 ```C#
 public IOTimeoutException(Int64 actualCount, Byte[] actualData)
@@ -54,3 +55,4 @@ public Int64 ActualCount { get; protected set; }
 ```C#
 public Byte[] ActualData { get; protected set; }
 ```
+-->

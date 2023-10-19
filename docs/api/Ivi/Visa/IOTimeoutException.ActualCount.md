@@ -1,6 +1,6 @@
 English | 日本語
 
-# ActualCount Property
+# IOTimeoutException.ActualCount Property
 
 ## Definition
 Namespace:[Ivi.Visa](../Visa.md)<BR>
