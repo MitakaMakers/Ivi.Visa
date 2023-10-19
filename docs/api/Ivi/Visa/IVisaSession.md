@@ -136,25 +136,25 @@ void UnlockResource();
 ```
 ## WaitOnEvent(EventType eventType) Method
 ```C#
-VisaEventArgs WaitOnEvent(EventType eventType);
+[VisaEventArgs](VisaEventArgs.md) WaitOnEvent(EventType eventType);
 ```
 ## WaitOnEvent(EventType eventType, out EventQueueStatus status) Method
 ```C#
-VisaEventArgs WaitOnEvent(EventType eventType, out EventQueueStatus status);
+[VisaEventArgs](VisaEventArgs.md) WaitOnEvent(EventType eventType, out EventQueueStatus status);
 ```
 ## WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds) Method
 ```C#
-VisaEventArgs WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds);
+[VisaEventArgs](VisaEventArgs.md) WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds);
 ```
 ## WaitOnEvent(EventType eventType, TimeSpan timeout);
 ```C#
-VisaEventArgs WaitOnEvent(EventType eventType, TimeSpan timeout) Method
+[VisaEventArgs](VisaEventArgs.md) WaitOnEvent(EventType eventType, TimeSpan timeout) Method
 ```
 ## WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds, out EventQueueStatus status) Method
 ```C#
-VisaEventArgs WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds, out EventQueueStatus status);
+[VisaEventArgs](VisaEventArgs.md) WaitOnEvent(EventType eventType, Int32 timeoutMilliseconds, out EventQueueStatus status);
 ```
 ## WaitOnEvent(EventType eventType, TimeSpan timeout, out EventQueueStatus status) Method
 ```C#
-VisaEventArgs WaitOnEvent(EventType eventType, TimeSpan timeout, out EventQueueStatus status);
+[VisaEventArgs](VisaEventArgs.md) WaitOnEvent(EventType eventType, TimeSpan timeout, out EventQueueStatus status);
 ```

@@ -5,7 +5,7 @@ English | 日本語
 ## Definition
 Namespace:[Ivi.Visa](../Visa.md)<BR>
 Assembly:Ivi.Visa.dll<BR>
-Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.EventArgs](https://learn.microsoft.com/en-us/dotnet/api/system.eventargs) -> [Ivi.Visa.VisaEventArgs](Ivi.Visa.VisaEventArgs.md) -> **Ivi.Visa.VxiSignalProcessorEventArgs**
+Inheritance:[System.Object](https://learn.microsoft.com/en-us/dotnet/api/system.object) -> [System.EventArgs](https://learn.microsoft.com/en-us/dotnet/api/system.eventargs) -> [Ivi.Visa.VisaEventArgs](VisaEventArgs.md) -> **Ivi.Visa.VxiSignalProcessorEventArgs**
 
 ## Constructors
 
