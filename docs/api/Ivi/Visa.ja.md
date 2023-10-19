@@ -1,4 +1,4 @@
-[English](Ivi.Visa.md) | 日本語
+[English](Visa.md) | 日本語
 
 # Ivi.Visa 名前空間
 
