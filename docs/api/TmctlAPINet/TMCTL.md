@@ -1,7 +1,7 @@
 # TMCTL Class
 
 ## Definition
-Namespace:[TmctlAPINet](TmctlAPINet.md)<BR>
+Namespace:[TmctlAPINet](../TmctlAPINet.md)<BR>
 Assembly:TmctlAPINet.dll
 
 ## Properties

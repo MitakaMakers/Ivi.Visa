@@ -1,14 +1,14 @@
-# ClientPortmapUdp Class
+# ClientPortmapTcp Class
 
 ## Definition
-Namespace:[Vxi11Net](Vxi11Net.md)<BR>
+Namespace:[Vxi11Net](../Vxi11Net.md)<BR>
 Assembly:TmctlAPINet.dll
 
 ## Properties
 
 |Property Name|
 |---|
-|[clientRpcUdp](#clientRpcUdp-Property)|
+|[clientRpcTcp](#clientRpcTcp-Property)|
 |[xid](#xid-Property)|
 
 ## Methods
@@ -23,7 +23,7 @@ Assembly:TmctlAPINet.dll
 
 ## clientRpcTcp Property
 ```C#
-private ClientRpcUdp clientRpcUdp = new ClientRpcUdp();
+private ClientRpcTcp clientRpcTcp = new ClientRpcTcp();
 ```
 ## xid Property
 ```C#

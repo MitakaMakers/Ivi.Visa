@@ -1,7 +1,7 @@
 # ClientRpcTcp Class
 
 ## Definition
-Namespace:[Vxi11Net](Vxi11Net.md)<BR>
+Namespace:[Vxi11Net](../Vxi11Net.md)<BR>
 Assembly:TmctlAPINet.dll
 
 ## Properties

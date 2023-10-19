@@ -9,8 +9,8 @@
 ## Classes
 |Name|Description|
 |---|---|
-|[TMCTL](TmctlAPINet.TMCTL.md)||
-|[TmVxi11](TmctlAPINet.TmVXI11.md)||
+|[TMCTL](TmctlAPINet/TMCTL.md)||
+|[TmVxi11](TmctlAPINet/TmVXI11.md)||
 
 ## Interfaces
 |Name|Description|

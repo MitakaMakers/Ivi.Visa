@@ -1,14 +1,14 @@
-# ServerPortmapUdp Class
+# ServerPortmapTcp Class
 
 ## Definition
-Namespace:[Vxi11Net](Vxi11Net.md)<BR>
+Namespace:[Vxi11Net](../Vxi11Net.md)<BR>
 Assembly:TmctlAPINet.dll
 
 ## Properties
 
 |Property Name|
 |---|
-|[serverRpcUdp](#serverRpcUdp-Property)|
+|[serverRpcTcp](#serverRpcTcp-Property)|
 |[tokenSource](#tokenSource-Property)|
 
 ## Methods
@@ -23,14 +23,16 @@ Assembly:TmctlAPINet.dll
 |[ReplyGetPort(int xid, int port)](#ReplyGetPortint-xid-int-port-Method)|
 |[ClearArgs()](#ClearArgs-Method)|
 |[ReceiveMsg()](#ReceiveMsg-Method)|
-|[Run(string host, int port)](#Runstring-host-int-port-Method)|
-|[Shutdown()](#Shutdown-Method)|
+|[TcpThread()](#TcpThread-Method)|
 |[Create(string host, int port)](#Createstring-host-int-port-Method)|
 |[Destroy()](#Destroy-Method)|
+|[Run(string host, int port)](#Runstring-host-int-port-Method)|
+|[OneShot(string host, int port, int count)](#OneShotstring-host-int-port-int-count-Method)|
+|[Shutdown()](#Shutdown-Method)|
 
-## serverRpcUdp Property
+## serverRpcTcp Property
 ```C#
-private ServerRpcUdp serverRpcUdp = new ServerRpcUdp();
+private ServerRpcTcp serverRpcTcp = new ServerRpcTcp();
 ```
 ## tokenSource Property
 ```C#
@@ -68,13 +70,9 @@ public void ClearArgs()
 ```C#
 public Rpc.RPC_MESSAGE_PARAMS ReceiveMsg()
 ```
-## Run(string host, int port) Method
+## TcpThread() Method
 ```C#
-public void Run(string host, int port)
-```
-## Shutdown() Method
-```C#
-public void Shutdown()
+public void TcpThread()
 ```
 ## Create(string host, int port) Method
 ```C#
@@ -83,4 +81,16 @@ public void Create(string host, int port)
 ## Destroy() Method
 ```C#
 public void Destroy()
+```
+## Run(string host, int port) Method
+```C#
+public void Run(string host, int port)
+```
+## OneShot(string host, int port, int count) Method
+```C#
+public void OneShot(string host, int port, int count)
+```
+## Shutdown() Method
+```C#
+public void Shutdown()
 ```
