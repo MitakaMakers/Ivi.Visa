@@ -11,5 +11,6 @@ The actual bytes read or written before the timeout occurred.
 public Byte[] ActualData { get; protected set; }
 ```
 
-## ActualData Property
+## Property Value
+[Byte](https://learn.microsoft.com/en-us/dotnet/api/system.byte)<BR>
 The actual bytes read or written before the timeout occurred.  If the actual number of elements read could not be determined, the array is empty.

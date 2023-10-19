@@ -11,5 +11,6 @@ The actual number of elements read or written before the timeout occurred.
 public Int64 ActualCount { get; protected set; }
 ```
 
-## ActualCount Property
+## Property Value
+[Int64](https://learn.microsoft.com/en-us/dotnet/api/system.int64)<BR>
 The actual number of elements read or written before the timeout occurred.  A value of -1 indicates that the actual number could not be determined.
