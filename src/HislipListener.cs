@@ -9,16 +9,6 @@ namespace Vxi11Net
 {
     public class HislipListener
     {
-        private HislipListenerContext m_Context;
-
-        public HislipListener(TcpClient server, ulong maxMessageSize)
-        {
-            m_Context = new HislipListenerContext(this, server, maxMessageSize);
-        }
-        public void Close()
-        {
-            m_Context.Close();
-        }
         public static uint NetworkToHostOrderToUInt32(byte[] array, int index)
         {
             uint u = (uint)array[index] << 24;
@@ -38,6 +28,34 @@ namespace Vxi11Net
             u += (ulong)array[index + 6] << 8;
             u += (ulong)array[index + 7];
             return u;
+        }
+
+        enum State
+        {
+            Started,
+            Stopped,
+            Closed,
+        }
+
+        private HislipListenerContext m_Context;
+        private volatile State m_State;
+
+        public HislipListener(TcpClient server, ulong maxMessageSize)
+        {
+            m_Context = new HislipListenerContext(this, server, maxMessageSize);
+            m_State = State.Started;
+        }
+        public void Close()
+        {
+            m_Context.Close();
+            m_State = State.Stopped;
+        }
+        public bool IsListening
+        {
+            get
+            {
+                return m_State == State.Started;
+            }
         }
         public static HislipListenerContext GetMessage(TcpClient client)
         {
@@ -82,65 +100,82 @@ namespace Vxi11Net
         }
         public HislipListenerContext GetMessage()
         {
-            NetworkStream stream = m_Context.SyncClient.GetStream();
-            int size = Marshal.SizeOf(typeof(Hislip.Message));
-            byte[] buffer = new byte[size];
-            int bytes = stream.Read(buffer, 0, size);
-
-            HislipListenerRequest request = m_Context.Request;
-            request.Prologue0 = (char)buffer[0];
-            request.Prologue1 = (char)buffer[1];
-            request.MessageType = buffer[2];
-            request.ControlCode = buffer[3];
-            request.MessageParameter = NetworkToHostOrderToUInt32(buffer, 4);
-            request.PayloadLength = NetworkToHostOrderToUInt64(buffer, 8);
-            if (request.PayloadLength > 0)
+            try
             {
-                stream.Read(request.Payload, 0, (int)request.PayloadLength);
-            }
+                HislipListenerRequest request = m_Context.Request;
+                HislipListenerResponse response = m_Context.Response;
+                NetworkStream stream = m_Context.SyncClient.GetStream();
+                int size = Marshal.SizeOf(typeof(Hislip.Message));
+                byte[] buffer = new byte[size];
+                int bytes = stream.Read(buffer, 0, size);
+                if (bytes == 0)
+                {
+                    m_State = State.Closed;
+                    request.MessageType = 255;
+                }
+                else
+                {
 
-            HislipListenerResponse response = m_Context.Response;
-            response.Prologue0 = 'H';
-            response.Prologue1 = 'S';
-            switch (request.MessageType)
-            {
-                case Hislip.AsyncLock:
-                    response.MessageType = Hislip.AsyncLockResponse_;
-                    break;
-                case Hislip.Data_:
-                    response.MessageType = Hislip.Data_;
-                    response.MessageID = request.MessageParameter;
-                    break;
-                case Hislip.DataEnd:
-                    response.MessageType = Hislip.DataEnd;
-                    response.MessageID = request.MessageParameter;
-                    break;
-                case Hislip.DeviceClearComplete:
-                    response.MessageType = Hislip.DeviceClearAcknowledge;
-                    break;
-                case Hislip.AsyncRemoteLocalControl:
-                    response.MessageType = Hislip.AsyncRemoteLocalResponse;
-                    break;
-                case Hislip.AsyncDeviceClear:
-                    response.MessageType = Hislip.AsyncDeviceClearAcknowledge;
-                    break;
-                case Hislip.AsyncStatusQuery:
-                    response.MessageType = Hislip.AsyncStatusResponse;
-                    response.MessageID = request.MessageParameter;
-                    break;
-                case Hislip.AsyncLockInfo:
-                    response.MessageType = Hislip.AsyncLockInfoResponse;
-                    break;
+                    request.Prologue0 = (char)buffer[0];
+                    request.Prologue1 = (char)buffer[1];
+                    request.MessageType = buffer[2];
+                    request.ControlCode = buffer[3];
+                    request.MessageParameter = NetworkToHostOrderToUInt32(buffer, 4);
+                    request.PayloadLength = NetworkToHostOrderToUInt64(buffer, 8);
+                    if (request.PayloadLength > 0)
+                    {
+                        stream.Read(request.Payload, 0, (int)request.PayloadLength);
+                    }
+
+                    response.Prologue0 = 'H';
+                    response.Prologue1 = 'S';
+                    switch (request.MessageType)
+                    {
+                        case Hislip.AsyncLock:
+                            response.MessageType = Hislip.AsyncLockResponse_;
+                            break;
+                        case Hislip.Data_:
+                            response.MessageType = Hislip.Data_;
+                            response.MessageID = request.MessageParameter;
+                            break;
+                        case Hislip.DataEnd:
+                            response.MessageType = Hislip.DataEnd;
+                            response.MessageID = request.MessageParameter;
+                            break;
+                        case Hislip.DeviceClearComplete:
+                            response.MessageType = Hislip.DeviceClearAcknowledge;
+                            break;
+                        case Hislip.AsyncRemoteLocalControl:
+                            response.MessageType = Hislip.AsyncRemoteLocalResponse;
+                            break;
+                        case Hislip.AsyncDeviceClear:
+                            response.MessageType = Hislip.AsyncDeviceClearAcknowledge;
+                            break;
+                        case Hislip.AsyncStatusQuery:
+                            response.MessageType = Hislip.AsyncStatusResponse;
+                            response.MessageID = request.MessageParameter;
+                            break;
+                        case Hislip.AsyncLockInfo:
+                            response.MessageType = Hislip.AsyncLockInfoResponse;
+                            break;
+                    }
+                    response.ControlCode = 0;
+                    response.MessageParameter = 0;
+                    response.PayloadLength = 0;
+                }
             }
-            response.ControlCode = 0;
-            response.MessageParameter = 0;
-            response.PayloadLength = 0;
+            catch (System.IO.IOException e)
+            {
+                Console.WriteLine(e.ToString());
+                m_State = State.Closed;
+            }
             return m_Context;
         }
 
         internal void Stop()
         {
-            throw new NotImplementedException();
+            m_Context.Close();
+            m_State = State.Stopped;
         }
     }
 }
