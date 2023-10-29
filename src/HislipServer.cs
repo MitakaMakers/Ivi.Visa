@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Vxi11Net
 {
@@ -10,6 +11,7 @@ namespace Vxi11Net
     {
         private IPAddress m_LocalAddr = IPAddress.Parse("127.0.0.1");
         private short m_Port = Hislip.PORT;
+        private long m_MaximumMessageSize;
         private bool m_IsListening;
         private TcpListener m_TcpListener;
 
@@ -39,11 +41,28 @@ namespace Vxi11Net
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException("value");
+                    throw new ArgumentOutOfRangeException("Port");
                 }
             }
         }
-
+        public long MaximumMessageSize
+        {
+            get
+            {
+                return m_MaximumMessageSize;
+            }
+            set
+            {
+                if (value >= 0)
+                {
+                    m_MaximumMessageSize = value;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("MaximumMessageSize");
+                }
+            }
+        }
         public void Start()
         {
             m_IsListening = true;
@@ -97,7 +116,8 @@ namespace Vxi11Net
                 response = context.Response;
                 if (request.MessageType == Hislip.AsyncMaximumMessageSize)
                 {
-                    response.MaximumMessageSize = 1024;
+                   
+                    response.MaximumMessageSize = m_MaximumMessageSize;
                     byte[] bytes = response.GetBytes();
                     asyncClient.GetStream().Write(bytes);
                     break;
@@ -107,7 +127,7 @@ namespace Vxi11Net
                     asyncClient.Close();
                 }
             }
-            HislipListener listener = new HislipListener(client);
+            HislipListener listener = new HislipListener(client, m_MaximumMessageSize);
             return listener;
         }
         public void Abort() { }

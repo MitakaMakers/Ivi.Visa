@@ -16,18 +16,18 @@ namespace Vxi11Net
 
         internal HislipListenerContext(TcpClient server)
         {
-            m_Listener = new HislipListener(server);
-            m_Request = new HislipListenerRequest(this);
+            m_Listener = new HislipListener(server, 1024);
+            m_Request = new HislipListenerRequest(this, 1024);
             m_Response = new HislipListenerResponse(this);
             m_SyncClient = server;
             m_AsyncClient = server;
             m_RequestStream = new HislipRequestStream(this);
             m_ResponseStream = new HislipResponseStream(this);
         }
-        internal HislipListenerContext(HislipListener hislipListener, TcpClient server)
+        internal HislipListenerContext(HislipListener hislipListener, TcpClient server, long maxMessageSize)
         {
             m_Listener = hislipListener;
-            m_Request = new HislipListenerRequest(this);
+            m_Request = new HislipListenerRequest(this, maxMessageSize);
             m_Response = new HislipListenerResponse(this);
             m_SyncClient = server;
             m_AsyncClient = server;

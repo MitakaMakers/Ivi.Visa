@@ -32,7 +32,6 @@ namespace Vxi11Net
         private int m_MessageParameter;
         private long m_MaximumMessageSize;
         private byte[] m_Payload;
-        private string m_Message = "";
         private HislipListenerContext m_HislipListenerContext;
 
         internal HislipListenerResponse(HislipListenerContext context)
@@ -239,24 +238,6 @@ namespace Vxi11Net
                 }
             }
         }
-        public string Message
-        {
-            get
-            {
-                return m_Message;
-            }
-            set
-            {
-                if (value != null)
-                {
-                    m_Message = value;
-                }
-                else
-                {
-                    throw new ArgumentOutOfRangeException("value");
-                }
-            }
-        }
         public long PayloadLength
         {
             get
@@ -385,36 +366,34 @@ namespace Vxi11Net
             }
             else if (m_MessageType == Hislip.FatalError)
             {
-                byte[] array = System.Text.Encoding.ASCII.GetBytes(m_Message);
                 Hislip.Message reply = new Hislip.Message();
                 reply.Prologue0 = 'H';
                 reply.Prologue1 = 'S';
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = m_ControlCode;
                 reply.MessageParameter = 0;
-                reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
-                int size = Marshal.SizeOf(typeof(Hislip.Message)) + array.Length;
+                reply.PayloadLength = IPAddress.HostToNetworkOrder(m_PayloadLength);
+                int size = Marshal.SizeOf(typeof(Hislip.Message)) + (int)m_PayloadLength;
                 packet = new byte[size];
                 GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
                 Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-                Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
+                Buffer.BlockCopy(m_Payload, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), (int)m_PayloadLength);
                 gchw.Free();
             }
             else if (m_MessageType == Hislip.Error)
             {
-                byte[] array = System.Text.Encoding.ASCII.GetBytes(m_Message);
                 Hislip.Message reply = new Hislip.Message();
                 reply.Prologue0 = 'H';
                 reply.Prologue1 = 'S';
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = m_ControlCode;
                 reply.MessageParameter = 0;
-                reply.PayloadLength = IPAddress.HostToNetworkOrder((long)array.Length);
-                int size = Marshal.SizeOf(typeof(Hislip.Message)) + array.Length;
+                reply.PayloadLength = IPAddress.HostToNetworkOrder(m_PayloadLength);
+                int size = Marshal.SizeOf(typeof(Hislip.Message)) + (int)m_PayloadLength;
                 packet = new byte[size];
                 GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
                 Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-                Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
+                Buffer.BlockCopy(m_Payload, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), (int)m_PayloadLength);
                 gchw.Free();
             }
             else if (m_MessageType == Hislip.AsyncLockResponse_)
@@ -440,13 +419,12 @@ namespace Vxi11Net
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = m_ControlCode;
                 reply.MessageParameter = IPAddress.HostToNetworkOrder(m_MessageID);
-                reply.PayloadLength = IPAddress.HostToNetworkOrder((long)m_Message.Length);
-                int size = Marshal.SizeOf(typeof(Hislip.Message)) + m_Message.Length;
+                reply.PayloadLength = IPAddress.HostToNetworkOrder(m_PayloadLength);
+                int size = Marshal.SizeOf(typeof(Hislip.Message)) + (int)m_PayloadLength;
                 packet = new byte[size];
                 GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
                 Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-                byte[] array = System.Text.Encoding.ASCII.GetBytes(m_Message);
-                Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
+                Buffer.BlockCopy(m_Payload, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), (int)m_PayloadLength);
                 gchw.Free();
             }
             else if (m_MessageType == Hislip.DataEnd)
@@ -457,13 +435,12 @@ namespace Vxi11Net
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = m_ControlCode;
                 reply.MessageParameter = IPAddress.HostToNetworkOrder(m_MessageParameter);
-                reply.PayloadLength = IPAddress.HostToNetworkOrder((long)m_Message.Length);
-                int size = Marshal.SizeOf(typeof(Hislip.Message)) + m_Message.Length;
+                reply.PayloadLength = IPAddress.HostToNetworkOrder(m_PayloadLength);
+                int size = Marshal.SizeOf(typeof(Hislip.Message)) + (int)m_PayloadLength;
                 packet = new byte[size];
                 GCHandle gchw = GCHandle.Alloc(packet, GCHandleType.Pinned);
                 Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
-                byte[] array = System.Text.Encoding.ASCII.GetBytes(m_Message);
-                Buffer.BlockCopy(array, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), array.Length);
+                Buffer.BlockCopy(m_Payload, 0, packet, Marshal.SizeOf(typeof(Hislip.Message)), (int)m_PayloadLength);
                 gchw.Free();
             }
             else if (m_MessageType == Hislip.AsyncDeviceClearAcknowledge)

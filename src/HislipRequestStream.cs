@@ -117,8 +117,7 @@ namespace Vxi11Net
                 return 0;
             }
 
-            uint dataRead = 0;
-            m_HislipListenerContext.SyncClient.GetStream().Read(buffer, offset, size);
+            int dataRead = m_HislipListenerContext.SyncClient.GetStream().Read(buffer, offset, size);
 
             return (int)dataRead;
         }

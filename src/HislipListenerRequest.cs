@@ -12,14 +12,35 @@ namespace Vxi11Net
         private short m_Version;
         private short m_VendorID;
         private long m_PayloadLength;
-        private int m_MessageParameter;
+        private uint m_MessageParameter;
         private byte[] m_Payload;
+        private long m_MaxMessageSize;
         private HislipListenerContext m_HislipListenerContext;
 
-        internal HislipListenerRequest(HislipListenerContext context)
+        internal HislipListenerRequest(HislipListenerContext context, long MaximumMessageSize)
         {
             m_HislipListenerContext = context;
-            m_Payload = new byte[0];
+            m_MaxMessageSize = MaximumMessageSize;
+            m_Payload = new byte[m_MaxMessageSize];
+        }
+        public byte[] Payload
+        {
+            get
+            {
+                return m_Payload;
+            }
+            set
+            {
+                if (Payload != null)
+                {
+                    m_MaxMessageSize = Payload.Length;
+                    m_Payload = value;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("value");
+                }
+            }
         }
         public char Prologue0
         {
@@ -129,7 +150,7 @@ namespace Vxi11Net
                 }
             }
         }
-        public int MessageParameter
+        public uint MessageParameter
         {
             get
             {

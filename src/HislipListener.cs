@@ -1,7 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Vxi11Net
 {
@@ -9,8 +11,8 @@ namespace Vxi11Net
     {
         private HislipListenerContext m_Context;
 
-        public HislipListener(TcpClient server) {
-            m_Context = new HislipListenerContext(this, server);
+        public HislipListener(TcpClient server, long maxMessageSize) {
+            m_Context = new HislipListenerContext(this, server, maxMessageSize);
         }
         public void Close()
         {
@@ -29,8 +31,12 @@ namespace Vxi11Net
             request.Prologue1 = (char)buffer[1];
             request.MessageType = buffer[2];
             request.ControlCode = buffer[3];
-            request.MessageParameter = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            request.MessageParameter = (uint)IPAddress.NetworkToHostOrder(BitConverter.ToUInt32(buffer, 4));
             request.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
+            if (request.PayloadLength > 0)
+            {
+                stream.Read(request.Payload, 0, (int)request.PayloadLength);
+            }
 
             HislipListenerResponse response = context.Response;
             response.Prologue0 = 'H';
@@ -55,7 +61,7 @@ namespace Vxi11Net
         }
         public HislipListenerContext GetMessage()
         {
-            using NetworkStream stream = m_Context.SyncClient.GetStream();
+            NetworkStream stream = m_Context.SyncClient.GetStream();
             int size = Marshal.SizeOf(typeof(Hislip.Message));
             byte[] buffer = new byte[size];
             int bytes = stream.Read(buffer, 0, size);
@@ -65,22 +71,40 @@ namespace Vxi11Net
             request.Prologue1 = (char)buffer[1];
             request.MessageType = buffer[2];
             request.ControlCode = buffer[3];
-            request.MessageParameter = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(buffer, 4));
+            request.MessageParameter = (uint)IPAddress.NetworkToHostOrder(BitConverter.ToUInt32(buffer, 4));
             request.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
+            if (request.PayloadLength > 0)
+            {
+                stream.Read(request.Payload, 0, (int)request.PayloadLength);
+            }
 
             HislipListenerResponse response = m_Context.Response;
             response.Prologue0 = 'H';
             response.Prologue1 = 'S';
             switch (request.MessageType)
             {
-                case Hislip.Initialize_:
-                    response.MessageType = Hislip.InitializeResponse_;
+                case Hislip.Data:
+                    response.MessageType = Hislip.Data;
+                    response.MessageID = request.MessageParameter;
                     break;
-                case Hislip.AsyncInitialize:
-                    response.MessageType = Hislip.AsyncInitializeResponse_;
+                case Hislip.DataEnd:
+                    response.MessageType = Hislip.DataEnd;
                     break;
-                case Hislip.AsyncMaximumMessageSize:
-                    response.MessageType = Hislip.AsyncMaximumMessageSizeResponse;
+                case Hislip.AsyncLock:
+                    break;
+                case Hislip.DeviceClearComplete:
+                    break;
+                case Hislip.AsyncRemoteLocalControl:
+                    break;
+                case Hislip.Trigger:
+                    break;
+                case Hislip.AsyncDeviceClear:
+                    break;
+                case Hislip.AsyncServiceRequest:
+                    break;
+                case Hislip.AsyncStatusQuery:
+                    break;
+                case Hislip.AsyncLockInfo:
                     break;
             }
             response.ControlCode = 0;
