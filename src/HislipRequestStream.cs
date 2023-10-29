@@ -1,6 +1,8 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Vxi11Net
 {
@@ -15,7 +17,6 @@ namespace Vxi11Net
         {
             m_HislipListenerContext = hislipListenerContext;
         }
-
 
         public override bool CanSeek
         {
@@ -54,17 +55,6 @@ namespace Vxi11Net
             get
             {
                 return m_DataChunkIndex > -1;
-            }
-        }
-
-        // This low level API should only be consumed if the caller can make sure that the state is not corrupted
-        // WebSocketHttpListenerDuplexStream (a duplex wrapper around HttpRequestStream/HttpResponseStream)
-        // is currenlty the only consumer of this API
-        internal HislipListenerContext InternalHislipContext
-        {
-            get
-            {
-                return m_HislipListenerContext;
             }
         }
 
@@ -128,7 +118,7 @@ namespace Vxi11Net
             }
 
             uint dataRead = 0;
-            m_HislipListenerContext.SyncStream.Read(buffer, offset, size);
+            m_HislipListenerContext.SyncClient.GetStream().Read(buffer, offset, size);
 
             return (int)dataRead;
         }
@@ -148,7 +138,7 @@ namespace Vxi11Net
                 throw new ArgumentOutOfRangeException("size");
             }
             
-            return m_HislipListenerContext.SyncStream.BeginRead(buffer, offset, size, callback, state);
+            return m_HislipListenerContext.SyncClient.GetStream().BeginRead(buffer, offset, size, callback, state);
         }
 
         public override int EndRead(IAsyncResult asyncResult)
@@ -157,7 +147,7 @@ namespace Vxi11Net
             {
                 throw new ArgumentNullException("asyncResult");
             }
-            int dataRead = m_HislipListenerContext.SyncStream.EndRead(asyncResult);
+            int dataRead = m_HislipListenerContext.SyncClient.GetStream().EndRead(asyncResult);
             return dataRead;
         }
 
@@ -187,6 +177,5 @@ namespace Vxi11Net
                 base.Dispose(disposing);
             }
         }
-
     }
 }                                      

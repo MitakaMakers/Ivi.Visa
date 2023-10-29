@@ -1,14 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net.Sockets;
 
 namespace Vxi11Net
 {
-    internal class Vxi11Listener
+    public class Vxi11Listener
     {
-        internal Vxi11ListenerContext GetMessage()
+        private Vxi11ListenerContext m_Context;
+
+        public Vxi11Listener(TcpClient server)
+        {
+            m_Context = new Vxi11ListenerContext(this, server);
+        }
+
+        public Vxi11ListenerContext GetMessage()
         {
             throw new NotImplementedException();
         }

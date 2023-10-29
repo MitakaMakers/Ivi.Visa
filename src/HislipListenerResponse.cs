@@ -1,5 +1,6 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System;
+using System.IO;
+using System.Net;
 using System.Runtime.InteropServices;
 
 namespace Vxi11Net
@@ -34,12 +35,12 @@ namespace Vxi11Net
         private string m_Message = "";
         private HislipListenerContext m_HislipListenerContext;
 
-        internal HislipListenerResponse(HislipListenerContext httpContext)
+        internal HislipListenerResponse(HislipListenerContext context)
         {
             m_ResponseState = ResponseState.Created;
             m_PayloadLength = 0;
             m_Payload = new byte[0];
-            m_HislipListenerContext = httpContext;
+            m_HislipListenerContext = context;
         }
 
         private HislipListenerContext HislipListenerContext

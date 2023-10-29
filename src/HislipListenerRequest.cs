@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.IO;
 
 namespace Vxi11Net
 {
@@ -15,9 +16,9 @@ namespace Vxi11Net
         private byte[] m_Payload;
         private HislipListenerContext m_HislipListenerContext;
 
-        internal HislipListenerRequest(HislipListenerContext hislipListenerContext)
+        internal HislipListenerRequest(HislipListenerContext context)
         {
-            m_HislipListenerContext = hislipListenerContext;
+            m_HislipListenerContext = context;
             m_Payload = new byte[0];
         }
         public char Prologue0

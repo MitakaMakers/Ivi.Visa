@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Net;
+using System.IO;
 using System.Net.Sockets;
-using System.Text;
 
 namespace Vxi11Net
 {
@@ -16,7 +14,6 @@ namespace Vxi11Net
         private HislipRequestStream m_RequestStream;
         private HislipResponseStream m_ResponseStream;
 
-
         internal HislipListenerContext(TcpClient server)
         {
             m_Listener = new HislipListener(server);
@@ -27,7 +24,7 @@ namespace Vxi11Net
             m_RequestStream = new HislipRequestStream(this);
             m_ResponseStream = new HislipResponseStream(this);
         }
-    internal HislipListenerContext(HislipListener hislipListener, TcpClient server)
+        internal HislipListenerContext(HislipListener hislipListener, TcpClient server)
         {
             m_Listener = hislipListener;
             m_Request = new HislipListenerRequest(this);
@@ -90,21 +87,7 @@ namespace Vxi11Net
                 }
             }
         }
-        public Stream SyncStream
-        {
-            get
-            {
-                return m_SyncClient.GetStream();
-            }
-        }
 
-        public Stream AsyncStream
-        {
-            get
-            {
-                return m_AsyncClient.GetStream();
-            }
-        }
         public void Close()
         {
             m_SyncClient.Close();
