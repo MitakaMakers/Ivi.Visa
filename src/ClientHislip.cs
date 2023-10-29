@@ -33,8 +33,8 @@ namespace Vxi11Net
             reply.Prologue1 = (char)buffer[1];
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
-            reply.Protocol = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 4));
-            reply.SessionID = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 6));
+            reply.Protocol = (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 4));
+            reply.SessionID = (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 6));
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return reply.SessionID;
         }
@@ -62,7 +62,7 @@ namespace Vxi11Net
             reply.MessageType = buffer[2];
             reply.ControlCode = buffer[3];
             reply.dummy = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 4));
-            reply.ServerID = IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 6));
+            reply.ServerID = (ushort)IPAddress.NetworkToHostOrder(BitConverter.ToInt16(buffer, 6));
             reply.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
             return 0;
         }
@@ -109,7 +109,7 @@ namespace Vxi11Net
             Hislip.Message call = new Hislip.Message();
             call.Prologue0 = 'H';
             call.Prologue1 = 'S';
-            call.MessageType = Hislip.Data;
+            call.MessageType = Hislip.Data_;
             call.ControlCode = controlcode;
             call.MessageParameter = IPAddress.HostToNetworkOrder(messageID);
             call.PayloadLength = IPAddress.HostToNetworkOrder((long)data.Length);

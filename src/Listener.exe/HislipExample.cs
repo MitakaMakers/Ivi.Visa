@@ -15,10 +15,10 @@ namespace Vxi11Net
 
             HislipServer server = new HislipServer();
             server.Port = 4880;
-            server.MaximumMessageSize = 1024*1024;
+            server.MaximumMessageSize = 1024 * 1024;
             server.Start();
             Console.WriteLine("Listening...");
-            HislipListener listener = server.AcceptHislipClient();
+            HislipListener listener = server.AcceptClient();
 
             while (true)
             {
@@ -28,42 +28,35 @@ namespace Vxi11Net
                     HislipListenerResponse response = context.Response;
                     byte[] dest;
                     String text;
+                    bool IsQuery = false;
                     switch (request.MessageType)
                     {
                         case Hislip.AsyncLock:
                             break;
                         case Hislip.Data_:
-                            dest = new byte[request.PayloadLength];
-                            Buffer.BlockCopy(request.Payload, 0, dest, 0, (int)request.PayloadLength);
-                            text = System.Text.Encoding.UTF8.GetString(dest);
+                            text = request.PayloadAsString;
                             //tmctl.Send(id, text);
                             if (text.Contains("?"))
                             {
-                                StringBuilder buff = new StringBuilder(1000);
-                                int rlen = 1;
-                                //tmctl.Receive(id, buff, 1000, ref rlen);
-                                if (rlen > 0)
-                                {
-                                    byte[] data = System.Text.Encoding.ASCII.GetBytes("YOKOGAWA,DL950,V1.1,TEMP01" /* buff.ToString() */);
-                                    response.Payload = data;
-                                    byte[] bytes = response.GetBytes();
-                                    response.OutputStream.Write(bytes);
-                                }
+                                IsQuery = true;
                             }
                             break;
                         case Hislip.DataEnd:
-                            dest = new byte[request.PayloadLength];
-                            Buffer.BlockCopy(request.Payload,  0, dest, 0, (int)request.PayloadLength);
-                            text = System.Text.Encoding.UTF8.GetString(dest);
+                            text = request.PayloadAsString;
                             //tmctl.Send(id, text);
                             if (text.Contains("?")){
+                                IsQuery = true;
+                            }
+                            if (IsQuery)
+                            {
+
                                 StringBuilder buff = new StringBuilder(1000);
                                 int rlen = 1;
                                 //tmctl.Receive(id, buff, 1000, ref rlen);
                                 if (rlen > 0)
                                 {
                                     response.ControlCode = Hislip.RMTwasDelivered;
-                                    byte[] data = System.Text.Encoding.ASCII.GetBytes("YOKOGAWA,DL950,V1.1,TEMP01" /* buff.ToString() */);
+                                    byte[] data = System.Text.Encoding.ASCII.GetBytes("YOKOGAWA,DL950,V1.1,TEMP01\n" /* buff.ToString() */);
                                     response.Payload = data;
                                     byte[] bytes = response.GetBytes();
                                     response.OutputStream.Write(bytes);

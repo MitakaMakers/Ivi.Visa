@@ -24,7 +24,7 @@ namespace Vxi11Net
             m_RequestStream = new HislipRequestStream(this);
             m_ResponseStream = new HislipResponseStream(this);
         }
-        internal HislipListenerContext(HislipListener hislipListener, TcpClient server, long maxMessageSize)
+        internal HislipListenerContext(HislipListener hislipListener, TcpClient server, ulong maxMessageSize)
         {
             m_Listener = hislipListener;
             m_Request = new HislipListenerRequest(this, maxMessageSize);

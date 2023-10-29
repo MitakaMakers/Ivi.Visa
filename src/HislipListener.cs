@@ -11,7 +11,8 @@ namespace Vxi11Net
     {
         private HislipListenerContext m_Context;
 
-        public HislipListener(TcpClient server, long maxMessageSize) {
+        public HislipListener(TcpClient server, ulong maxMessageSize)
+        {
             m_Context = new HislipListenerContext(this, server, maxMessageSize);
         }
         public void Close()
@@ -21,9 +22,9 @@ namespace Vxi11Net
         public static uint NetworkToHostOrderToUInt32(byte[] array, int index)
         {
             uint u = (uint)array[index] << 24;
-            u += (uint)array[index+1] << 16;
-            u += (uint)array[index+2] << 8;
-            u += (uint)array[index+3];
+            u += (uint)array[index + 1] << 16;
+            u += (uint)array[index + 2] << 8;
+            u += (uint)array[index + 3];
             return u;
         }
         public static ulong NetworkToHostOrderToUInt64(byte[] array, int index)

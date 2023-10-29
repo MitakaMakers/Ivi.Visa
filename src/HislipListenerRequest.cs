@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Vxi11Net
 {
@@ -14,10 +15,10 @@ namespace Vxi11Net
         private ulong m_PayloadLength;
         private uint m_MessageParameter;
         private byte[] m_Payload;
-        private long m_MaxMessageSize;
+        private ulong m_MaxMessageSize;
         private HislipListenerContext m_HislipListenerContext;
 
-        internal HislipListenerRequest(HislipListenerContext context, long MaximumMessageSize)
+        internal HislipListenerRequest(HislipListenerContext context, ulong MaximumMessageSize)
         {
             m_HislipListenerContext = context;
             m_MaxMessageSize = MaximumMessageSize;
@@ -33,7 +34,7 @@ namespace Vxi11Net
             {
                 if (Payload != null)
                 {
-                    m_MaxMessageSize = Payload.Length;
+                    m_MaxMessageSize = (ulong)Payload.Length;
                     m_Payload = value;
                 }
                 else
@@ -42,6 +43,19 @@ namespace Vxi11Net
                 }
             }
         }
+        public String PayloadAsString
+        {
+            get
+            {
+                byte[] dest = new byte[m_PayloadLength];
+                Buffer.BlockCopy(m_Payload, 0, dest, 0, (int)m_PayloadLength);
+                string text = System.Text.Encoding.UTF8.GetString(dest);
+                return text;
+            }
+        }
+
+
+
         public char Prologue0
         {
             get

@@ -11,7 +11,8 @@ namespace Vxi11Net
     {
         private IPAddress m_LocalAddr = IPAddress.Parse("127.0.0.1");
         private short m_Port = Hislip.PORT;
-        private long m_MaximumMessageSize;
+        private ushort m_SessionID;
+        private ulong m_MaximumMessageSize;
         private bool m_IsListening;
         private TcpListener m_TcpListener;
 
@@ -45,7 +46,25 @@ namespace Vxi11Net
                 }
             }
         }
-        public long MaximumMessageSize
+        public ushort SessionID
+        {
+            get
+            {
+                return m_SessionID;
+            }
+            set
+            {
+                if (value >= 0)
+                {
+                    m_SessionID = value;
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException("Port");
+                }
+            }
+        }
+        public ulong MaximumMessageSize
         {
             get
             {
@@ -68,7 +87,7 @@ namespace Vxi11Net
             m_IsListening = true;
             m_TcpListener.Start();
         }
-        public HislipListener AcceptHislipClient()
+        public HislipListener AcceptClient()
         {
             TcpClient client;
             TcpClient asyncClient;
@@ -85,7 +104,7 @@ namespace Vxi11Net
                     response = context.Response;
                     if (request.MessageType == Hislip.Initialize_)
                     {
-                        response.SessionID = 123;
+                        response.SessionID = m_SessionID;
                         response.ServerVersion = Hislip.ServerVersion;
                         byte[] bytes = response.GetBytes();
                         client.GetStream().Write(bytes);
