@@ -28,7 +28,7 @@ namespace Vxi11Net
         private short m_ProtocolVersion;
         private short m_SessionID;
         private short m_ServerID;
-        private int m_MessageID;
+        private uint m_MessageID;
         private int m_MessageParameter;
         private long m_MaximumMessageSize;
         private byte[] m_Payload;
@@ -220,7 +220,7 @@ namespace Vxi11Net
                 }
             }
         }
-        public int MessageID
+        public uint MessageID
         {
             get
             {
@@ -411,14 +411,14 @@ namespace Vxi11Net
                 Marshal.StructureToPtr(reply, gchw.AddrOfPinnedObject(), false);
                 gchw.Free();
             }
-            else if (m_MessageType == Hislip.Data)
+            else if (m_MessageType == Hislip.Data_)
             {
-                Hislip.Message reply = new Hislip.Message();
+                Hislip.Data reply = new Hislip.Data();
                 reply.Prologue0 = 'H';
                 reply.Prologue1 = 'S';
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = m_ControlCode;
-                reply.MessageParameter = IPAddress.HostToNetworkOrder(m_MessageID);
+                reply.MessageID = (uint)IPAddress.HostToNetworkOrder(m_MessageID);
                 reply.PayloadLength = IPAddress.HostToNetworkOrder(m_PayloadLength);
                 int size = Marshal.SizeOf(typeof(Hislip.Message)) + (int)m_PayloadLength;
                 packet = new byte[size];
@@ -429,12 +429,12 @@ namespace Vxi11Net
             }
             else if (m_MessageType == Hislip.DataEnd)
             {
-                Hislip.Message reply = new Hislip.Message();
+                Hislip.Data reply = new Hislip.Data();
                 reply.Prologue0 = 'H';
                 reply.Prologue1 = 'S';
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = m_ControlCode;
-                reply.MessageParameter = IPAddress.HostToNetworkOrder(m_MessageParameter);
+                reply.MessageID = (uint)IPAddress.HostToNetworkOrder(m_MessageID);
                 reply.PayloadLength = IPAddress.HostToNetworkOrder(m_PayloadLength);
                 int size = Marshal.SizeOf(typeof(Hislip.Message)) + (int)m_PayloadLength;
                 packet = new byte[size];
@@ -475,12 +475,12 @@ namespace Vxi11Net
             }
             else if (m_MessageType == Hislip.Interrupted)
             {
-                Hislip.Message reply = new Hislip.Message();
+                Hislip.Data reply = new Hislip.Data();
                 reply.Prologue0 = 'H';
                 reply.Prologue1 = 'S';
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = 0;
-                reply.MessageParameter = IPAddress.HostToNetworkOrder(m_MessageID);
+                reply.MessageID = (uint)IPAddress.HostToNetworkOrder(m_MessageID);
                 reply.PayloadLength = 0;
                 int size = Marshal.SizeOf(typeof(Hislip.Message));
                 packet = new byte[size];
@@ -490,12 +490,12 @@ namespace Vxi11Net
             }
             else if (m_MessageType == Hislip.AsyncInterrupted)
             {
-                Hislip.Message reply = new Hislip.Message();
+                Hislip.Data reply = new Hislip.Data();
                 reply.Prologue0 = 'H';
                 reply.Prologue1 = 'S';
                 reply.MessageType = m_MessageType;
                 reply.ControlCode = 0;
-                reply.MessageParameter = IPAddress.HostToNetworkOrder(m_MessageID);
+                reply.MessageID = (uint)IPAddress.HostToNetworkOrder(m_MessageID);
                 reply.PayloadLength = 0;
                 int size = Marshal.SizeOf(typeof(Hislip.Message));
                 packet = new byte[size];

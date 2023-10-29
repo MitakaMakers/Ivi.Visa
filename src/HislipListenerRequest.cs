@@ -11,7 +11,7 @@ namespace Vxi11Net
         private byte m_ControlCode;
         private short m_Version;
         private short m_VendorID;
-        private long m_PayloadLength;
+        private ulong m_PayloadLength;
         private uint m_MessageParameter;
         private byte[] m_Payload;
         private long m_MaxMessageSize;
@@ -168,7 +168,7 @@ namespace Vxi11Net
                 }
             }
         }
-        public long PayloadLength
+        public ulong PayloadLength
         {
             get
             {

@@ -18,6 +18,26 @@ namespace Vxi11Net
         {
             m_Context.Close();
         }
+        public static uint NetworkToHostOrderToUInt32(byte[] array, int index)
+        {
+            uint u = (uint)array[index] << 24;
+            u += (uint)array[index+1] << 16;
+            u += (uint)array[index+2] << 8;
+            u += (uint)array[index+3];
+            return u;
+        }
+        public static ulong NetworkToHostOrderToUInt64(byte[] array, int index)
+        {
+            ulong u = (ulong)array[index] << 58;
+            u += (ulong)array[index + 1] << 48;
+            u += (ulong)array[index + 2] << 40;
+            u += (ulong)array[index + 3] << 32;
+            u += (ulong)array[index + 4] << 24;
+            u += (ulong)array[index + 5] << 16;
+            u += (ulong)array[index + 6] << 8;
+            u += (ulong)array[index + 7];
+            return u;
+        }
         public static HislipListenerContext GetMessage(TcpClient client)
         {
             NetworkStream stream = client.GetStream();
@@ -31,8 +51,8 @@ namespace Vxi11Net
             request.Prologue1 = (char)buffer[1];
             request.MessageType = buffer[2];
             request.ControlCode = buffer[3];
-            request.MessageParameter = (uint)IPAddress.NetworkToHostOrder(BitConverter.ToUInt32(buffer, 4));
-            request.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
+            request.MessageParameter = NetworkToHostOrderToUInt32(buffer, 4);
+            request.PayloadLength = NetworkToHostOrderToUInt64(buffer, 8);
             if (request.PayloadLength > 0)
             {
                 stream.Read(request.Payload, 0, (int)request.PayloadLength);
@@ -71,8 +91,8 @@ namespace Vxi11Net
             request.Prologue1 = (char)buffer[1];
             request.MessageType = buffer[2];
             request.ControlCode = buffer[3];
-            request.MessageParameter = (uint)IPAddress.NetworkToHostOrder(BitConverter.ToUInt32(buffer, 4));
-            request.PayloadLength = IPAddress.NetworkToHostOrder(BitConverter.ToInt64(buffer, 8));
+            request.MessageParameter = NetworkToHostOrderToUInt32(buffer, 4);
+            request.PayloadLength = NetworkToHostOrderToUInt64(buffer, 8);
             if (request.PayloadLength > 0)
             {
                 stream.Read(request.Payload, 0, (int)request.PayloadLength);
@@ -83,28 +103,32 @@ namespace Vxi11Net
             response.Prologue1 = 'S';
             switch (request.MessageType)
             {
-                case Hislip.Data:
-                    response.MessageType = Hislip.Data;
+                case Hislip.AsyncLock:
+                    response.MessageType = Hislip.AsyncLockResponse_;
+                    break;
+                case Hislip.Data_:
+                    response.MessageType = Hislip.Data_;
                     response.MessageID = request.MessageParameter;
                     break;
                 case Hislip.DataEnd:
                     response.MessageType = Hislip.DataEnd;
-                    break;
-                case Hislip.AsyncLock:
+                    response.MessageID = request.MessageParameter;
                     break;
                 case Hislip.DeviceClearComplete:
+                    response.MessageType = Hislip.DeviceClearAcknowledge;
                     break;
                 case Hislip.AsyncRemoteLocalControl:
-                    break;
-                case Hislip.Trigger:
+                    response.MessageType = Hislip.AsyncRemoteLocalResponse;
                     break;
                 case Hislip.AsyncDeviceClear:
-                    break;
-                case Hislip.AsyncServiceRequest:
+                    response.MessageType = Hislip.AsyncDeviceClearAcknowledge;
                     break;
                 case Hislip.AsyncStatusQuery:
+                    response.MessageType = Hislip.AsyncStatusResponse;
+                    response.MessageID = request.MessageParameter;
                     break;
                 case Hislip.AsyncLockInfo:
+                    response.MessageType = Hislip.AsyncLockInfoResponse;
                     break;
             }
             response.ControlCode = 0;

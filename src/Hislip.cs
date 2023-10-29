@@ -14,7 +14,7 @@ namespace Vxi11Net
         public const int Error = 3;
         public const int AsyncLock = 4;
         public const int AsyncLockResponse_ = 5;
-        public const int Data = 6;
+        public const int Data_ = 6;
         public const int DataEnd = 7;
         public const int DeviceClearComplete = 8;
         public const int DeviceClearAcknowledge = 9;
@@ -139,6 +139,15 @@ namespace Vxi11Net
             public byte ControlCode;
             public int MessageParameter;
             public long PayloadLength;
-        };        
+        };
+        public struct Data
+        {
+            public char Prologue0;
+            public char Prologue1;
+            public byte MessageType;
+            public byte ControlCode;
+            public uint MessageID;
+            public long PayloadLength;
+        };
     }
 }

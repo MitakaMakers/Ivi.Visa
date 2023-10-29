@@ -26,15 +26,35 @@ namespace Vxi11Net
                     HislipListenerContext context = listener.GetMessage();
                     HislipListenerRequest request = context.Request;
                     HislipListenerResponse response = context.Response;
+                    byte[] dest;
+                    String text;
                     switch (request.MessageType)
                     {
                         case Hislip.AsyncLock:
                             break;
-                        case Hislip.Data:
+                        case Hislip.Data_:
+                            dest = new byte[request.PayloadLength];
+                            Buffer.BlockCopy(request.Payload, 0, dest, 0, (int)request.PayloadLength);
+                            text = System.Text.Encoding.UTF8.GetString(dest);
+                            //tmctl.Send(id, text);
+                            if (text.Contains("?"))
+                            {
+                                StringBuilder buff = new StringBuilder(1000);
+                                int rlen = 1;
+                                //tmctl.Receive(id, buff, 1000, ref rlen);
+                                if (rlen > 0)
+                                {
+                                    byte[] data = System.Text.Encoding.ASCII.GetBytes("YOKOGAWA,DL950,V1.1,TEMP01" /* buff.ToString() */);
+                                    response.Payload = data;
+                                    byte[] bytes = response.GetBytes();
+                                    response.OutputStream.Write(bytes);
+                                }
+                            }
+                            break;
                         case Hislip.DataEnd:
-                            byte[] dest = new byte[request.PayloadLength];
+                            dest = new byte[request.PayloadLength];
                             Buffer.BlockCopy(request.Payload,  0, dest, 0, (int)request.PayloadLength);
-                            String text = System.Text.Encoding.UTF8.GetString(dest);
+                            text = System.Text.Encoding.UTF8.GetString(dest);
                             //tmctl.Send(id, text);
                             if (text.Contains("?")){
                                 StringBuilder buff = new StringBuilder(1000);
@@ -42,6 +62,7 @@ namespace Vxi11Net
                                 //tmctl.Receive(id, buff, 1000, ref rlen);
                                 if (rlen > 0)
                                 {
+                                    response.ControlCode = Hislip.RMTwasDelivered;
                                     byte[] data = System.Text.Encoding.ASCII.GetBytes("YOKOGAWA,DL950,V1.1,TEMP01" /* buff.ToString() */);
                                     response.Payload = data;
                                     byte[] bytes = response.GetBytes();
