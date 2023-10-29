@@ -98,9 +98,9 @@
 ## 例外
 |名前|説明|
 |---|---|
-|IOTimeoutException|VISA.NETのI/Oタイムアウトが発生した。|
-|NativeErrorCode|標準エラー・ステータス・コードを含むクラス。|
-|NativeVisaException|基礎となるVISAネイティブC実装に関連するエラーが発生した。|
-|TypeFormatterException|タイプ・フォーマッタ・エラーが発生した。|
-|VisaException|VISA.NETエラーが発生した|
+|[IOTimeoutException](IOTimeoutException.ja.md)|VISA.NETのI/Oタイムアウトが発生した。|
+|[NativeErrorCode](NativeErrorCode.ja.md)|標準エラー・ステータス・コードを含むクラス。|
+|[NativeVisaException](NativeVisaException.ja.md)|基礎となるVISAネイティブC実装に関連するエラーが発生した。|
+|[TypeFormatterException](TypeFormatterException.ja.md)|タイプ・フォーマッタ・エラーが発生した。|
+|[VisaException](VisaException.ja.md)|VISA.NETエラーが発生した|
 
