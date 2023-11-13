@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>Vxi11Net</RootNamespace>
+    <StartupObject>Vxi11Net.Vxi11ListenerExample</StartupObject>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Vxi11.cs" />
+    <Compile Include="Vxi11Example.cs" />
+    <Compile Include="..\Vxi11Listener.cs" />
+    <Compile Include="..\Vxi11ListenerContext.cs" />
+    <Compile Include="..\Vxi11ListenerRequest.cs" />
+    <Compile Include="..\Vxi11ListenerResponse.cs" />
+    <Compile Include="..\Vxi11RequestStream.cs" />
+    <Compile Include="..\Vxi11ResponseStream.cs" />
+    <Compile Include="..\Vxi11Server.cs" />
+  </ItemGroup>
+
+</Project>

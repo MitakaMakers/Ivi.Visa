@@ -21,33 +21,6 @@
     <Compile Include="..\HislipRequestStream.cs" />
     <Compile Include="..\HislipResponseStream.cs" />
     <Compile Include="..\HislipServer.cs" />
-    <Compile Include="..\Vxi11.cs" />
-    <Compile Include="Vxi11Example.cs" />
-    <Compile Include="..\Vxi11Listener.cs" />
-    <Compile Include="..\Vxi11ListenerContext.cs" />
-    <Compile Include="..\Vxi11ListenerRequest.cs" />
-    <Compile Include="..\Vxi11ListenerResponse.cs" />
-    <Compile Include="..\Vxi11RequestStream.cs" />
-    <Compile Include="..\Vxi11ResponseStream.cs" />
-    <Compile Include="..\Vxi11Server.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="TmctlAPINet">
-      <HintPath>TmctlAPINet.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="tmctl.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="TmctlAPINet.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="YKMUSB.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>
